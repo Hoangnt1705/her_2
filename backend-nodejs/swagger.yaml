@@ -1,0 +1,14 @@
+swagger: "2.0"
+info:
+  description: "APIs of Her"
+  version: "1.0.0"
+  title: "Her"
+  contact:
+    email: "tuanhoang1705@gmail.com"
+host: "localhost:8000"
+basePath: "/api"
+schemes:
+- "http"
+- "https"
+tags:
+
