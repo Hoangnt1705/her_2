@@ -2,10 +2,6 @@ import jwt from 'jsonwebtoken'
 import { sendError, sendServerError } from '../helper/client.js'
 import { TOKEN_LIST, TOKEN_BLACKLIST } from '../index.js'
 
-export const ensureAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) { return next(); }
-    res.redirect('/login')
-  }
 
 
 /**
@@ -60,3 +56,8 @@ export const verifyCustomerOrAdmin = async (req, res, next) => {
         return sendError(res, 'Forbidden.', 403)
     next()
 }
+
+// export const ensureAuthenticated = (req, res, next) => {
+//     if (req.isAuthenticated()) { return next(); }
+//     res.redirect('/login')
+//   }

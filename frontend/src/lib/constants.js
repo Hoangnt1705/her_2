@@ -1,3 +1,4 @@
+import {PUBLIC_APP_API_BASE_URL} from '$env/static/public';
 export const navigation = [
     {
         title: 'Home',
@@ -37,3 +38,4 @@ export const icons = [
     
 ]
 
+export const END_POINT = PUBLIC_APP_API_BASE_URL;

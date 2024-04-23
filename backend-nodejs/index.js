@@ -3,6 +3,7 @@ dotenv.config();
 import createError from 'http-errors';
 import express from 'express';
 import path from 'path';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import YAML from 'yamljs'
@@ -13,7 +14,7 @@ import session from 'express-session';
 import authRoute from './routes/auth.js'; // Assuming this is the correct route for authentication
 import adminRoute from "./routes/admin/index.js";
 import userRoute from "./routes/user.js";
-import strat from './service/passport.js';
+// import strat from './service/passport.js';
 import { initRedis, getRedis } from "./db/index.js";
 
 
@@ -57,18 +58,32 @@ app.use(session({
   resave: false
 }))
 
-app.use(function (req, res, next) {
-  if (req.method === 'GET' && (req.url === '/api/auth/login' || req.url === '/api/auth/login/success')) {
-    req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000; // 7*24*60*60*1000 Rememeber 'me' for 30 days
-  }
-  else {
-    req.session.cookie.maxAge = SESSION_AGE;
-  }
-  next();
-});
+const whitelist = ['http://localhost:5173']; // Whitelist your allowed origins
 
-app.use(passport.initialize());
-app.use(passport.session());
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
+
+// app.use(function (req, res, next) {
+//   if (req.method === 'GET' && (req.url === '/api/auth/login' || req.url === '/api/auth/login/success')) {
+//     req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000; // 7*24*60*60*1000 Rememeber 'me' for 30 days
+//   }
+//   else {
+//     req.session.cookie.maxAge = SESSION_AGE;
+//   }
+//   next();
+// });
+
+// app.use(passport.initialize());
+// app.use(passport.session());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

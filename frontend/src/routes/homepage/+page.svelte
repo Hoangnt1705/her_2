@@ -1,63 +1,60 @@
 <script>
-  import "$lib/css/homepage.css";
-  import { onMount } from "svelte";
-  import { navigation, icons } from "$lib/home/constants.js";
-  import { base } from "$app/paths";
-  import { page } from "$app/stores";
-  import Typed from "typed.js";
+  import '$lib/css/homepage.css'
+  import { onMount } from 'svelte'
+  import { base } from '$app/paths'
+  import { page } from '$app/stores'
+  import Typed from 'typed.js'
 
-  let menuActive = false;
-  let activeSlide = 0;
+  export let data
+
+  let active = false
+  // let activeSlide = 0;
+
+
   onMount(() => {
-    const typed = new Typed(".typewriter", {
-      strings: ["to Cover <br/> Letter A.I"],
+    const typed = new Typed('.typewriter', {
+      strings: ['to Cover <br/> Letter A.I'],
       loop: true,
       typeSpeed: 100,
       backSpeed: 80,
       backDelay: 1500,
-    });
-    const video = document.querySelector(".video-slide");
+    })
+    const video = document.querySelector('.video-slide')
 
     // Add the preload attribute dynamically
-    video.setAttribute("preload", "auto");
+    video.setAttribute('preload', 'auto')
 
     return () => {
       if (typed) {
-        typed.destroy();
+        typed.destroy()
       }
-    };
-  });
-  function toggleMenu() {
-    menuActive = !menuActive;
-  }
-  $: pathname = $page.url.pathname;
+    }
+  })
+
+  $: pathname = $page.url.pathname
 </script>
 
 <header>
   <a href="#" class="brand">Her</a>
-  <div
-    class="menu-btn {menuActive ? 'active' : ''}"
-    on:click={toggleMenu}
-  ></div>
-  <div class="navigation {menuActive ? 'active' : ''}">
+  <div class="menu-btn" class:active on:click={() => (active = !active)} />
+  <div class="navigation" class:active>
     <div class="navigation-items">
-      {#each navigation as item}
+      {#each data.navigation as { title, url }}
         <a
-          rel={item.url.match("http") ? "noopener noreferrer" : ""}
-          data-sveltekit-prefetch={item.url.match("http") ? null : true}
-          class:active={item.url !== "/homepage"
-            ? pathname.match(item.url)
-            : item.url === pathname}
-          href="{base}{item.url}">{item.title}</a
-        >
+          rel={url.match('http') ? 'noopener noreferrer' : ''}
+          data-sveltekit-prefetch={url.match('http') ? null : true}
+          class:active={url !== '/homepage' ? pathname.match(url) : url === pathname}
+          href="{base}{url}"
+          data-sveltekit-preload-data>
+          {title}
+        </a>
       {/each}
     </div>
   </div>
 </header>
 <section class="home">
-  <video class="video-slide active" src="/home/1.mp4" autoplay muted loop
-  ></video>
-  <div class="content {activeSlide === 0 ? 'active' : ''}">
+  {@html data.video_slide}
+  <div class="content active">
     <div class="wrap-header-content">
       <h1>Welcome<br /><span class="typewriter"> </span></h1>
     </div>
@@ -68,19 +65,17 @@
       chances of landing an interview and save time with our intuitive
       interface. Experience the power of ChatGPT AI today!
     </p>
-    <a href="/">Get started</a>
+    <a href="/account/login/" data-sveltekit-preload-data>Get started</a>
   </div>
-  <div id="canvas3d"></div>
-
   <div class="media-icons">
-    {#each icons as icon}
-      <a href={icon.url}><i class={icon.title}></i></a>
+    {#each data.icons as { title, url }}
+      <a href={url} data-sveltekit-preload-data>
+        <i class={title} />
+      </a>
     {/each}
   </div>
 
-  <div class="copy-right">
-    <p>Copyright © 2024 Her</p>
-  </div>
+  {@html data.copyRight}
   <!-- <div class="slider-navigation"> -->
   <!-- {#each [0, 1] as i}
         <div class="nav-btn {activeSlide === i ? 'active' : ''}" on:click={() => sliderNav(i)}></div>

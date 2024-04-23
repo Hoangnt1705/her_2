@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+  
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+ }
+ 
+ body{
+  background: #eee;
+  font-family: 'Montserrat', sans-serif;
+ }
+ 
+ .icon{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+ }
+ 
+ .icon{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+ }
+ 
+ .drop{
+  position: relative;
+  width: 150px;
+  height: 150px;
+  box-shadow: inset 10px 10px 10px rgba(0,0,0,0.05),
+  15px 25px 10px rgba(0,0,0,0.05),
+  15px 20px 20px rgba(0,0,0,0.05),
+  inset -10px -10px 15px rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ }
+ 
+ 
+ .drop::before{
+  content: '';
+  position: absolute;
+  top: 35px;
+  left: 25px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+ }
+ 
+ .drop::after{
+  content: '';
+  position: absolute;
+  top: 25px;
+  left: 50px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+ }
+ 
+ .drop ion-icon{
+  font-size: 4.9em;
+  color: #444;
+ }
+  </style>
+</head>
+
+<body>
+  <div class="icon">
+    <div class="heading">
+     <h1>CSS Water Drop Logo Effect</h1>
+    </div>
+    <div class="drop">
+     <ion-icon name="logo-apple"></ion-icon>
+    </div>
+   </div>
+</body>
+
+</html>

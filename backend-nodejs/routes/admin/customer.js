@@ -1,9 +1,7 @@
 import express from "express"
 import Customer from "../../model/Customer.js"
 import { sendError, sendServerError, sendSuccess } from "../../helper/client.js"
-import { CUSTOMER } from "../../constant.js"
 import User from "../../model/User.js";
-import Order from "../../model/Order.js"
 
 
 const customerAdminRoute = express.Router();

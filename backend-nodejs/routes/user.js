@@ -1,6 +1,6 @@
 import express from 'express'
 import { sendError, sendServerError, sendSuccess } from '../helper/client.js'
-import { verifyCustomer, verifyStaff, verifyToken } from '../middleware/index.js'
+import { verifyStaff, verifyToken } from '../middleware/index.js'
 import Customer from '../model/Customer.js'
 import Staff from '../model/Staff.js'
 import User from '../model/User.js'
@@ -12,7 +12,7 @@ const userRoute = express.Router()
  * @description update personnal customer information
  * @access private
  */
-userRoute.put('/customer', verifyToken, verifyCustomer, async (req, res) => {
+userRoute.put('/customer', verifyToken, async (req, res) => {
     const user = req.user
     const { name, email, phone, address, description } = req.body
 
