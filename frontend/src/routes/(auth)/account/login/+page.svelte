@@ -1,43 +1,54 @@
 <script>
+  import { browser } from '$app/environment'
   import '$lib/css/loginpage.css'
-  import { beforeUpdate, afterUpdate, onMount } from 'svelte'
+  import { beforeUpdate, afterUpdate, onMount, tick } from 'svelte'
   import { END_POINT } from '$lib/constants.js'
   import { PUBLIC_OAUTH_GOOGLE_KEY } from '$env/static/public'
   import { Application } from '@splinetool/runtime'
   import axios from 'axios'
-  import { fade, fly } from 'svelte/transition'
-  import { redirect } from '@sveltejs/kit'
   import { signInHandle } from '$lib/context/MainContext.js'
-  import { visible, titleToast, contentToast } from '$lib/store.js'
+  import { Skeleton } from 'svelte-loading-skeleton'
+  import {
+    visible,
+    titleToast,
+    contentToast,
+    iconNotification,
+  } from '$lib/store.js'
+  import { iconsNotification } from '$lib/constants.js'
   import Toast from '$lib/components/Toast.svelte'
+  import { goto } from '$app/navigation'
 
-  export let data;
-  let canvas;
+  export let data
+  let canvas
 
   const success = () => {
-    visible.update((v) => v  = !v);
-    titleToast.set('Successfully Sign in!');
-    contentToast.set('Hope you will have a good experience using the service!');
-    redirect(-1);
-  };
+    iconNotification.set(iconsNotification.success)
+    visible.update((v) => (v = !v))
+    titleToast.set('Successfully Sign in!')
+    contentToast.set('Hope you will have a good experience using the service✨')
+    setTimeout(() => {
+      visible.update((v) => (v = !v))
+      goto('/')
+    }, 2000)
+  }
   const failed403 = () => {
-    message.error({
-      content: "Role của bạn chưa được xác nhận, từ chối đăng nhập",
-      className: "custom-class",
-      style: {
-        marginTop: "20vh",
-      },
-    });
-  };
-  const failed400 = () => {
-    message.error({
-      content: "Email, số điện thoại hoặc mật khẩu không đúng",
-      className: "custom-class",
-      style: {
-        marginTop: "20vh",
-      },
-    });
-  };
+    iconNotification.set(iconsNotification.error)
+    visible.update((v) => (v = !v))
+    titleToast.set('Sign in failed')
+    contentToast.set('Your role has not been confirmed, refuse to sign in!')
+    setTimeout(() => {
+      visible.update((v) => (v = !v))
+    }, 2000)
+  }
+  const failed502 = () => {
+    iconNotification.set(iconsNotification.error)
+    visible.update((v) => (v = !v))
+    titleToast.set('Sign in failed!')
+    contentToast.set('Error server, refuse to sign in!')
+    setTimeout(() => {
+      visible.update((v) => (v = !v))
+    }, 2000)
+  }
 
   async function handleCredentialResponse(responseToken) {
     try {
@@ -45,11 +56,12 @@
       const response = await axios.post(`${END_POINT}/auth/login`, {
         idToken: responseToken.credential,
       })
-      success();
+      success()
       const { data } = response.data
       signInHandle(data.accessToken, data.refreshToken, data.user)
       console.log(data)
     } catch (error) {
+      failed502()
       console.log(error)
     }
   }
@@ -69,23 +81,37 @@
       client_id: PUBLIC_OAUTH_GOOGLE_KEY,
       callback: handleCredentialResponse,
     })
-
+    await tick();
     google.accounts.id.renderButton(
       document.getElementById('buttonDiv'),
       { theme: 'outline', size: 'large', locale: 'en' }, // customization attributes
     )
-
+    await tick();
     google.accounts.id.prompt() // also display the One Tap dialog
   }
 
-  onMount(() => {
-    canvas = document.getElementById('canvas3d')
-    const app = new Application(canvas)
-    app.load('https://prod.spline.design/0KlpWURw0tIyxS4r/scene.splinecode')
-    initializeGoogleSignIn()
-  });
-  
+  onMount(async () => {
+    try {
+      canvas = document.getElementById('canvas3d')
+      await tick()
+      const app = new Application(canvas)
+      await app.load(
+        'https://prod.spline.design/0KlpWURw0tIyxS4r/scene.splinecode',
+      )
+
+      initializeGoogleSignIn()
+    } catch (error) {
+      console.log(error)
+      failed502()
+    }
+  })
 </script>
+
+<Toast
+  visible={$visible}
+  iconNotification={$iconNotification}
+  title={$titleToast}
+  content={$contentToast} />
 
 <div class="container-login">
   <a href="#" class="brand ">Her</a>
@@ -96,11 +122,15 @@
           <div class="title ">
             <h1>Sign in</h1>
           </div>
-          <div id="buttonDiv" />
+          {#if !browser}
+            <!-- skeleton or loader -->
+            <Skeleton />
+          {:else}
+            <!-- full ui with data -->
+            <div id="buttonDiv" />
+          {/if}
         </div>
       </div>
-
-      <Toast visible={$visible} />
 
       <div class="drop-chills">
         <div class="drop-chill" />
@@ -112,7 +142,13 @@
   <div class="copy-right-login ">
     <div>Copyright © 2024 Her</div>
   </div>
-  <canvas id="canvas3d" />
+  {#if !browser}
+    <!-- skeleton or loader -->
+    <h1>.</h1>
+  {:else}
+    <!-- full ui with data -->
+    <canvas id="canvas3d" />
+  {/if}
 </div>
 
 <svelte:head>

@@ -1,8 +1,5 @@
-import { writable } from 'svelte/store';
 import { PUBLIC_APP_LOCALSTORAGE_REFRESH_NAME, PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME } from '$env/static/public';
-const accessToken = writable(null);
-const refreshToken = writable(null);
-const user = writable(null);
+import {user, refreshToken, accessToken} from '$lib/store.js';
 
 export const signInHandle = (_accessToken, _refreshToken, userData) => {
     user.set(userData);

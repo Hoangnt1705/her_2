@@ -42,10 +42,14 @@
 
 .title h1 {
     font-size: 3.7em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add text shadow */
+    font-weight: 600;
 }
 
 #buttonDiv {
     border-radius: 3px;
+    box-shadow: rgba(0.1, 0.08, 0.1, 0.3) 3px 5px 8px;
+
 }
 
 .cards .container-water-drop {

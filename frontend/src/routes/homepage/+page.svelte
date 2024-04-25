@@ -10,7 +10,6 @@
   let active = false
   // let activeSlide = 0;
 
-
   onMount(() => {
     const typed = new Typed('.typewriter', {
       strings: ['to Cover <br/> Letter A.I'],
@@ -56,7 +55,11 @@
   {@html data.video_slide}
   <div class="content active">
     <div class="wrap-header-content">
-      <h1>Welcome<br /><span class="typewriter"> </span></h1>
+      <h1>
+        Welcome
+        <br />
+        <span class="typewriter" />
+      </h1>
     </div>
     <p>
       Generate customized cover letters effortlessly using our ChatGPT AI tool.
