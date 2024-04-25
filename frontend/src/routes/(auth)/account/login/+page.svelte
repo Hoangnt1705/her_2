@@ -73,7 +73,7 @@
       typeof google.accounts.id === 'undefined'
     ) {
       // Google sign-in script hasn't loaded yet, delay initialization
-      setTimeout(initializeGoogleSignIn, 100)
+      setTimeout(initializeGoogleSignIn, 500)
       return
     }
 
@@ -86,8 +86,7 @@
       document.getElementById('buttonDiv'),
       { theme: 'outline', size: 'large', locale: 'en' }, // customization attributes
     )
-    await tick();
-    google.accounts.id.prompt() // also display the One Tap dialog
+    // google.accounts.id.prompt() // also display the One Tap dialog
   }
 
   onMount(async () => {
@@ -113,7 +112,7 @@
   title={$titleToast}
   content={$contentToast} />
 
-<div class="container-login">
+<section class="container-login">
   <a href="#" class="brand ">Her</a>
   <div class="collection-login">
     <div class="cards">
@@ -124,10 +123,12 @@
           </div>
           {#if !browser}
             <!-- skeleton or loader -->
-            <Skeleton />
+            <Skeleton height="38px"/>
           {:else}
             <!-- full ui with data -->
-            <div id="buttonDiv" />
+            <div style="width: 100%">
+              <div id="buttonDiv" />
+            </div>
           {/if}
         </div>
       </div>
@@ -144,12 +145,12 @@
   </div>
   {#if !browser}
     <!-- skeleton or loader -->
-    <h1>.</h1>
+    <Skeleton height="100vh"/>
   {:else}
     <!-- full ui with data -->
     <canvas id="canvas3d" />
   {/if}
-</div>
+</section>
 
 <svelte:head>
   <link

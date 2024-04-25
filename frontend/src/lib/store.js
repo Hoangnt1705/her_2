@@ -4,7 +4,7 @@ import { browser } from '$app/environment';
 // mockdata
 // let t = 'Successfully Sign in!'
 // let c = 'Hope you will have a good experience using the service!'
-//
+
 export const accessToken = writable(null);
 export const refreshToken = writable(null);
 export const user = writable(null);
