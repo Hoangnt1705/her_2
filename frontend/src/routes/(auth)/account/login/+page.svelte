@@ -81,7 +81,7 @@
       client_id: PUBLIC_OAUTH_GOOGLE_KEY,
       callback: handleCredentialResponse,
     })
-    await tick();
+    await tick()
     google.accounts.id.renderButton(
       document.getElementById('buttonDiv'),
       { theme: 'outline', size: 'large', locale: 'en' }, // customization attributes
@@ -123,12 +123,10 @@
           </div>
           {#if !browser}
             <!-- skeleton or loader -->
-            <Skeleton height="38px"/>
+            <Skeleton height="38px" />
           {:else}
             <!-- full ui with data -->
-            <div style="width: 100%">
               <div id="buttonDiv" />
-            </div>
           {/if}
         </div>
       </div>
@@ -145,7 +143,7 @@
   </div>
   {#if !browser}
     <!-- skeleton or loader -->
-    <Skeleton height="100vh"/>
+    <Skeleton height="100vh" />
   {:else}
     <!-- full ui with data -->
     <canvas id="canvas3d" />

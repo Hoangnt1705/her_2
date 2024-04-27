@@ -1,26 +1,27 @@
 <script>
-  import ProtectedRoute from '$lib/components/ProtectedRoute.svelte'
-  import '$lib/css/main.css'
-  import { tick } from 'svelte'
+  import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+  import '$lib/css/main.css';
+  import { onMount, tick } from 'svelte';
 
-  import { slide } from 'svelte/transition'
-  import { quintOut } from 'svelte/easing'
+  import { slide } from 'svelte/transition';
+  import { quintOut } from 'svelte/easing';
+  import {user} from '$lib/store.js';
 
   let sidebar = true
   let userMenu = false
   let newChatView = true
   let selectedModel = 'gpt-3'
   let messageBoxHeight = '30px'
-  let showAnimate = false;
+  let showAnimate = false
   function toggleSidebar() {
     sidebar = !sidebar
   }
 
   async function toggleUserMenu() {
     userMenu = !userMenu
-	setTimeout(() => {
-		showAnimate = !showAnimate 
-	}, 200);
+    setTimeout(() => {
+      showAnimate = !showAnimate
+    }, 200)
   }
 
   function selectModel(model) {
@@ -34,11 +35,12 @@
       messageBoxHeight = '200px'
     }
   }
-
   function showView(view) {
     newChatView = view === 'newChat'
   }
+
 </script>
+
 <svelte:head>
   <link
     rel="stylesheet"
@@ -48,10 +50,10 @@
     referrerpolicy="no-referrer" />
 </svelte:head>
 
-
 <ProtectedRoute>
   <section
-    style="width: 100%; display: flex; height: 100vh; box-sizing: border-box; margin: 0; padding: 0">
+    style="width: 100%; display: flex; height: 100vh; box-sizing: border-box;
+    margin: 0; padding: 0">
     <nav
       id="sidebar"
       class:hidden={!sidebar}
@@ -199,12 +201,10 @@
           </button>
         </div>
         <div class="disclaimer">
-			Her can make mistakes. Consider checking important information.
+          Her can make mistakes. Consider checking important information.
         </div>
       </div>
 
     </main>
   </section>
 </ProtectedRoute>
-
-
