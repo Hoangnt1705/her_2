@@ -58,7 +58,7 @@
   {#if !browser}
     <Skeleton width="100%" height="100%" />
   {:else}
-    <section class="home">
+    <section class="home section-h-page">
       {@html data.video_slide}
       <div class="content active">
         <div class="wrap-header-content">

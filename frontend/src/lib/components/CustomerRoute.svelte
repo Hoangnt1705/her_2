@@ -1,5 +1,3 @@
 <script>
-  import { user } from '$lib/store.js';
-
-  
+  import { user } from '$lib/stores.js'
 </script>

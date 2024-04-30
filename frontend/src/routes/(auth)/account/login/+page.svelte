@@ -13,13 +13,15 @@
     titleToast,
     contentToast,
     iconNotification,
-  } from '$lib/store.js'
+  } from '$lib/stores.js'
   import { iconsNotification } from '$lib/constants.js'
   import Toast from '$lib/components/Toast.svelte'
-  import { goto } from '$app/navigation'
+  import { goto, invalidate } from '$app/navigation'
 
   export let data
-  let canvas
+
+  let timeCanvas = false;
+
 
   const success = () => {
     iconNotification.set(iconsNotification.success)
@@ -91,14 +93,15 @@
 
   onMount(async () => {
     try {
-      canvas = document.getElementById('canvas3d')
+      const canvas = document.getElementById('canvas3d')
       await tick()
       const app = new Application(canvas)
       await app.load(
         'https://prod.spline.design/0KlpWURw0tIyxS4r/scene.splinecode',
       )
 
-      initializeGoogleSignIn()
+      initializeGoogleSignIn();
+      timeCanvas = true;
     } catch (error) {
       console.log(error)
       failed502()
@@ -121,12 +124,12 @@
           <div class="title ">
             <h1>Sign in</h1>
           </div>
-          {#if !browser}
+          {#if !timeCanvas}
             <!-- skeleton or loader -->
             <Skeleton height="38px" />
           {:else}
             <!-- full ui with data -->
-              <div id="buttonDiv" />
+            <div id="buttonDiv" />
           {/if}
         </div>
       </div>

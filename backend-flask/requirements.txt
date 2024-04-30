@@ -1,0 +1,9 @@
+Flask
+Flask-Session
+pytz
+requests
+werkzeug
+flask_socketio
+tenacity
+termcolor
+openai

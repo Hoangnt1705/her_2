@@ -3,5 +3,5 @@
 </script>
 
 <ProtectedRoute>
-  <slot />
+  <slot  data-sveltekit-reload/>
 </ProtectedRoute>

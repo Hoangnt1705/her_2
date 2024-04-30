@@ -5,6 +5,7 @@ import express from 'express';
 import path from 'path';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser'
 import logger from 'morgan';
 import YAML from 'yamljs'
 import { fileURLToPath } from 'url';
@@ -14,6 +15,8 @@ import session from 'express-session';
 import authRoute from './routes/auth.js'; // Assuming this is the correct route for authentication
 import adminRoute from "./routes/admin/index.js";
 import userRoute from "./routes/user.js";
+import parseRecruiter from './routes/parseRecruiter.js';
+import { verifyToken } from './middleware/index.js';
 // import strat from './service/passport.js';
 import { initRedis, getRedis } from "./db/index.js";
 
@@ -23,6 +26,7 @@ import RedisStore from "connect-redis"
 // swagger setup
 import swaggerUi from 'swagger-ui-express'
 import { SESSION_AGE } from "./constant.js";
+// import { addSocketSession, handleDisconnect } from "./socket/handle.js"
 const swaggerDocument = YAML.load('./swagger.yaml')
 
 
@@ -31,6 +35,8 @@ const linkedInAPIKey = process.env.LINKEDIN_API_KEY;
 const openAIAPIKey = process.env.OPENAI_API_KEY;
 export const TOKEN_LIST = {}
 export const TOKEN_BLACKLIST = {}
+export const SOCKET_SESSIONS = []
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -58,7 +64,7 @@ app.use(session({
   resave: false
 }))
 
-const whitelist = ['http://localhost:5173']; // Whitelist your allowed origins
+const whitelist = ['http://localhost:5173', 'http://localhost:5000']; // Whitelist your allowed origins
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -71,16 +77,19 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
-// app.use(function (req, res, next) {
-//   if (req.method === 'GET' && (req.url === '/api/auth/login' || req.url === '/api/auth/login/success')) {
-//     req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000; // 7*24*60*60*1000 Rememeber 'me' for 30 days
-//   }
-//   else {
-//     req.session.cookie.maxAge = SESSION_AGE;
-//   }
-//   next();
-// });
+
+app.use(function (req, res, next) {
+  if (req.method === 'GET' && (req.url === '/api/auth/login' || req.url === '/api/auth/login/success')) {
+    req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000; // 7*24*60*60*1000 Rememeber 'me' for 30 days
+  }
+  else {
+    req.session.cookie.maxAge = SESSION_AGE;
+  }
+  next();
+});
 
 // app.use(passport.initialize());
 // app.use(passport.session());
@@ -95,6 +104,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
   .use('/api/admin', adminRoute)
   .use('/api/auth', authRoute)
   .use('/api/user', userRoute)
+  .use('/api/v1/parse-recruiter', parseRecruiter);
 
 app.use('/*', async (req, res) => {
   res.status(501).send("Don't implement.")
@@ -114,5 +124,6 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
 
 export default app;

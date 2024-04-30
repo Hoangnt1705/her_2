@@ -1,5 +1,6 @@
 import multer from "multer"
-
+import env from 'dotenv'
+env.config()
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, `./public/uploads/${req.dirName}/`)
@@ -12,6 +13,8 @@ const storage = multer.diskStorage({
         cb(null, part.join("."))
     }
 })
+
+
 export const upload = multer({ storage })
 
 const storageResources = multer.diskStorage({
@@ -57,3 +60,7 @@ export const STAFF = {
     STOREKEEPER: 'storekeeper',
     STAFF: 'staff'
 }
+
+export const SOCKET_URL = process.env.NODE_SOCKET_URL;
+
+

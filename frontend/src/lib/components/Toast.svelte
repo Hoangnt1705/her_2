@@ -1,6 +1,6 @@
 <script>
   import { fade, fly } from 'svelte/transition'
-  import { screenSize } from '$lib/store.js'
+  import { screenSize } from '$lib/stores.js'
   export let visible
   export let title
   export let content

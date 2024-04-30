@@ -29,7 +29,7 @@ var authRoute = express.Router();
 authRoute.post('/login', async (req, res) => {
     const token = req.body.idToken;
     if (!token) return sendError(res, 'Required valid token');
-    
+
     const client = new OAuth2Client();
     try {
         const ticket = await client.verifyIdToken({
@@ -67,8 +67,8 @@ authRoute.post('/login', async (req, res) => {
         }
         else if (!user.role) return sendError(res, 'your role is not valid. access denied.', 403)
         else {
-             // update the user with latest google profile info
-             await User.findByIdAndUpdate(user._id, {
+            // update the user with latest google profile info
+            await User.findByIdAndUpdate(user._id, {
                 email: email
             })
             await Customer.findByIdAndUpdate(user.role, {
@@ -200,7 +200,9 @@ authRoute.post('/logout', verifyToken, async (req, res) => {
         })
         TOKEN_BLACKLIST[req.verifyToken] = req.verifyToken
         clearTokenList(TOKEN_BLACKLIST)
-    } catch (error) { }
+    } catch (error) {
+        console.log(error);
+    }
     return sendSuccess(res, 'log out successfully. see you soon.')
 })
 
