@@ -7,7 +7,8 @@
 import app from '../index.js';
 import debug from 'debug';
 import http from 'http';
-import {TOKEN_BLACKLIST} from '../index.js'
+import { TOKEN_BLACKLIST } from '../index.js'
+import { clearTokenList } from '../service/jwt.js';
 
 /**
  * Get port from environment and store in Express.

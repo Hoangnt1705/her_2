@@ -80,6 +80,7 @@
 
         <!-- <div class="logo">ChatWTF</div> -->
       </div>
+      
     {:else}
       <div class="view conversation-view">
         <div class="model-name">
@@ -103,7 +104,9 @@
           </div>
         </div>
       </div>
+      
     {/if}
+    
     <!-- <div id="message-form">
         <div class="message-wrapper">
           <textarea

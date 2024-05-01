@@ -7,3 +7,4 @@ flask_socketio
 tenacity
 termcolor
 openai
+flask_bcrypt

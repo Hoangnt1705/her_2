@@ -341,7 +341,7 @@ i.user-icon {
 }
 
 .main-page {
-  overflow: hidden;
+  overflow: scroll;
   width: 100%;
   margin: 0 auto;
   display: flex;

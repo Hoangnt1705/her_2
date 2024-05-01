@@ -12,12 +12,13 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import passport from "passport";
 import session from 'express-session';
+import axios from 'axios';
+
 import authRoute from './routes/auth.js'; // Assuming this is the correct route for authentication
 import adminRoute from "./routes/admin/index.js";
 import userRoute from "./routes/user.js";
 import parseRecruiter from './routes/parseRecruiter.js';
 import { verifyToken } from './middleware/index.js';
-// import strat from './service/passport.js';
 import { initRedis, getRedis } from "./db/index.js";
 
 
@@ -43,13 +44,13 @@ const __dirname = dirname(__filename);
 
 const app = express()
 
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 //redis
 initRedis();
 const { instanceConnect: redisClient } = await getRedis();
-
 
 // const store = new session.MemoryStore()
 app.use(session({
@@ -100,12 +101,64 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+async function fetchApiData(species) {
+  const apiResponse = await axios.get(
+    `https://www.fishwatch.gov/api/species/${species}`
+  );
+  console.log("Request sent to the API");
+  return apiResponse.data;
+}
+
+
+async function cacheData(req, res, next) {
+  const species = req.params.species;
+  let results;
+  try {
+    const cacheResults = await redisClient.get(species);
+    if (cacheResults) {
+      results = JSON.parse(cacheResults);
+      res.send({
+        fromCache: true,
+        data: results,
+      });
+    } else {
+      next();
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(404);
+  }
+}
+
+async function getSpeciesData(req, res) {
+  const species = req.params.species;
+  let results;
+  try {
+      results = await fetchApiData(species);
+      if (results.length === 0) {
+        throw "API returned an empty array";
+      }
+      await redisClient.set(species, JSON.stringify(results), {
+        EX: 180,
+        NX: true,
+      });    
+
+    res.send({
+      fromCache: false,
+      data: results,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(404).send("Data unavailable");
+  }
+}
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
   .use('/api/admin', adminRoute)
   .use('/api/auth', authRoute)
   .use('/api/user', userRoute)
-  .use('/api/v1/parse-recruiter', parseRecruiter);
-
+  .use('/api/v1/parse-recruiter', parseRecruiter)
+  .use("/fish/:species", cacheData, getSpeciesData);
 app.use('/*', async (req, res) => {
   res.status(501).send("Don't implement.")
 })

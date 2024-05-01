@@ -135,6 +135,8 @@ authRoute.post('/verify-token', (req, res) => {
     try {
         // kiểm tra accessToken có trong TOKEN_LIST? Để đảm bảo rằng hacker sẽ không lấy refresh token trong TOKEN_LIST để truy cập trái phép
         if (accessToken in TOKEN_LIST || accessToken in TOKEN_BLACKLIST) return sendError(res, "Unauthorzied.", 401)
+        // kiểm tra xem access token người gửi có xác thực được không, nếu token vẫn hoạt động bình thường hoặc không hết hạn
+        // sẽ gửi data về tiếp cho khách hàng
         const { payload } = jwt.verify(accessToken, process.env.JWT_SECRET_KEY, {
             complete: true
         })
@@ -144,6 +146,10 @@ authRoute.post('/verify-token', (req, res) => {
     }
     catch (error) {
         console.log(TOKEN_LIST[refreshToken].accessToken)
+        // nếu accesstoken khách hàng bị lỗi sẽ kiểm tra xem khách hàng có tác động xấu vào token không,
+        // check refresh token nếu tồn tại trong hệ thống sẽ lấy access token từ refresh token, nếu xác thực thành công
+        // sẽ trả về lỗi bởi vì token khách hàng gửi lên sai mà check trong server thì lại true
+
         if (refreshToken && refreshToken in TOKEN_LIST) {
             try {
                 jwt.verify(TOKEN_LIST[refreshToken].accessToken, process.env.JWT_SECRET_KEY, {
