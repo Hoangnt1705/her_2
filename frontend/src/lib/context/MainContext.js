@@ -65,3 +65,11 @@ export const logOutHandle = async (_accessToken) => {
   }
 }
 
+export const parseRecruiter = async (user) => {
+  try {
+    
+    
+  } catch (error) {
+    console.log(error)
+  }
+}

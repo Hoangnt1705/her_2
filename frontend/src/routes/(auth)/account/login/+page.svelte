@@ -1,6 +1,7 @@
 <script>
   import { browser } from '$app/environment'
   import '$lib/css/loginpage.css'
+  import 'bootstrap/dist/css/bootstrap.min.css';
   import { beforeUpdate, afterUpdate, onMount, tick } from 'svelte'
   import { END_POINT } from '$lib/constants.js'
   import { PUBLIC_OAUTH_GOOGLE_KEY } from '$env/static/public'
@@ -63,8 +64,8 @@
       signInHandle(data.accessToken, data.refreshToken, data.user)
       console.log(data)
     } catch (error) {
-      failed502()
       console.log(error)
+      failed502()
     }
   }
 
@@ -154,9 +155,6 @@
 </section>
 
 <svelte:head>
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
   <link
     rel="stylesheet"
     href="https://unpkg.com/bs-brain@2.0.3/components/logins/login-4/assets/css/login-4.css" />

@@ -6,7 +6,7 @@
   export let content
   export let iconNotification
   let size = 0
-  if ($screenSize.width < 860) {
+  if ($screenSize.width < 760) {
     size = -200
   } else {
     size = 200
@@ -20,7 +20,7 @@
     bottom: 50%;
     width: 340px;
   }
-  @media screen and (max-width: 860px) {
+  @media screen and (max-width: 760px) {
     .custom {
       left: 28.1%;
       width: 280px;

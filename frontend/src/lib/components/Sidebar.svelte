@@ -1,24 +1,60 @@
 <script>
-  import SidebarToggle from './SidebarToggle.svelte'
-  import { slide } from 'svelte/transition'
+  import { slide, fade, fly } from 'svelte/transition'
   import { quintOut } from 'svelte/easing'
-  import { sidebar } from '$lib/stores.js'
   import Nav from '$lib/components/Nav.svelte'
-  import { onMount, getContext } from 'svelte'
   import ButtonLogin from '$lib/components/ButtonLogin.svelte';
-  import { accessToken, user } from '$lib/stores.js'
+  import { accessToken, user, sidebar } from '$lib/stores.js'
+  import { spring } from 'svelte/motion';
   import { logOutHandle } from '$lib/context/MainContext.js';
   let userMenu = false
   let showAnimate = false
-  const myContext = getContext('myContext')
+  let isHovered = false;
+  let pathValue;
+
   async function toggleUserMenu() {
     userMenu = !userMenu
     setTimeout(() => {
       showAnimate = !showAnimate
     }, 200)
   }
+  
+  function handleHover() {
+    isHovered = !isHovered;
+    if($sidebar){
+      if (isHovered) {
+      pathValue = "M16 17L14 12L16 7";
+    } else {
+      pathValue = "M12 17V7";
+    }
+    }
+    else{
+      if (isHovered) {
+      pathValue = "M12 17L14 12L12 7";
+    } else {
+      pathValue = "M12 17V7";
+    }
+    }
+    
+  }
 </script>
 
+<style>
+  @keyframes animations{
+    0%{
+      opacity: 0
+    }
+    100%{
+      opacity: 1;
+    }
+  }
+
+  #arrow-svg:hover path {
+    animation: animations .5s ease-in-out forwards; 
+  }
+</style>
+
+
+<div style="display:flex;">
 <div
   id="sidebar"
   class:hidden={!$sidebar}
@@ -29,7 +65,6 @@
         <i class="fa fa-plus" />
         New chat
       </button>
-      <SidebarToggle />
     </div>
 
     <Nav />
@@ -62,4 +97,14 @@
   {:else}
     <ButtonLogin />
   {/if}
+</div>
+<div style="display:flex; align-items: center; opacity: 0.3; transform:translateX(20px); margin-left:-40px; cursor:pointer" on:click={() => sidebar.update((s) => s = !s ) }>
+  <div>
+    <svg id="arrow-svg" width="60px" height="60px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" on:mouseover={handleHover} on:mouseout={handleHover}>
+        <g id="Interface / Line_M" style="cursor:pointer">
+          <path id="Vector" d={pathValue} stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+      </svg>
+  </div>  
+</div>
 </div>

@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
 
+
 :root {
   --color-charcoal: #444444;
   --color-main: #f9d9d9;
@@ -22,7 +23,7 @@
   --color-assistant-bg: #3f4042;
   --color-assistant-text: #e1e6ed;
   --color-disclaimer: #34373a;
-  --color-border1: #484a4e;
+  --color-border1: #000000a6;
   --color-user-menu-border: #34373a;
   --color-user-menu-selected-border: #f7f7d0; /* #fbfbe6 */
   --color-border2: #292d32;
@@ -64,12 +65,6 @@
   margin-right: -260px;
 }
 
-#sidebar.hidden .hide-sidebar {
-  left: 60px;
-  transform: rotate(180deg);
-  padding: 15px 13px 11px 13px;
-}
-
 button {
   display: block;
   background: inherit;
@@ -82,7 +77,7 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+.new-chat:hover {
   background: var(--color-button-hover);
 }
 
@@ -94,14 +89,6 @@ button:hover {
 
 .sidebar-controls button {
   padding: 12px 13px 12px 13px;
-}
-
-.hide-sidebar {
-  position: relative;
-  left: 0;
-  top: 0;
-  transition: all 0.2s ease-in-out;
-  transform: rotate(0deg);
 }
 
 .new-chat i {
@@ -341,7 +328,7 @@ i.user-icon {
 }
 
 .main-page {
-  overflow: scroll;
+  overflow: scroll auto;
   width: 100%;
   margin: 0 auto;
   display: flex;
@@ -538,4 +525,37 @@ button.send-button:hover {
 
 p {
   margin: 0 0 1.5em 0;
+}
+
+.hide-navbar {
+  display: none;
+
+}
+@media screen and (max-width: 768px) {
+  .hide-navbar {
+    display: block;
+    background-color: #f5f5f5;
+    position: absolute;
+    width: 100%;
+  }
+  .test2 {  
+    border: none;
+    display: block !important;
+  }
+  .model-selector{
+    display: none;
+  }
+
+  #sidebar{
+    left: -260px;
+    margin-right: -260px;
+  }
+  #sidebar.hidden {
+    left: 0;
+    margin-right: 0;
+  }
+}
+
+.test2{
+  display: none;
 }

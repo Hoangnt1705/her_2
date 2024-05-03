@@ -1,6 +1,6 @@
 <script>
   import '$lib/css/homepage.css'
-  import { onMount, tick } from 'svelte'
+  import { afterUpdate, onMount, tick } from 'svelte'
   import { base } from '$app/paths'
   import { page } from '$app/stores'
   import Typed from 'typed.js'
@@ -11,7 +11,7 @@
 
   let active = false
   // let activeSlide = 0;
-
+  
   onMount(async () => {
     const typed = new Typed('.typewriter', {
       strings: ['to Cover <br/> Letter A.I'],
@@ -26,17 +26,13 @@
     // Add the preload attribute dynamically
     video.setAttribute('preload', 'auto')
 
-    return () => {
-      if (typed) {
-        typed.destroy()
-      }
-    }
+   
   })
 
   $: pathname = $page.url.pathname
 </script>
 
-<main class="main-homepage">
+<main class="main-homepage" data-sveltekit-reload>
   <header>
     <a href="#" class="brand">Her</a>
     <div class="menu-btn" class:active on:click={() => (active = !active)} />
@@ -60,23 +56,27 @@
   {:else}
     <section class="home section-h-page">
       {@html data.video_slide}
-      <div class="content active">
-        <div class="wrap-header-content">
+      <div class="content active" style="position:relative">
+        <div class="wrap-header-content" style="position:relative">
           <h1>
             Welcome
             <br />
             <span class="typewriter" />
           </h1>
         </div>
-        <p>
-          Generate customized cover letters effortlessly using our ChatGPT AI
-          tool. Simply upload your CV, and our advanced system will create
-          tailored cover letters that highlight your qualifications and
-          experiences. Improve your chances of landing an interview and save
-          time with our intuitive interface. Experience the power of ChatGPT AI
-          today!
-        </p>
-        <a href="/" data-sveltekit-preload-data>Get started</a>
+        <div class="message" style="width: 70%">
+          <p>
+            Generate customized cover letters effortlessly using our ChatGPT AI
+            tool. Simply upload your CV, and our advanced system will create
+            tailored cover letters that highlight your qualifications and
+            experiences. Improve your chances of landing an interview and save
+            time with our intuitive interface. Experience the power of ChatGPT AI
+            today!
+          </p>
+        </div>
+        <div style="position: relative; padding-bottom: 30px">
+          <a href="/" data-sveltekit-preload-data>Get started</a>
+        </div>
       </div>
       <div class="media-icons">
         {#each data.icons as { title, url }}

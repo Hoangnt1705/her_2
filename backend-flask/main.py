@@ -11,7 +11,7 @@ from context.index import tools
 from helper import chat_completion_request, pretty_print_conversation
 from tenacity import retry, wait_random_exponential, stop_after_attempt
 from datetime import date
-from sqlalchemy import select, insert, and_, union_all, text, literal
+from sqlalchemy import select, insert, and_, union_all,  text, literal
 from flask_bcrypt import Bcrypt
 from flask_caching import Cache
 import redis
@@ -46,27 +46,29 @@ def test_connect():
 @cache.cached(timeout=60, key_prefix='socketio')
 @retry(wait=wait_random_exponential(multiplier=1, max=40), stop=stop_after_attempt(3))
 def parse_recruiter(json):
-#     messages = []
-#     messages.append({"role": "system", "content": "Parse recruiter messages to JSON with parameters: is_remote, salary_min, salary_max, contract (boolean), role_name, benefits (array), notes, experience (integer), recruiter, next_step, holidays (integer), response, city, and country. Respond with parsed JSON only, setting NULL for missing data. Do not include any additional prose, notes, or reasoning."})
-#     messages.append({"role": "user", "content": 'Hi how are you?'})
-#     chat_response = chat_completion_request(
-#         messages, tools=tools
-#     )
-#     assistant_message = chat_response.choices[0].message
-#     res = ''
-#     if assistant_message.content:
-#         print('error>>>>>')
-#         res = assistant_message.content  # error
-#     else:
-#         print('success>>>>>')        
-#         res = json.loads(assistant_message.tool_calls[0].function.arguments)
+    # messages = []
+    # messages.append({"role": "system", "content": "Parse recruiter messages to JSON with parameters: is_remote, salary_min, salary_max, contract (boolean), role_name, benefits (array), notes, experience (integer), recruiter, next_step, holidays (integer), response, city, and country. Respond with parsed JSON only, setting NULL for missing data. Do not include any additional prose, notes, or reasoning."})
+    # messages.append({"role": "user", "content": 'Hi how are you?'})
+    # chat_response = chat_completion_request(
+    #     messages, tools=tools
+    # )
+    # assistant_message = chat_response.choices[0].message
+    # res = ''
+    # if assistant_message.content:
+    #     print('error>>>>>')
+    #     res = assistant_message.content  # error
+    # else:
+    #     print('success>>>>>')        
+    #     res = json.loads(assistant_message.tool_calls[0].function.arguments)
     
-#     print('received json: ' + str(res))
-    cached_response = redis_client.get('socketio')
-    if cached_response:
-        return jsonify(cached_response)
-    print(cached_response)
+    # cached_response = redis_client.get('socketio')
+    # if cached_response:
+    #     return jsonify(cached_response)
+    # print(cached_response)
+    
     emit('my response', str('hello'))
+
+
 
 
 @socketio.on('disconnect')

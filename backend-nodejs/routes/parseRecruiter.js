@@ -11,14 +11,14 @@ const prRoute = express.Router()
  * @description get api ai parse recruiter
  * @access private
  */
-prRoute.get('/', async (req, res) => {
+prRoute.get('/', verifyToken, async (req, res) => {
     const pyIo = io(SOCKET_URL + EVENT.parseRecruiter, { reconnection: true, transports: ['websocket', 'polling'] });
 
-    pyIo.on('my response', function (data) {
-        console.log("my res - from python server: " + data);
-    });
-    pyIo.emit('json', { 'msg': 'jsontest' });
-    return res.json({ status: 200 })
+    // pyIo.on('my response', function (data) {
+    //     console.log("my res - from python server: " + data);
+    // });
+    // pyIo.emit('json', { 'msg': 'jsontest' });
+    return res.json({ status: 200, data: req.verifyToken })
 });
 
 

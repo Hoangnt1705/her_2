@@ -5,8 +5,23 @@
   import Sidebar from '$lib/components/Sidebar.svelte'
   import { sidebar } from '$lib/stores.js'
   import { accessToken, user } from '$lib/stores.js'
-  import {invalidateAll} from '$app/navigation'
+  import { invalidateAll } from '$app/navigation'
+  import SidebarToggle from '$lib/components/SidebarToggle.svelte'
+  import {
+    Collapse,
+    Navbar,
+    NavbarToggler,
+    NavbarBrand,
+    Nav,
+    NavItem,
+    NavLink,
+    Dropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem,
+  } from 'sveltestrap'
 
+  import { Styles } from 'sveltestrap'
 
   // const myContext = getContext('myContext')
   // $: console.log($myContext)
@@ -30,6 +45,11 @@
     newChatView = view === 'newChat'
   }
 
+  let isOpen = false
+
+  function handleUpdate(event) {
+    isOpen = event.detail.isOpen
+  }
 </script>
 
 <svelte:head>
@@ -42,9 +62,39 @@
 
 </svelte:head>
 
-<ProtectedRoute>
+<Styles />
 
+<ProtectedRoute>
+  
   <main class="main-page">
+    <Navbar class="hide-navbar" light expand="md">
+        <SidebarToggle />
+
+      <!-- <NavbarToggler on:click={() => (isOpen = !isOpen)} /> -->
+      <!-- <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
+        <Nav class="ms-auto" navbar>
+          <NavItem>
+            <NavLink href="#components/">Components</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink href="https://github.com/bestguy/sveltestrap">
+              GitHub
+            </NavLink>
+          </NavItem>
+          <Dropdown nav inNavbar>
+            <DropdownToggle nav caret>Options</DropdownToggle>
+            <DropdownMenu end>
+              <DropdownItem>
+                Option 1 with long text leaking out of the view
+              </DropdownItem>
+              <DropdownItem>Option 2</DropdownItem>
+              <DropdownItem divider />
+              <DropdownItem>Reset</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </Nav>
+      </Collapse> -->
+    </Navbar>
     {#if newChatView}
       <div class="view new-chat-view" class:show-main-page={$sidebar}>
         <div class="model-selector">
@@ -80,7 +130,6 @@
 
         <!-- <div class="logo">ChatWTF</div> -->
       </div>
-      
     {:else}
       <div class="view conversation-view">
         <div class="model-name">
@@ -104,9 +153,8 @@
           </div>
         </div>
       </div>
-      
     {/if}
-    
+
     <!-- <div id="message-form">
         <div class="message-wrapper">
           <textarea

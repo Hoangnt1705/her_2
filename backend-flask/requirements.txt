@@ -8,3 +8,7 @@ tenacity
 termcolor
 openai
 flask_bcrypt
+redis
+typing
+sqlalchemy
+flask_caching
