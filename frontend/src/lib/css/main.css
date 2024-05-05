@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
 
-
 :root {
   --color-charcoal: #444444;
   --color-main: #f9d9d9;
@@ -12,7 +11,7 @@
   --color-user-icon: #8e0000;
   --color-groupings: #333333;
   --color-gpt-icon: #000000;
-  --color-black: #fff;
+  --color-white: #fff;
   --color-user-menu-hover: #fceded;
   --color-text: #f5f9ff;
   --color-gpt3: #7db9d9;
@@ -38,6 +37,12 @@
   height: 100vh;
   width: 100%;
   display: flex;
+  color: var(--color-charcoal);
+}
+
+.wrap-sidebar {
+  display: flex;
+  height: 100vh;
 }
 
 #sidebar {
@@ -102,6 +107,10 @@ button {
 .conversations {
   width: calc(100% + 8px);
   overflow-y: scroll;
+}
+
+.new-func-view {
+  width: 80%;
 }
 
 .conversations,
@@ -224,9 +233,9 @@ i.user-icon {
   padding: 0px 5px;
 }
 .avatar-user {
-  width: 30px;
+  width: 40px;
   margin: 7px;
-  border-radius: 30px;
+  border-radius: 40px;
 }
 .user-menu button {
   width: 100%;
@@ -244,7 +253,7 @@ i.user-icon {
   float: right;
   opacity: 0.7;
   height: 0;
-  top: 14px;
+  top: 23px;
   right: 7px;
 }
 
@@ -263,7 +272,7 @@ i.user-icon {
   left: 0;
   opacity: 0;
   transform: translateY(-100%);
-  background: var(--color-black);
+  background: var(--color-white);
   border-radius: 10px;
   width: 100%;
   transition: all 0.2s ease-in-out;
@@ -328,13 +337,12 @@ i.user-icon {
 }
 
 .main-page {
-  overflow: scroll auto;
+  overflow: auto;
   width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-content: center;
-  justify-content: space-between;
   padding: 0 0 30px 0;
   box-sizing: border-box;
 }
@@ -428,125 +436,166 @@ p.secondary {
   font-size: 2.3em;
 }
 
-.view.conversation-view {
-  display: none;
-  overflow-y: auto;
-}
-
-.model-name {
-  background: var(--color-main);
-  text-align: center;
-  color: var(--color-model-name);
-  padding: 23px;
-  border-bottom: 1px solid var(--color-border2);
-  font-size: 0.85em;
-}
-
-.message {
-  display: flex;
-  gap: 20px;
-  padding: 25px 60px 15px 60px;
-  border-bottom: 1px solid var(--color-border2);
-  font-size: 0.95em;
-}
-
-.message .content {
-  padding-top: 5px;
-}
-
-.user.message {
-  color: var(--color-text);
-}
-
-.assistant.message {
-  background: var(--color-assistant-bg);
-  color: var(--color-assistant-text);
-}
-
-#message-form {
-  margin: 0 auto;
-  width: 100%;
-  box-sizing: border-box;
-  max-width: 850px;
-  text-align: center;
-  padding: 0px 45px 0 45px;
-  box-shadow: var(--color-main) 0 0 50px;
-}
-
-.message-wrapper {
-  position: relative;
-}
-
-#message::placeholder {
-  color: var(--color-groupings);
-}
-
-#message {
-  background: var(--color-user-menu-hover);
-  border-radius: 13px;
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid var(--color-user-message-border);
-  resize: none;
-  padding: 17px 85px 17px 15px;
-  font-family: inherit;
-  font-size: 1em;
-  color: var(--color-charcoal);
-  box-shadow: rgba(0, 0, 0, 0.2) 0 0 45px;
-  outline: none;
-}
-
-.disclaimer {
-  margin-top: 12px;
-  color: var(--color-disclaimer);
-  font-size: 0.7em;
-}
-
-.send-button {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--color-gpt3);
-  border-radius: 5px;
-  display: inline-block;
-  font-size: 1em;
-  padding: 7px 9px 7px 7px;
-  color: var(--color-charcoal);
-  border: none;
-  margin-top: -2px;
-}
-
-button.send-button:hover {
-  border: none;
-  background: var(--color-gpt3);
-  color: var(--color-charcoal);
-}
-
 p {
   margin: 0 0 1.5em 0;
 }
 
-.hide-navbar {
+.new-write{
   display: none;
-
 }
+
+.hide-navbar {
+}
+
+.wrap-open-sidebar-full-screen {
+  display: flex;
+  align-items: center;
+  opacity: 0.3;
+}
+.open-sidebar-full-screen {
+  position: absolute;
+  transform: translateX(-15px);
+  cursor: pointer;
+  width: 50px;
+}
+
+#arrow-svg:hover path {
+  animation: animations 0.3s ease-in-out forwards;
+}
+#arrow-svg {
+  transition: transform 0.3s ease;
+}
+
+.open-sidebar-responsive {
+  display: none;
+}
+
+.tippy-box[data-theme~='light'] {
+  background-color: #f5f5f5; /* Set background color */
+  color: var(--color-charcoal);
+}
+
+.tippy-box[data-theme~='light'][data-placement^='right']
+  > .tippy-arrow::before {
+  color: #f5f5f5;
+}
+
+.drop-menu-toggle {
+  margin-right: 10px;
+  font-weight: 600;
+  font-size: 23px;
+  display: block;
+}
+
+
+.drop-menu-main-page {
+  align-content: center;
+  width: 360px;
+  padding: 15px 15px;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+.remove-style-li {
+  list-style-type: none;
+}
+
+.titleSelectModelAi,
+.intern-ai-drop,
+.senior-ai-drop {
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+  justify-content: space-between;
+}
+.wrap-style-intern,
+.wrap-style-senior {
+  padding: 10px 10px;
+  width: 300px;
+}
+
+.bold-intern-ai-drop,
+.bold-senior-ai-drop {
+  font-weight: 600;
+  font-size: 16px;
+}
+.static-intern-ai-drop,
+.static-senior-ai-drop {
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--color-logo) !important;
+}
+
+.titleSelectModelAi {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.update-to-senior {
+  background: #00ffba;
+  border: none;
+  width: 100%;
+  margin-top: 10px;
+}
+.update-to-senior:hover {
+  background: #00e5a7;
+}
+
+.drop{
+  padding: 10px;
+}
+.drop:hover{
+  background: var(--color-button-hover);
+  border-radius: 10px;
+}
+@keyframes animations {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 @media screen and (max-width: 768px) {
-  .hide-navbar {
+  .new-write{
     display: block;
-    background-color: #f5f5f5;
+  }
+
+  .drop-menu-main-page {
+    margin-left: -120px;
+  }
+
+  .wrap-sidebar {
+    z-index: 999999;
     position: absolute;
+  }
+  .new-func-view {
     width: 100%;
   }
-  .test2 {  
+
+  .hide-navbar {
+    display: flex;
+    background-color: #f5f5f5;
+    position: relative;
+    width: 100%;
+  }
+  .container-fluid {
+    padding: 0 0px;
+  }
+  .open-sidebar-responsive {
     border: none;
     display: block !important;
   }
-  .model-selector{
+  /* .dropdown-menu-end[data-bs-popper] {
+    left: auto;
+  } */
+
+  .wrap-open-sidebar-full-screen {
     display: none;
   }
 
-  #sidebar{
+  #sidebar {
     left: -260px;
     margin-right: -260px;
   }
@@ -554,8 +603,4 @@ p {
     left: 0;
     margin-right: 0;
   }
-}
-
-.test2{
-  display: none;
 }

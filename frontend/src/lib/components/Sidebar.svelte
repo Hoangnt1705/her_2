@@ -6,55 +6,67 @@
   import { accessToken, user, sidebar } from '$lib/stores.js'
   import { spring } from 'svelte/motion';
   import { logOutHandle } from '$lib/context/MainContext.js';
+  import { Button, Overlay, MaterialApp } from 'svelte-materialify';
+  import { tick } from 'svelte';
+  import { svg } from '$lib/constants.js'
+  import SidebarToggle from '$lib/components/SidebarToggle.svelte'
+  import tippy from 'tippy.js';
+	import 'tippy.js/dist/tippy.css';
+
+  export let isHovered;
+
   let userMenu = false
   let showAnimate = false
-  let isHovered = false;
-  let pathValue;
+  let active = !$sidebar;
+  let pathValue = "M12 17V7";
+  let rotate = '0deg';
+  let content = 'Close sidebar';
+  let openSidebarResponsive = $sidebar;
 
+  $: openSidebarResponsive = $sidebar;
+  $: active = !$sidebar;
+  $: $sidebar ? content = 'Close sidebar' : content = 'Open sidebar';
+  $: $sidebar ? rotate = '180deg' : rotate = '0deg';
   async function toggleUserMenu() {
     userMenu = !userMenu
     setTimeout(() => {
       showAnimate = !showAnimate
     }, 200)
   }
-  
+
   function handleHover() {
-    isHovered = !isHovered;
-    if($sidebar){
-      if (isHovered) {
-      pathValue = "M16 17L14 12L16 7";
-    } else {
-      pathValue = "M12 17V7";
-    }
-    }
-    else{
-      if (isHovered) {
       pathValue = "M12 17L14 12L12 7";
-    } else {
-      pathValue = "M12 17V7";
-    }
-    }
-    
   }
+  function handleOverlay(){
+    active = !active;
+    sidebar.update(s => s = !s)
+  }
+
+  function handleHoverOut() {
+    pathValue = "M12 17V7";
+  }
+
+  function tooltip(node, options) {
+    console.log(options)
+		const tooltip = tippy(node, options);
+
+		return {
+			update(options) {
+				tooltip.setProps(options);
+			},
+			destroy() {
+				tooltip.destroy();
+			}
+		};
+	}
+  
 </script>
 
 <style>
-  @keyframes animations{
-    0%{
-      opacity: 0
-    }
-    100%{
-      opacity: 1;
-    }
-  }
-
-  #arrow-svg:hover path {
-    animation: animations .5s ease-in-out forwards; 
-  }
+  
 </style>
-
-
-<div style="display:flex;">
+<MaterialApp>
+<div class="wrap-sidebar">
 <div
   id="sidebar"
   class:hidden={!$sidebar}
@@ -98,13 +110,33 @@
     <ButtonLogin />
   {/if}
 </div>
-<div style="display:flex; align-items: center; opacity: 0.3; transform:translateX(20px); margin-left:-40px; cursor:pointer" on:click={() => sidebar.update((s) => s = !s ) }>
-  <div>
-    <svg id="arrow-svg" width="60px" height="60px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" on:mouseover={handleHover} on:mouseout={handleHover}>
-        <g id="Interface / Line_M" style="cursor:pointer">
+{#if !openSidebarResponsive}
+<div on:click={handleOverlay}>
+    <button class="open-sidebar-responsive" style="border: #f5f5f5 solid;">
+      {@html svg.openSidebarResponsive}
+    </button>
+</div>
+{/if}
+<div class="wrap-open-sidebar-full-screen">
+  <div class="open-sidebar-full-screen"
+   on:click={async () => {
+     sidebar.update((s) => s = !s );
+     await tick();
+     active = false;
+
+    }}
+   on:mouseover={handleHover}
+     on:mouseout={handleHoverOut}
+     use:tooltip={{ content, delay: 300, theme: 'light', placement: 'right', offset: [0, -1]}}>
+    <svg  id="arrow-svg" style="transform: rotate({rotate})" width="60px" height="60px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g id="Interface / Line_M">
           <path id="Vector" d={pathValue} stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </g>
       </svg>
   </div>  
 </div>
 </div>
+<Overlay
+  {active}
+  on:click={handleOverlay} />
+</MaterialApp>

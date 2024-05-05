@@ -12,23 +12,23 @@
   //     direction = ''
   //   }
   // }
-
+  export let visible;
 
   function toggleSidebar() {
     sidebar.update((s) => (s = !s))
   }
 
-  let direction
+  // let direction
 
-  $: if (direction == 'right') {
-    sidebar.set(true)
-  } else if (direction == 'left') {
-    sidebar.set(false)
-  }
+  // $: if (direction == 'right') {
+  //   sidebar.set(true)
+  // } else if (direction == 'left') {
+  //   sidebar.set(false)
+  // }
 </script>
 
 <!-- use:clickOutside on:click_outside={handleClickOutside} -->
-  <button class="test2" on:click={toggleSidebar}>
+  <button class="open-sidebar-responsive" style="visibility:{visible}" on:click={toggleSidebar}>
     {@html svg.openSidebarResponsive}
   </button>
-<Swipe bind:direction />
+<!-- <Swipe bind:direction /> -->

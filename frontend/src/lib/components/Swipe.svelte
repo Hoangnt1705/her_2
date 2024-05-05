@@ -7,14 +7,15 @@
   export let direction
 
   const findSwipeDirection = () => {
-    if (touchstartX - touchendX > 80) {
+    if (touchstartX - touchendX > 100) {
+      direction = 'right'
       // console.log("Swiped Left");
-      direction = 'left'
     }
 
-    if (touchendX - touchstartX > 80) {
+    if (touchendX - touchstartX > 100) {
       // console.log("Swiped Right");
-      direction = 'right'
+      direction = 'left'
+
     }
 
     // if (touchstartY - touchendY > 60) {
