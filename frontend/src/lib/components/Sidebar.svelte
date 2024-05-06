@@ -47,7 +47,6 @@
   }
 
   function tooltip(node, options) {
-    console.log(options)
 		const tooltip = tippy(node, options);
 
 		return {

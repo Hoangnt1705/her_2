@@ -1,14 +1,14 @@
 <script>
-	import { visible } from './../lib/stores.js';
+  import { visible } from './../lib/stores.js'
   import ProtectedRoute from '$lib/components/ProtectedRoute.svelte'
   import '$lib/css/main.css'
-  import { getContext, onMount, setContext, tick } from 'svelte'
+  import { getContext, onMount, setContext, tick, onDestroy } from 'svelte'
   import Sidebar from '$lib/components/Sidebar.svelte'
   import { sidebar } from '$lib/stores.js'
   import { accessToken, user } from '$lib/stores.js'
   import { invalidateAll } from '$app/navigation'
   import SidebarToggle from '$lib/components/SidebarToggle.svelte'
-  import { svg } from '$lib/constants.js';
+  import { svg } from '$lib/constants.js'
   import {
     Button,
     Collapse,
@@ -32,9 +32,11 @@
   // $: console.log($myContext)
   let selectedModel = 'gpt-3'
   let messageBoxHeight = '30px'
-  let translateXContent= '0px';
+  let translateXContent = '0px'
+  let isOpen = true
+  export let data
 
-  $: $sidebar ? translateXContent = '0px': translateXContent = '259px';
+  $: $sidebar ? (translateXContent = '0px') : (translateXContent = '259px')
 
   function selectModel(model) {
     selectedModel = model
@@ -47,12 +49,47 @@
       messageBoxHeight = '200px'
     }
   }
-  
-  let isOpen = false
+  let text = ''
+  let typingSpeed = 50 // Adjust typing speed as needed
 
-  function handleUpdate(event) {
-    isOpen = event.detail.isOpen
+  // Select a random placeholder text from the array
+  let randomIndex = Math.floor(Math.random() * data.placeholderTexts.length)
+  let placeholderText = data.placeholderTexts[randomIndex]
+  let inputHasValue = false
+
+  const typeWriter = () => {
+    if (!inputHasValue && text.length < placeholderText.length) {
+      text = placeholderText.slice(0, text.length + 1)
+      setTimeout(typeWriter, typingSpeed)
+    } else {
+      setTimeout(() => {
+        text = ''
+        placeholderText =
+          data.placeholderTexts[
+            Math.floor(Math.random() * data.placeholderTexts.length)
+          ]
+        setTimeout(typeWriter, typingSpeed)
+      }, 1500)
+    }
   }
+
+  const handleInputChange = (event) => {
+    if (event.target.value.trim().length > 0) inputHasValue = true
+  }
+
+  const stopAutoWriter = () => {
+    inputHasValue = true
+  }
+
+  onDestroy(() => {
+    stopAutoWriter()
+  })
+
+  onMount(() => typeWriter())
+
+  // function handleUpdate(event) {
+  //   isOpen = event.detail.isOpen
+  // }
 </script>
 
 <svelte:head>
@@ -61,131 +98,236 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
     crossorigin="anonymous"
-    referrerpolicy="no-referrer" />
+    referrerpolicy="no-referrer"/>
+  <link
+    rel="stylesheet"
+    href="https://horizon-tailwind-react-git-tailwind-components-horizon-ui.vercel.app/static/css/main.ad49aa9b.css" />
 
 </svelte:head>
 
 <Styles />
 
 <ProtectedRoute>
-    <main class="main-page">
-      <Navbar class="hide-navbar" light expand="md">
-        <SidebarToggle visible={$sidebar ? 'visible' : 'hidden' }/>
+  <main class="main-page overflow-auto" on:blur={() => (isOpen = !isOpen)}>
+    <Navbar class="hide-navbar" light expand="md">
+      <SidebarToggle visible={$sidebar ? 'visible' : 'hidden'} />
 
-        <Dropdown nav inNavbar class="drop remove-style-li">
-          <DropdownToggle nav caret class="drop-menu-toggle">Intern AI</DropdownToggle>
-          <DropdownMenu end class="drop-menu-main-page">
-            <Dropdown class="titleSelectModelAi">
-                <div>
-                  Model
-                </div>
-            </Dropdown>
-            <Dropdown class="intern-ai-drop">
-              <Dropdown>
+      <NavItem class="remove-style-li">
+        <div class="drop-menu-toggle">
+          <div
+            class="drop"
+            style="display:flex"
+            on:click={() => (isOpen = !isOpen)}>
+            <span>chatGPT</span>
+            {@html svg.downDrop}
+          </div>
+        </div>
+        <div class="drop-main">
+          <ul class:open-drop-menu={isOpen} class="drop-menu-main-page">
+            <div class="titleSelectModelAi">
+              <div>Model</div>
+            </div>
+            <div class="drhv intern-ai-drop">
+              <div>
                 {@html svg.internAi}
-              </Dropdown>
-              <Dropdown class="wrap-style-intern">
-                <div class="bold-intern-ai-drop">
-                  Intern AI
+              </div>
+              <div class="wrap-style-intern">
+                <div
+                  class="bold-intern-ai-drop font-bold text-navy-700
+                  dark:text-white">
+                  Condense Job Posting Information
+                  <!-- Condense Job Posting Information -->
                 </div>
-                <div class="static-intern-ai-drop">
-                  Great Content Analysis Functionality
+                <div class="static-intern-ai-drop text-base text-gray-600">
+                  Great information Analysis Functionality
                 </div>
-              </Dropdown>
-              <Dropdown>
+              </div>
+              <div>
                 {@html svg.activeModel}
-              </Dropdown>
-            </Dropdown>
-            <Dropdown class="senior-ai-drop">
-              <Dropdown>
+              </div>
+            </div>
+            <div class="drhv senior-ai-drop">
+              <div>
                 {@html svg.seniorAi}
-              </Dropdown>
-              <Dropdown class="wrap-style-senior">
-                <div class="bold-senior-ai-drop">
+              </div>
+              <div class="wrap-style-senior">
+                <div
+                  class="bold-senior-ai-drop font-bold text-navy-700
+                  dark:text-white">
                   Senior AI
                 </div>
-                <div class="static-senior-ai-drop" >
-                  Great Content Analysis Functionality, Great Content Analysis Functionality, xin chào đây là chức năng normal, bạn có thể thấy
-                  nếu muốn chọn, tôi sẽ chọn bạn, ailove, và bây giờ là những điều cần nói 
+                <div class="static-senior-ai-drop text-base text-gray-600">
+                  Generate a Resume with AI Using Two-Way Data for Precision.
                 </div>
                 <Button class="update-to-senior">Upgrade to Senior</Button>
-              </Dropdown>
-              <Dropdown>
+              </div>
+              <div>
                 {@html svg.activeModel}
-              </Dropdown>
-            </Dropdown>
-          </DropdownMenu>
-        </Dropdown>
+              </div>
+            </div>
+          </ul>
+        </div>
+      </NavItem>
 
+      <NavItem class="new-write remove-style-li" style="padding:12px">
+        {@html svg.newWrite}
+      </NavItem>
+    </Navbar>
 
-        <NavItem class="new-write remove-style-li" style="padding:12px">
-          {@html svg.newWrite}
-        </NavItem>
-
-      </Navbar>
-      <Container class="view new-func-view">
+    <Container class="view new-func-view">
       <Row>
-        <Col>.col</Col>
-      </Row>
-      <Row>
-        <Col>.col</Col>
-        <Col>.col</Col>
-        <Col>.col</Col>
-        <Col>.col</Col>
-        <Col>.col</Col>
-        <Col>.col</Col>
-        <Col>.col</Col>
-        <Col>.col</Col>
-
-      </Row>
-      <Row>
-        <Col xs="3">.col-3</Col>
-        <Col xs="auto">.col-auto - variable width content</Col>
-        <Col xs="3">.col-3</Col>
-      </Row>
-      <Row>
-        <Col xs="6">.col-6</Col>
-        <Col xs="6">.col-6</Col>
-      </Row>
-      <Row>
-        <Col xs="6" sm="4">.col-6 .col-sm-4</Col>
-        <Col xs="6" sm="4">.col-6 .col-sm-4</Col>
-        <Col sm="4">.col-sm-4</Col>
-      </Row>
-      <Row>
-        <Col sm={{ size: 6, order: 2, offset: 1 }}>
-          .col-sm-6 .order-sm-2 .offset-sm-1
+        <Col>
+          <div data-mdb-input-init class="form-outline">
+            <textarea
+              class="form-control"
+              id="textAreaExample1"
+              rows="9"
+              placeholder={text}
+              on:input={handleInputChange} />
+          </div>
         </Col>
       </Row>
-      <Row>
-        <Col sm="12" md={{ size: 6, offset: 3 }}>
-          .col-sm-12 .col-md-6 .offset-md-3
+      <Row style="margin: 20px auto">
+        <Col xs="10">
+          <Button outline color="danger">Condense</Button>
         </Col>
       </Row>
+
       <Row>
-        <Col sm={{ size: 'auto', offset: 1 }}>.col-sm-auto .offset-sm-1</Col>
-        <Col sm={{ size: 'auto', offset: 1 }}>.col-sm-auto .offset-sm-1</Col>
-      </Row>
-      <Row cols={2}>
-        <Col>col-1</Col>
-        <Col>col-2</Col>
-        <Col>col-3</Col>
-        <Col>col-4</Col>
-        <Col>col-5</Col>
-        <Col>col-6</Col>
-      </Row>
-      <Row cols={{ lg: 3, md: 2, sm: 1 }}>
-        <Col>col-1</Col>
-        <Col>col-2</Col>
-        <Col>col-3</Col>
-        <Col>col-4</Col>
-        <Col>col-5</Col>
-        <Col>col-6</Col>
+        <Col xs="12">
+          <div class="flex-col justify-center items-center h-[100vh]" style="flex-wrap: wrap;">
+            <div
+              class="relative flex flex-col items-center rounded-[20px]
+              w-[700px] max-w-[95%] mx-auto bg-white bg-clip-border shadow-3xl
+              shadow-shadow-500 dark:!bg-navy-800 dark:text-white
+              dark:!shadow-none p-3">
+              <div class="mt-2 mb-8 w-full">
+                <h4
+                  class="px-2 text-xl font-bold text-navy-700 dark:text-white">
+                  General Information
+                </h4>
+              </div>
+              <div class="grid grid-cols-2 gap-4 px-2 w-full">
+                <div
+                  class="flex flex-col items-start justify-center rounded-2xl
+                  bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500
+                  dark:!bg-navy-700 dark:shadow-none">
+                  <p class="text-sm text-gray-600">Education</p>
+                  <p
+                    class="text-base font-medium text-navy-700 dark:text-white">
+                    Stanford University
+                  </p>
+                </div>
+
+                <div
+                  class="flex flex-col justify-center rounded-2xl bg-white
+                  bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500
+                  dark:!bg-navy-700 dark:shadow-none">
+                  <p class="text-sm text-gray-600">Languages</p>
+                  <p
+                    class="text-base font-medium text-navy-700 dark:text-white">
+                    English, Spanish, Italian
+                  </p>
+                </div>
+
+                <div
+                  class="flex flex-col items-start justify-center rounded-2xl
+                  bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500
+                  dark:!bg-navy-700 dark:shadow-none">
+                  <p class="text-sm text-gray-600">Department</p>
+                  <p
+                    class="text-base font-medium text-navy-700 dark:text-white">
+                    Product Design
+                  </p>
+                </div>
+
+                <div
+                  class="flex flex-col justify-center rounded-2xl bg-white
+                  bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500
+                  dark:!bg-navy-700 dark:shadow-none">
+                  <p class="text-sm text-gray-600">Work History</p>
+                  <p
+                    class="text-base font-medium text-navy-700 dark:text-white">
+                    English, Spanish, Italian
+                  </p>
+                </div>
+
+                <div
+                  class="flex flex-col items-start justify-center rounded-2xl
+                  bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500
+                  dark:!bg-navy-700 dark:shadow-none">
+                  <p class="text-sm text-gray-600">Organization</p>
+                  <p
+                    class="text-base font-medium text-navy-700 dark:text-white">
+                    Simmmple Web LLC
+                  </p>
+                </div>
+
+                <div
+                  class="flex flex-col justify-center rounded-2xl bg-white
+                  bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500
+                  dark:!bg-navy-700 dark:shadow-none">
+                  <p class="text-sm text-gray-600">Birthday</p>
+                  <p
+                    class="text-base font-medium text-navy-700 dark:text-white">
+                    20 July 1986
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Col>
       </Row>
     </Container>
-    </main>
+  </main>
+</ProtectedRoute>
 
-  <!-- 
+<!-- <Row>
+          <Col xs="3">.col-3</Col>
+          <Col xs="auto">.col-auto - variable width content</Col>
+          <Col xs="3">.col-3</Col>
+        </Row>
+        <Row>
+          <Col xs="6">.col-6</Col>
+          <Col xs="6">.col-6</Col>
+        </Row>
+        <Row>
+          <Col xs="6" sm="4">.col-6 .col-sm-4</Col>
+          <Col xs="6" sm="4">.col-6 .col-sm-4</Col>
+          <Col sm="4">.col-sm-4</Col>
+        </Row>
+        <Row>
+          <Col sm={{ size: 6, order: 2, offset: 1 }}>
+            .col-sm-6 .order-sm-2 .offset-sm-1
+          </Col>
+        </Row>
+        <Row>
+          <Col sm="12" md={{ size: 6, offset: 3 }}>
+            .col-sm-12 .col-md-6 .offset-md-3
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={{ size: 'auto', offset: 1 }}>.col-sm-auto .offset-sm-1</Col>
+          <Col sm={{ size: 'auto', offset: 1 }}>.col-sm-auto .offset-sm-1</Col>
+        </Row>
+        <Row cols={2}>
+          <Col>col-1</Col>
+          <Col>col-2</Col>
+          <Col>col-3</Col>
+          <Col>col-4</Col>
+          <Col>col-5</Col>
+          <Col>col-6</Col>
+        </Row>
+        <Row cols={{ lg: 3, md: 2, sm: 1 }}>
+          <Col>col-1</Col>
+          <Col>col-2</Col>
+          <Col>col-3</Col>
+          <Col>col-4</Col>
+          <Col>col-5</Col>
+          <Col>col-6</Col>
+        </Row> -->
+
+<!-- 
         <div class="model-selector">
           <button
           class="gpt-4"
@@ -218,7 +360,7 @@
         </div>
        -->
 
-  <!-- <div id="message-form">
+<!-- <div id="message-form">
         <div class="message-wrapper">
           <textarea
             id="message"
@@ -233,5 +375,3 @@
           Her can make mistakes. Consider checking important information.
         </div>
       </div> -->
-
-</ProtectedRoute>

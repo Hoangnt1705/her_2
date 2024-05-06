@@ -46,17 +46,17 @@
   }
 
   .button-22:hover {
-    background-color: #99cde6;
+    background-color: #5c636a;
   }
 </style>
 
 <div class="login-wrap" style="margin: 22px;">
   <p
-    style="color: #444444;font-weight: 500;font-size: 0.675rem;line-height:
+    style="color: #1b254b;font-weight: 500;font-size: 0.675rem;line-height:
     0rem;">
     Login
   </p>
-  <p style="color: #848484;font-size: 0.675rem;line-height: 1rem; ">
+  <p style="color: #a3aed0;font-size: 0.675rem;line-height: 1rem; ">
     Save your chat history, share chats, and personalize your experience.
   </p>
   <button

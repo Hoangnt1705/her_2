@@ -31,7 +31,7 @@
     contentToast.set('Hope you will have a good experience using the service✨')
     setTimeout(() => {
       visible.update((v) => (v = !v))
-      goto('/')
+      window.location.href = '/';
     }, 2000)
   }
   const failed403 = () => {
