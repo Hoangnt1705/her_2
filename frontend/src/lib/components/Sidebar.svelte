@@ -5,18 +5,17 @@
   import ButtonLogin from '$lib/components/ButtonLogin.svelte';
   import { accessToken, user, sidebar } from '$lib/stores.js'
   import { spring } from 'svelte/motion';
-  import { logOutHandle } from '$lib/context/MainContext.js';
   import { Button, Overlay, MaterialApp } from 'svelte-materialify';
   import { tick } from 'svelte';
   import { svg } from '$lib/constants.js'
   import SidebarToggle from '$lib/components/SidebarToggle.svelte'
+  import UserMenu from '$lib/components/UserMenu.svelte';
   import tippy from 'tippy.js';
 	import 'tippy.js/dist/tippy.css';
 
   export let isHovered;
 
-  let userMenu = false
-  let showAnimate = false
+
   let active = !$sidebar;
   let pathValue = "M12 17V7";
   let rotate = '0deg';
@@ -27,12 +26,6 @@
   $: active = !$sidebar;
   $: $sidebar ? content = 'Close sidebar' : content = 'Open sidebar';
   $: $sidebar ? rotate = '180deg' : rotate = '0deg';
-  async function toggleUserMenu() {
-    userMenu = !userMenu
-    setTimeout(() => {
-      showAnimate = !showAnimate
-    }, 200)
-  }
 
   function handleHover() {
       pathValue = "M12 17L14 12L12 7";
@@ -61,10 +54,6 @@
   
 </script>
 
-<style>
-  
-</style>
-<MaterialApp>
 <div class="wrap-sidebar">
 <div
   id="sidebar"
@@ -81,30 +70,7 @@
     <Nav />
   </div>
   {#if $user && $user?.role}
-    <div  on:click={toggleUserMenu} class="user-menu" >
-      <img src={$user.role.avatarUrl} class="avatar-user"/>
-      <button style="overflow: hidden;">
-        {$user.role.name}
-      </button>
-      <i class="fa fa-ellipsis dots" />
-      <ul
-        class:show={userMenu}
-        class:show-animate={showAnimate}
-        transition:slide={{ duration: 200, easing: quintOut }}>
-        <li>
-          <button>My plan</button>
-        </li>
-        <li>
-          <button>Custom instructions</button>
-        </li>
-        <li>
-          <button>Settings &amp; Beta</button>
-        </li>
-        <li >
-          <button on:click={() => logOutHandle($accessToken)}>Log out</button>
-        </li>
-      </ul>
-    </div>
+    <UserMenu user={$user} accessToken={$accessToken}/> 
   {:else}
     <ButtonLogin />
   {/if}
@@ -138,4 +104,3 @@
 <Overlay
   {active}
   on:click={handleOverlay} />
-</MaterialApp>

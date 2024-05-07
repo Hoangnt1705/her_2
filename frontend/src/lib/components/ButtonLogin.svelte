@@ -31,12 +31,13 @@
     padding: 10px 21px;
     text-align: center;
     text-transform: none;
-    transition: color 0.13s ease-in-out, background 0.13s ease-in-out,
+    transition: color 0.13s ease-in-out, 0.13s ease-in-out,
       opacity 0.13s ease-in-out, box-shadow 0.13s ease-in-out;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
     width: 200px;
+    margin-top: 10px
   }
 
   .button-22:active {
@@ -48,15 +49,18 @@
   .button-22:hover {
     background-color: #5c636a;
   }
+  p{
+    line-height: 20px !important;
+    padding: 3px 0;
+  }
 </style>
 
 <div class="login-wrap" style="margin: 22px;">
   <p
-    style="color: #1b254b;font-weight: 500;font-size: 0.675rem;line-height:
-    0rem;">
+    style="color: #1b254b;font-weight: 500;font-size: 0.675rem;">
     Login
   </p>
-  <p style="color: #a3aed0;font-size: 0.675rem;line-height: 1rem; ">
+  <p style="color: #a3aed0;font-size: 0.675rem;">
     Save your chat history, share chats, and personalize your experience.
   </p>
   <button

@@ -1,8 +1,8 @@
 <script>
   import { browser } from '$app/environment'
   import '$lib/css/loginpage.css'
-  import 'bootstrap/dist/css/bootstrap.min.css';
-  import { beforeUpdate, afterUpdate, onMount, tick } from 'svelte'
+  import 'bootstrap/dist/css/bootstrap.min.css'
+  import { beforeUpdate, afterUpdate, onMount, tick, onDestroy } from 'svelte'
   import { END_POINT } from '$lib/constants.js'
   import { PUBLIC_OAUTH_GOOGLE_KEY } from '$env/static/public'
   import { Application } from '@splinetool/runtime'
@@ -19,11 +19,7 @@
   import Toast from '$lib/components/Toast.svelte'
   import { goto, invalidate } from '$app/navigation'
 
-  export let data
-
-  let timeCanvas = false;
-
-
+  let canvas;
   const success = () => {
     iconNotification.set(iconsNotification.success)
     visible.update((v) => (v = !v))
@@ -92,22 +88,28 @@
     // google.accounts.id.prompt() // also display the One Tap dialog
   }
 
+  const destroyCanvas = () => {
+    canvas = ''
+  }
+
   onMount(async () => {
     try {
-      const canvas = document.getElementById('canvas3d')
+      canvas = document.getElementById('canvas3d')
       await tick()
       const app = new Application(canvas)
       await app.load(
         'https://prod.spline.design/0KlpWURw0tIyxS4r/scene.splinecode',
       )
 
-      initializeGoogleSignIn();
-      timeCanvas = true;
+      initializeGoogleSignIn()
     } catch (error) {
       console.log(error)
       failed502()
     }
-  })
+  });
+  onDestroy(() => {
+    destroyCanvas();
+  });
 </script>
 
 <Toast
@@ -125,7 +127,7 @@
           <div class="title ">
             <h1>Sign in</h1>
           </div>
-          {#if !timeCanvas}
+          {#if !browser}
             <!-- skeleton or loader -->
             <Skeleton height="38px" />
           {:else}
