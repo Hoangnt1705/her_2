@@ -3,13 +3,15 @@
   import { slide, fade, fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
   import { logOutHandle } from '$lib/context/MainContext.js';
+  import {tick} from 'svelte';
 
   export let user, accessToken;
-  $:console.log('user', user);
   let userMenu = true;
   let showAnimate = false
   async function toggleUserMenu() {
     userMenu = !userMenu
+    console.log(userMenu)
+    await tick();
     setTimeout(() => {
       showAnimate = !showAnimate
     }, 200)
@@ -17,7 +19,7 @@
 </script>
 
 <TailwindCSS />
-<div class='flex items-center justify-center space-x-4 user-menu' style="color: #1b254b !important" on:click={toggleUserMenu} data-sveltekit-replacestate>
+<div class='flex items-center justify-center space-x-4 user-menu' style="color: #1b254b !important" on:click={toggleUserMenu}>
     <img class='w-10 h-10 rounded-full' src={user.role.avatarUrl} alt='Media rounded avatar'>
     <div class='font-medium'>
     <h5 class='text-base font-semibold text-gray-900'>{user.role.name}</h5>

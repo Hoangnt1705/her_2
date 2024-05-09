@@ -1,28 +1,25 @@
 <script>
-  import '$lib/css/main.css';
-  import TailwindCSS from '../TailwindCSS.svelte';
+  import { browser } from '$app/environment'
+  import '$lib/css/main.css'
   import { getContext, onMount, setContext, tick, onDestroy } from 'svelte'
   import SidebarToggle from '$lib/components/SidebarToggle.svelte'
   import { svg } from '$lib/constants.js'
-  import {
-    Button,
-    Collapse,
-    Navbar,
-    NavbarToggler,
-    NavbarBrand,
-    Nav,
-    NavItem,
-    NavLink,
-    Dropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    Container,
-    Row,
-    Col,
-  } from '@sveltestrap/sveltestrap'
-  import { Styles } from '@sveltestrap/sveltestrap'
+  import Nav from '$lib/components/Nav.svelte';
+  import { slide, fade, fly } from 'svelte/transition';
+  import { quintOut } from 'svelte/easing'
+
+  let speedDial = true
+  const handleHover = () => {
+    speedDial = false
+  }
+  const handleHoverOut = () => {
+    speedDial = true
+  }
 </script>
+
+<style>
+
+</style>
 
 <svelte:head>
   <link
@@ -36,17 +33,163 @@
 
   </script>
 </svelte:head>
+{#if browser}
+  <main class="main-page overflow-auto">
+    <Nav hiddenNavItems={true} />
+    <div
+      class="grid grid-cols-2 h-[95%] m-[auto] .max-h-1 gap-4 font-bold
+      leading-6 items-center view new-func-view -margin-choose-model"
+      style="overflow: auto;">
+      <div class="text-2xl my-10">
+        <h1>Choose the appropriate AI model</h1>
+      </div>
+      <div class="flex parse-recruiter">
+        <a
+          href="/parse-recruiter"
+          class="relative h-[200px] w-[250px] border border-solid
+          border-gray-200 rounded-2xl bg-white p-4 transition-all duration-500
+          col-span-12 xl:p-7 lg:col-span-3 md:col-span-6 shadow-none
+          transition-shadow duration-300 cursor-pointer hover:shadow-lg
+          hover:shadow-gray-400 w">
+          <div class=" mb-6 " data-sveltekit-preload-data>
+            {@html svg.internAi}
+          </div>
+          <h4
+            class="text-sm font-semibold mb-2 capitalize transition-all
+            duration-500 ">
+            Condense Job Posting Information
+          </h4>
+          <p
+            class="text-xs font-normal text-gray-500 transition-all duration-500
+            leading-5 ">
+            Great information Analysis Functionality
+          </p>
+        </a>
+        <div style="margin: auto 0;">
+          {@html svg.orMain}
+        </div>
+        <a
+          class="relative h-[200px] w-[250px] border border-solid
+          border-gray-200 rounded-2xl p-4 transition-all duration-500
+          col-span-12 xl:p-7 lg:col-span-3 md:col-span-6 bg-white shadow-none
+          transition-shadow duration-300 cursor-pointer hover:shadow-lg
+          hover:shadow-gray-400">
+          <div class=" mb-6 ">
+            {@html svg.seniorAi}
+          </div>
+          <h4
+            class="text-sm font-semibold mb-2 capitalize transition-all
+            duration-500 ">
+            Senior AI
+          </h4>
+          <p
+            class="text-xs font-normal text-gray-500 transition-all duration-500
+            leading-5 ">
+            Generate a Resume with AI Using Two-Way Data for Precision.
+          </p>
+        </a>
+      </div>
+      <div class="relative " style="position: absolute;
+      right: 0;
+      bottom: 10%;">
+        <div class="absolute right-6 bottom-6 group z-50 speeddial-button" aria-hidden="true"
+        on:mouseover={handleHover}
+        on:focus={handleHover}
+        on:mouseout={handleHoverOut}
+        on:blur={handleHoverOut}>
+          <div
+            id="speed-dial-menu-dropdown"
+            class="speed-dial-menu flex flex-col items-center mb-4
+            space-y-2 bg-white shadow-[0px_15px_60px_-4px_rgba(16,24,40,0.10)]
+            rounded-xl border border-gray-200" class:hidden={speedDial}>
+            <ul class="text-sm text-gray-600 p-5">
+              <li>
+                <a
+                  href="javascript:;"
+                  class="flex items-center py-4 border-b border-gray-200
+                  hover:text-gray-900 ">
+                  <svg
+                    class="w-6 h-6 mr-3 text-gray-900"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M9.5 11L11 12.5L15 8.5M13.8593 19.2512L15.1407
+                      19.9238C17.7596 21.2988 19.0691 21.9863 20.0346 21.4028C21
+                      20.8192 21 19.3402 21 16.3823V10C21 6.22876 21 4.34315
+                      19.8284 3.17157C18.6569 2 16.7712 2 13 2H11C7.22876 2
+                      5.34315 2 4.17157 3.17157C3 4.34315 3 6.22876 3
+                      10V16.3823C3 19.3402 3 20.8192 3.96543 21.4028C4.93086
+                      21.9863 6.24035 21.2988 8.85934 19.9238L10.1407
+                      19.2512C11.0515 18.773 11.5069 18.5339 12 18.5339C12.4931
+                      18.5339 12.9485 18.773 13.8593 19.2512Z"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                  <span class="text-sm font-medium">Favorite</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="javascript:;"
+                  class="flex items-center py-4 border-gray-200
+                  hover:text-gray-900 ">
+                  <svg
+                    class="w-6 h-6 mr-3 text-gray-900"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M9 8.94473C9 5.01842 15 5.01842 15 8.94473C15 11.7495
+                      12.2737 11.1898 12.2737 14.5543M12.2726 18L12.2829
+                      17.9873M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715
+                      2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12
+                      22Z"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                  <span class="text-sm font-medium">Support</span>
+                </a>
+              </li>
+              
+            </ul>
+          </div>
+          <button
+            type="button"
+            aria-expanded="false"
+            class="flex items-center justify-center text-white bg-red-500
+            rounded-full w-16 h-16 hover:bg-red-600 focus:outline-none
+            ml-auto">
+            <svg
+              class="w-5 h-5 transition-transform group-hover:rotate-45"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 18 18">
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 1v16M1 9h16" />
+            </svg>
+            <span class="sr-only">Open actions menu</span>
+          </button>
+        </div>
+      </div>
+      <div class="recommendations" style="padding: 0 20px;">
+        <span class="font-normal text-gray-400 text-xs">
+          Her can make mistakes. Consider checking important information.
+        </span>
+      </div>
+    </div>
 
-<TailwindCSS />
-
-<main class="main-page overflow-auto">
-    <Container class="view new-func-view">
-        <Row>
-          <Col>
-          </Col>
-        </Row>
-    </Container>
-</main>
+  </main>
+{/if}
 <!-- <Row>
             <Col xs="3">.col-3</Col>
             <Col xs="auto">.col-auto - variable width content</Col>

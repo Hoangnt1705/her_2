@@ -1,55 +1,32 @@
 <script>
   import '$lib/css/main.css'
   import { getContext, onMount, setContext, tick, onDestroy } from 'svelte'
-  import Sidebar from '$lib/components/Sidebar.svelte'
+  import Nav from '$lib/components/Nav.svelte'
   import { sidebar } from '$lib/stores.js'
-  import { accessToken, user } from '$lib/stores.js'
   import { invalidateAll } from '$app/navigation'
-  import SidebarToggle from '$lib/components/SidebarToggle.svelte'
   import { svg } from '$lib/constants.js'
   import { browser } from '$app/environment'
   import { fade } from 'svelte/transition'
-  import ParseRecruiter from '$lib/components/ParseRecruiter.svelte';
-  import {
-    Button,
-    Collapse,
-    Navbar,
-    NavbarToggler,
-    NavbarBrand,
-    Nav,
-    NavItem,
-    NavLink,
-    Dropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    Container,
-    Row,
-    Col,
-  } from '@sveltestrap/sveltestrap'
+  import ParseRecruiter from '$lib/components/ParseRecruiter.svelte'
 
-  import { Styles } from '@sveltestrap/sveltestrap'
-
-  // $: console.log($myContext)
+  export let data
   let selectedModel = 'gpt-3'
   let messageBoxHeight = '30px'
   let translateXContent = '0px'
-  let isOpen = true
-  export let data
 
   $: $sidebar ? (translateXContent = '0px') : (translateXContent = '259px')
 
-  function selectModel(model) {
-    selectedModel = model
-  }
+  // function selectModel(model) {
+  //   selectedModel = model
+  // }
 
-  function updateMessageBoxHeight() {
-    const messageBox = document.getElementById('message')
-    messageBoxHeight = `${messageBox.scrollHeight + 2}px`
-    if (messageBoxHeight > '200px') {
-      messageBoxHeight = '200px'
-    }
-  }
+  // function updateMessageBoxHeight() {
+  //   const messageBox = document.getElementById('message')
+  //   messageBoxHeight = `${messageBox.scrollHeight + 2}px`
+  //   if (messageBoxHeight > '200px') {
+  //     messageBoxHeight = '200px'
+  //   }
+  // }
   let text = ''
   let typingSpeed = 50 // Adjust typing speed as needed
 
@@ -111,102 +88,53 @@
     integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
     crossorigin="anonymous"
     referrerpolicy="no-referrer" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/flowbite@1.4.4/dist/flowbite.min.css" />
+  <script src="https://unpkg.com/flowbite@1.4.0/dist/flowbite.js">
+
+  </script>
 </svelte:head>
 
-<Styles />
-
 {#if browser}
-  <main class="main-page overflow-auto">
-    <Navbar class="hide-navbar" light expand="md">
-      <SidebarToggle visible={$sidebar ? 'visible' : 'hidden'} />
-
-      <NavItem class="remove-style-li">
-        <div class="drop-menu-toggle">
-          <div
-            class="drop"
-            style="display:flex"
-            on:click={() => (isOpen = !isOpen)}>
-            <span>chatGPT</span>
-            {@html svg.downDrop}
-          </div>
-        </div>
-        <div class="drop-main">
-          <ul class:open-drop-menu={isOpen} class="drop-menu-main-page">
-            <div class="titleSelectModelAi">
-              <div>Model</div>
-            </div>
-            <div class="drhv intern-ai-drop">
-              <div>
-                {@html svg.internAi}
-              </div>
-              <div class="wrap-style-intern">
-                <div
-                  class="bold-intern-ai-drop font-bold text-navy-700
-                  dark:text-white">
-                  Condense Job Posting Information
-                  <!-- Condense Job Posting Information -->
-                </div>
-                <div class="static-intern-ai-drop text-base text-gray-600">
-                  Great information Analysis Functionality
-                </div>
-              </div>
-              <div>
-                {@html svg.activeModel}
-              </div>
-            </div>
-            <div class="drhv senior-ai-drop">
-              <div>
-                {@html svg.seniorAi}
-              </div>
-              <div class="wrap-style-senior">
-                <div
-                  class="bold-senior-ai-drop font-bold text-navy-700
-                  dark:text-white">
-                  Senior AI
-                </div>
-                <div class="static-senior-ai-drop text-base text-gray-600">
-                  Generate a Resume with AI Using Two-Way Data for Precision.
-                </div>
-                <Button class="update-to-senior">Upgrade to Senior</Button>
-              </div>
-              <div>
-                {@html svg.activeModel}
-              </div>
-            </div>
-          </ul>
-        </div>
-      </NavItem>
-
-      <NavItem class="new-write remove-style-li" style="padding:12px">
-        {@html svg.newWrite}
-      </NavItem>
-    </Navbar>
-
-    <Container class="view new-func-view">
-      <Row>
-        <Col>
+  <main class="main-page content-center">
+    <Nav />
+    <div
+      class="grid grid-cols-1 text-xl text-center leading-6 justify-center
+      .max-h-1 wrap-view-parse-recruiter">
+      <div class="view new-func-view">
+        <div class="p-4 rounded-lg col-span-1">
           <div data-mdb-input-init class="form-outline">
-            <textarea
-              class="form-control"
-              id="textAreaExample1"
-              rows="6"
-              placeholder={text}
-              on:input={handleInputChange} />
+            <div class="mx-auto">
+              <textarea
+                id="infomation-recruiment"
+                placeholder={text}
+                on:input={handleInputChange}
+                rows="8"
+                class="block p-2.5 w-full text-base text-gray-900 bg-gray-50
+                rounded-lg border border-gray-300 focus:ring-red-500
+                focus:border-red-500 " />
+              <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 -->
+            </div>
           </div>
-        </Col>
-      </Row>
-      <Row style="margin: 20px auto">
-        <Col xs="10">
-          <Button outline color="danger">Condense</Button>
-        </Col>
-      </Row>
-
-      <Row>
-        <Col>
-          <ParseRecruiter data={data} />
-        </Col>
-      </Row>
-    </Container>
+        </div>
+        <div class="p-4 rounded-lg col-span-2">
+          <div class="inline-flex gap-2">
+            <button
+              type="button"
+              class="flex py-2.5 px-6 text-base rounded-lg bg-red-500 text-white
+              cursor-pointer font-semibold text-center shadow-xs transition-all
+              duration-500 hover:bg-red-700">
+              Condense
+              {@html svg.btnParseRecruiter}
+            </button>
+          </div>
+        </div>
+        <div class="p-4 rounded-lg col-span-2 font-bold">
+          <ParseRecruiter {data} />
+        </div>
+      </div>
+    </div>
   </main>
 {/if}
 

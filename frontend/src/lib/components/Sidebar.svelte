@@ -1,7 +1,6 @@
 <script>
   import { slide, fade, fly } from 'svelte/transition'
   import { quintOut } from 'svelte/easing'
-  import Nav from '$lib/components/Nav.svelte'
   import ButtonLogin from '$lib/components/ButtonLogin.svelte';
   import { accessToken, user, sidebar } from '$lib/stores.js'
   import { spring } from 'svelte/motion';
@@ -67,7 +66,6 @@
       </button>
     </div>
 
-    <Nav />
   </div>
   {#if $user && $user?.role}
     <UserMenu user={$user} accessToken={$accessToken}/> 

@@ -75,7 +75,6 @@
 button {
   display: block;
   background: inherit;
-  border: 1px solid var(--color-border1);
   border-radius: 5px;
   color: var(--color-font-main);
   padding: 13px;
@@ -115,6 +114,9 @@ button {
 
 .new-func-view {
   width: 80%;
+  margin: 0 auto;
+  margin-top: 30px;
+
 }
 
 .conversations,
@@ -235,7 +237,7 @@ i.user-icon {
   position: relative;
   display: flex;
   padding: 5px 5px;
-  color: var(--color-font-main)
+  color: var(--color-font-main);
 }
 
 .user-menu button {
@@ -339,17 +341,17 @@ i.user-icon {
 } */
 
 .main-page {
-  overflow-y: scroll;
   /* scrollbar-color: red orange;
   scrollbar-width:auto; */
   width: 100%;
   margin: 0 auto;
   display: flex;
   height: 100vh;
-  flex-direction: column;
   align-content: center;
+  flex-direction: column;
   padding: 0 0 30px 0;
   box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .main-page .view {
@@ -450,12 +452,14 @@ p {
 }
 
 .hide-navbar {
+  position: absolute;
 }
 
 .wrap-open-sidebar-full-screen {
   display: flex;
   align-items: center;
   opacity: 0.3;
+  z-index: 999;
 }
 .open-sidebar-full-screen {
   position: absolute;
@@ -486,9 +490,8 @@ p {
 }
 
 .drop-menu-toggle {
-  margin-right: 10px;
   font-weight: 700;
-  font-size: 19px;
+  font-size: 21px;
 }
 
 .drop-menu-main-page {
@@ -496,6 +499,8 @@ p {
   border-radius: 3px;
   padding: 15px 15px;
   position: absolute;
+  margin-left: 10px;
+  margin-top: 55px;
 }
 
 .remove-style-li {
@@ -532,27 +537,27 @@ p {
 }
 
 .update-to-senior {
-  background: #00ffba;
+  background: #00ffba !important;
   border: none;
   width: 100%;
   margin-top: 10px;
 }
 .update-to-senior:hover {
-  background: #00e5a7;
+  background: #00e5a7 !important;
 }
 
 .drop {
-  padding: 10px;
+  padding: 10px 0;
+  margin-left: 6px;
+  padding-left: 6px;
+  position: absolute;
   cursor: pointer;
 }
 .drop:hover {
   background: var(--color-button-hover);
   border-radius: 10px;
 }
-.drop:focus {
-  background: var(--color-button-hover);
-  border-radius: 10px;
-}
+
 .drhv {
   padding: 0 5px;
   border-radius: 3px;
@@ -582,24 +587,27 @@ p {
   padding: 10px;
 }
 
-.form-control::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   width: 10px;
 }
 
-.form-control::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: var(--color-white);
 }
 
-.form-control::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background: var(--color-main);
 }
 
-.form-control::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background: #555;
-}
+} */
 #textAreaExample1::placeholder {
   opacity: 1;
   color: var(--color-font-placeholder);
+}
+.recommendations{
+  position:absolute; bottom: 2%; background: var(--color-main); 
 }
 
 @keyframes animations {
@@ -611,9 +619,24 @@ p {
   }
 }
 
+
 @media screen and (max-width: 768px) {
+
+  .or-main{
+    margin: auto;
+    transform: rotate(90deg);
+  }
+  .parse-recruiter{
+    flex-direction: column;
+  }
+  .grid-cols-2{
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+  .drop{
+    position: relative;
+  }
   .main-page {
-    overflow-y: hidden;
+    overflow: hidden;
   }
   .form-outline {
     margin-top: 10px;
@@ -641,14 +664,16 @@ p {
   }
   .new-func-view {
     width: 100%;
-    overflow-y: scroll;
   }
-
+  .wrap-view-parse-recruiter{
+    overflow-y: auto;
+  }
   .hide-navbar {
     display: flex;
     background-color: #f5f5f5;
     position: relative;
     width: 100%;
+    justify-content: space-between;
   }
   .container-fluid {
     padding: 0 0px;
@@ -656,6 +681,7 @@ p {
   .open-sidebar-responsive {
     border: none;
     display: block !important;
+    padding-left: 10px;
   }
   /* .dropdown-menu-end[data-bs-popper] {
     left: auto;

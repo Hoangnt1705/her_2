@@ -15,7 +15,7 @@
 
 <DefaultLayOut>
   {#if !path.includes($page.url.pathname)}
-    <section class="session-main-page" data-sveltekit-reload>
+    <section class="session-main-page">
       <Sidebar isHovered={data.isHovered}/>
       <slot />
     </section>
