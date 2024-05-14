@@ -26,6 +26,12 @@ const openAIAPIKey = process.env.OPENAI_API_KEY;
 
 var authRoute = express.Router();
 
+
+/**
+ * @route POST /api/auth/login
+ * @description login user
+ * @access public
+ */
 authRoute.post('/login', async (req, res) => {
     const token = req.body.idToken;
     if (!token) return sendError(res, 'Required valid token');
@@ -125,7 +131,7 @@ authRoute.post('/login', async (req, res) => {
 });
 
 /**
- * @route POST /api/admin/auth/verify-token
+ * @route POST /api/auth/verify-token
  * @description verify user with access token
  * @access public
  */
@@ -191,7 +197,7 @@ authRoute.post('/verify-token', (req, res) => {
 })
 
 /**
- * @route POST /api/admin/auth/logout
+ * @route POST /api/auth/logout
  * @description user log out
  * @access private
  */

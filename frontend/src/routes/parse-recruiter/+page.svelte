@@ -8,11 +8,15 @@
   import { browser } from '$app/environment'
   import { fade } from 'svelte/transition'
   import ParseRecruiter from '$lib/components/ParseRecruiter.svelte'
+  import { END_POINT } from '$lib/constants.js'
+  import { accessToken } from '$lib/stores.js';
+  import axios from 'axios';
 
   export let data
   let selectedModel = 'gpt-3'
   let messageBoxHeight = '30px'
   let translateXContent = '0px'
+  let inputParseRecruiter
 
   $: $sidebar ? (translateXContent = '0px') : (translateXContent = '259px')
 
@@ -66,14 +70,34 @@
     }
     countStaticPR++
   }
+  const handleKeyDown = async (e) => {
+    if (e.key === 'Enter') return handleParseRecruiter()
+    else return
+  }
+  const handleParseRecruiter = async () => {
+    console.log(inputParseRecruiter)
+    try {
+      const response = await axios.post(
+        `${END_POINT}/v1/parse-recruiter/`,
+        { data: inputParseRecruiter },
+        {
+          headers: { authorization: `Bearer ${$accessToken}` },
+        },
+      )
+      let { data } = response.data
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   onDestroy(() => {
     stopAutoWriter()
   })
 
   onMount(() => {
-    typeWriter()
-    handleStaticPR()
+    typeWriter();
+    handleStaticPR();
   })
 
   // function handleUpdate(event) {
@@ -109,7 +133,9 @@
               <textarea
                 id="infomation-recruiment"
                 placeholder={text}
+                bind:value={inputParseRecruiter}
                 on:input={handleInputChange}
+                on:keydown={handleKeyDown}
                 rows="8"
                 class="block p-2.5 w-full text-base text-gray-900 bg-gray-50
                 rounded-lg border border-gray-300 focus:ring-red-500
@@ -124,7 +150,8 @@
               type="button"
               class="flex py-2.5 px-6 text-base rounded-lg bg-red-500 text-white
               cursor-pointer font-semibold text-center shadow-xs transition-all
-              duration-500 hover:bg-red-700">
+              duration-500 hover:bg-red-700"
+              on:click={handleParseRecruiter}>
               Condense
               {@html svg.btnParseRecruiter}
             </button>

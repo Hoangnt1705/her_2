@@ -75,7 +75,7 @@ export const initRedis = async () => {
   handleEventConnect({ connectionRedis: instanceRedis });
 }
 
-export const getRedis = () => client
+export const getRedis =  () => client
 
 export const closeRedis = () => {
 

@@ -12,3 +12,4 @@ redis
 typing
 sqlalchemy
 flask_caching
+scrapegraphai

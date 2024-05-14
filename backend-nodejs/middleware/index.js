@@ -1,7 +1,42 @@
 import jwt from 'jsonwebtoken'
 import { sendError, sendServerError } from '../helper/client.js'
 import { TOKEN_LIST, TOKEN_BLACKLIST } from '../index.js'
+import { incr, expire, timeToLive } from '../service/redis.js';
 
+
+/**
+ * API rate limit 
+ * if development environment not limit, if production 50 request on two hours
+ */
+
+export const rateLimitAPI = async (req, res, next) => {
+    try {
+        const getIpUser = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+        const numberReq = await incr(getIpUser);
+        let ttl = 0;
+        if (numberReq === 1) {
+            await expire(getIpUser, 60);
+        }
+        else {
+            ttl = await timeToLive(getIpUser);
+        }
+        if (numberReq >= 20) {
+            return sendError(res, 'Forbidden!', 403);
+        }
+        req.limit = {
+            getIpUser,
+            numberReq,
+            ttl,
+            data: {
+                success: 'okk',
+            }
+        }
+        next();
+    } catch (error) {
+        console.log(error);
+        sendServerError(res);
+    }
+}
 
 
 /**
@@ -12,7 +47,7 @@ export const verifyToken = async (req, res, next) => {
     try {
         const data = req.headers['authorization']
         const token = data?.split(" ")[1];
-        console.log(TOKEN_LIST, TOKEN_BLACKLIST)
+        console.log(token)
         if (!token) return sendError(res, 'jwt must be provided.', 401)
 
         if (token in TOKEN_LIST || token in TOKEN_BLACKLIST)

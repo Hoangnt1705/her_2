@@ -6,7 +6,7 @@ import json
 from flask import Flask, flash, redirect, url_for, render_template, request, session, jsonify
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask_socketio import SocketIO, send, emit
+from flask_socketio import SocketIO, send, emit, Namespace, disconnect
 from context.index import tools
 from helper import chat_completion_request, pretty_print_conversation
 from tenacity import retry, wait_random_exponential, stop_after_attempt
@@ -15,6 +15,7 @@ from sqlalchemy import select, insert, and_, union_all,  text, literal
 from flask_bcrypt import Bcrypt
 from flask_caching import Cache
 import redis
+import jwt
 
 
 # Configure application
@@ -36,59 +37,54 @@ cache.init_app(app)
 redis_client = redis.Redis(host=os.getenv('REDIS_URI'), port=os.getenv('REDIS_PORT'), password=os.getenv('REDIS_PASSWORD'),  db=0)
 
 
-@socketio.on('connect')
-def test_connect():
-    print('connected')
-    emit('my response', {'data': 'Connected'})
+SECRET_KEY = os.getenv('HALF_KEY')
 
-
+@socketio.on('connect', namespace="/parse-recruiter")
+def handle_connect():
+    token = request.headers.get('Authorization')
+    if not token or not token.startswith('Bearer '):
+        print("Invalid or missing token")
+        return False
+    try:
+        # Verify and decode the JWT token
+        decoded_token = jwt.decode(token[7:], SECRET_KEY, algorithms=['HS256'])
+        print("User ID:", decoded_token['name'])
+        print("Username:", decoded_token['password'])
+        print("Token verified successfully")
+    except jwt.ExpiredSignatureError:
+        print("Token has expired")
+    except jwt.InvalidTokenError:
+        print("Invalid token")
+    print("Connected")
 @socketio.on('json', namespace="/parse-recruiter")
-@cache.cached(timeout=60, key_prefix='socketio')
 @retry(wait=wait_random_exponential(multiplier=1, max=40), stop=stop_after_attempt(3))
 def parse_recruiter(json):
-    # messages = []
-    # messages.append({"role": "system", "content": "Parse recruiter messages to JSON with parameters: is_remote, salary_min, salary_max, contract (boolean), role_name, benefits (array), notes, experience (integer), recruiter, next_step, holidays (integer), response, city, and country. Respond with parsed JSON only, setting NULL for missing data. Do not include any additional prose, notes, or reasoning."})
-    # messages.append({"role": "user", "content": 'Hi how are you?'})
-    # chat_response = chat_completion_request(
-    #     messages, tools=tools
-    # )
-    # assistant_message = chat_response.choices[0].message
-    # res = ''
-    # if assistant_message.content:
-    #     print('error>>>>>')
-    #     res = assistant_message.content  # error
-    # else:
-    #     print('success>>>>>')        
-    #     res = json.loads(assistant_message.tool_calls[0].function.arguments)
+    messages = []
+    messages.append({"role": "system", "content": "Parse recruiter messages to JSON with parameters: is_remote, salary_min, salary_max, contract (boolean), role_name, benefits (array), notes, experience (integer), recruiter, next_step, holidays (integer), response, city, and country. Respond with parsed JSON only, setting NULL for missing data. Do not include any additional prose, notes, or reasoning."})
+    messages.append({"role": "user", "content": 'Hi how are you?'})
+    chat_response = chat_completion_request(
+        messages, tools=tools
+    )
+    assistant_message = chat_response.choices[0].message
+    res = ''
+    if assistant_message.content:
+        print('error>>>>>')
+        res = assistant_message.content  # error
+    else:
+        print('success>>>>>')        
+        res = json.loads(assistant_message.tool_calls[0].function.arguments)
     
-    # cached_response = redis_client.get('socketio')
-    # if cached_response:
-    #     return jsonify(cached_response)
-    # print(cached_response)
-    
-    emit('my response', str('hello'))
+    print('received json: ' + str(json))
+    emit('json', str(res))
 
 
-
-
-@socketio.on('disconnect')
+@socketio.on('disconnect', namespace="/parse-recruiter")
 def handle_disconnect():
     print('Client disconnected')
 
-
-
-@app.route('/items')
-def get_items():
-    res = redis_client.set("bike:2", "Process 134")
-    print(res)
-    # >>> True
-
-    res = redis_client.get("bike:2")
-    print(res)
-
-
-    return 'xolor'
-
+@app.route('/')
+def index():
+    return 'hello'
 
 # assistant_message.content = str(assistant_message.tool_calls[0].function)
 # messages.append({"role": assistant_message.role, "content": assistant_message.content})

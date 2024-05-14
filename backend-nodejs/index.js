@@ -21,7 +21,6 @@ import parseRecruiter from './routes/parseRecruiter.js';
 import { verifyToken } from './middleware/index.js';
 import { initRedis, getRedis } from "./db/index.js";
 
-
 import RedisStore from "connect-redis"
 
 // swagger setup
@@ -75,6 +74,7 @@ const corsOptions = {
       callback(new Error('Not allowed by CORS'));
     }
   },
+  credentials: true
 };
 
 app.use(cors(corsOptions));
@@ -82,15 +82,15 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 
-app.use(function (req, res, next) {
-  if (req.method === 'GET' && (req.url === '/api/auth/login' || req.url === '/api/auth/login/success')) {
-    req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000; // 7*24*60*60*1000 Rememeber 'me' for 30 days
-  }
-  else {
-    req.session.cookie.maxAge = SESSION_AGE;
-  }
-  next();
-});
+// app.use(function (req, res, next) {
+//   if (req.method === 'GET' && (req.url === '/api/auth/login' || req.url === '/api/auth/login/success')) {
+//     req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000; // 7*24*60*60*1000 Rememeber 'me' for 30 days
+//   }
+//   else {
+//     req.session.cookie.maxAge = SESSION_AGE;
+//   }
+//   next();
+// });
 
 // app.use(passport.initialize());
 // app.use(passport.session());
@@ -100,65 +100,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-async function fetchApiData(species) {
-  const apiResponse = await axios.get(
-    `https://www.fishwatch.gov/api/species/${species}`
-  );
-  console.log("Request sent to the API");
-  return apiResponse.data;
-}
-
-
-async function cacheData(req, res, next) {
-  const species = req.params.species;
-  let results;
-  try {
-    const cacheResults = await redisClient.get(species);
-    if (cacheResults) {
-      results = JSON.parse(cacheResults);
-      res.send({
-        fromCache: true,
-        data: results,
-      });
-    } else {
-      next();
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(404);
-  }
-}
-
-async function getSpeciesData(req, res) {
-  const species = req.params.species;
-  let results;
-  try {
-      results = await fetchApiData(species);
-      if (results.length === 0) {
-        throw "API returned an empty array";
-      }
-      await redisClient.set(species, JSON.stringify(results), {
-        EX: 180,
-        NX: true,
-      });    
-
-    res.send({
-      fromCache: false,
-      data: results,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(404).send("Data unavailable");
-  }
-}
-
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
   .use('/api/admin', adminRoute)
   .use('/api/auth', authRoute)
   .use('/api/user', userRoute)
   .use('/api/v1/parse-recruiter', parseRecruiter)
-  .use("/fish/:species", cacheData, getSpeciesData);
 app.use('/*', async (req, res) => {
   res.status(501).send("Don't implement.")
 })

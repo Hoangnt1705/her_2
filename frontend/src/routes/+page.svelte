@@ -10,11 +10,10 @@
 
   let speedDial = true
   const handleHover = () => {
-    speedDial = false
+    speedDial = !speedDial
   }
-  const handleHoverOut = () => {
-    speedDial = true
-  }
+
+   
 </script>
 
 <style>
@@ -95,8 +94,9 @@
         <div class="absolute right-6 bottom-6 group z-50 speeddial-button" aria-hidden="true"
         on:mouseover={handleHover}
         on:focus={handleHover}
-        on:mouseout={handleHoverOut}
-        on:blur={handleHoverOut}>
+        on:mouseout={handleHover}
+        on:blur={handleHover}
+        on:click={handleHover}>
           <div
             id="speed-dial-menu-dropdown"
             class="speed-dial-menu flex flex-col items-center mb-4
