@@ -1,5 +1,6 @@
 import express from 'express';
 import Customer from '../model/Customer.js';
+import {printIn} from '../service/consoleLog.js';
 import { sendError, sendServerError, sendSuccess } from '../helper/client.js';
 
 const customerRoute = express.Router();

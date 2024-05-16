@@ -16,7 +16,8 @@ from flask_bcrypt import Bcrypt
 from flask_caching import Cache
 import redis
 import jwt
-
+from client import send_error, send_success
+ 
 
 # Configure application
 app = Flask(__name__)
@@ -36,7 +37,6 @@ cache = Cache(app=app)
 cache.init_app(app)
 redis_client = redis.Redis(host=os.getenv('REDIS_URI'), port=os.getenv('REDIS_PORT'), password=os.getenv('REDIS_PASSWORD'),  db=0)
 
-
 SECRET_KEY = os.getenv('HALF_KEY')
 
 @socketio.on('connect', namespace="/parse-recruiter")
@@ -44,7 +44,6 @@ def handle_connect():
     token = request.headers.get('Authorization')
     if not token or not token.startswith('Bearer '):
         print("Invalid or missing token")
-        return False
     try:
         # Verify and decode the JWT token
         decoded_token = jwt.decode(token[7:], SECRET_KEY, algorithms=['HS256'])
@@ -56,27 +55,39 @@ def handle_connect():
     except jwt.InvalidTokenError:
         print("Invalid token")
     print("Connected")
+
 @socketio.on('json', namespace="/parse-recruiter")
 @retry(wait=wait_random_exponential(multiplier=1, max=40), stop=stop_after_attempt(3))
-def parse_recruiter(json):
-    messages = []
-    messages.append({"role": "system", "content": "Parse recruiter messages to JSON with parameters: is_remote, salary_min, salary_max, contract (boolean), role_name, benefits (array), notes, experience (integer), recruiter, next_step, holidays (integer), response, city, and country. Respond with parsed JSON only, setting NULL for missing data. Do not include any additional prose, notes, or reasoning."})
-    messages.append({"role": "user", "content": 'Hi how are you?'})
-    chat_response = chat_completion_request(
-        messages, tools=tools
-    )
-    assistant_message = chat_response.choices[0].message
-    res = ''
-    if assistant_message.content:
-        print('error>>>>>')
-        res = assistant_message.content  # error
-    else:
-        print('success>>>>>')        
-        res = json.loads(assistant_message.tool_calls[0].function.arguments)
-    
-    print('received json: ' + str(json))
-    emit('json', str(res))
-
+def parse_recruiter(data_parse_recruiter):
+    token = request.headers.get('Authorization')
+    if not token or not token.startswith('Bearer '):
+        emit('json', "Invalid request")
+    if not data_parse_recruiter['msg']:
+        emit('json', "Invalid request")
+    try:
+        # Verify and decode the JWT token
+        decoded_token = jwt.decode(token[7:], SECRET_KEY, algorithms=['HS256'])
+        messages = []
+        messages.append({"role": "system", "content": "Parse recruiter messages to JSON with parameters: is_remote, salary_min, salary_max, contract (boolean), role_name, benefits (array), notes, experience (integer), recruiter, next_step, holidays (integer), response, city, and country. Respond with parsed JSON only, setting NULL for missing data. Do not include any additional prose, notes, or reasoning."})
+        messages.append({"role": "user", "content": data_parse_recruiter['msg']})
+        chat_response = chat_completion_request(
+            messages, tools=tools
+        )
+        assistant_message = chat_response.choices[0].message
+        res = ''
+        if assistant_message.content:
+            print('error>>>>>')
+            res = assistant_message.content  # error
+            send_error(emit, 'json', json.loads(res))
+        else:
+            print('success>>>>>')        
+            res = json.loads(assistant_message.tool_calls[0].function.arguments)
+            send_success(emit, 'json', "Response Successfully", res)
+        
+    except jwt.ExpiredSignatureError:
+        send_error(emit, 'json', "Invalid request")
+    except jwt.InvalidTokenError:
+        send_error(emit, 'json', "Invalid request")
 
 @socketio.on('disconnect', namespace="/parse-recruiter")
 def handle_disconnect():

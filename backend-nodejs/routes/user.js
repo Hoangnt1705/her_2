@@ -1,6 +1,7 @@
 import express from 'express'
 import { sendError, sendServerError, sendSuccess } from '../helper/client.js'
 import { verifyStaff, verifyToken } from '../middleware/index.js'
+import {printIn} from '../service/consoleLog.js';
 import Customer from '../model/Customer.js'
 import Staff from '../model/Staff.js'
 import User from '../model/User.js'

@@ -11,6 +11,7 @@ import _ from 'lodash';
 import { verifyToken } from '../middleware/index.js';
 
 import { clearTokenList } from '../service/jwt.js';
+import {printIn} from '../service/consoleLog.js';
 import { TOKEN_BLACKLIST, TOKEN_LIST } from "../index.js"
 import { sendError, sendServerError, sendSuccess, sendAutoMail, sendAutoSMS } from '../helper/client.js'
 import { JWT_EXPIRED, JWT_REFRESH_EXPIRED, VERIFY_OP } from '../constant.js'
@@ -54,7 +55,8 @@ authRoute.post('/login', async (req, res) => {
         if (!email) throw new Error('You must provide a email')
         if (!payload.email_verified) throw new Error('You must verify email address')
         let user = await User.findOne({
-            email: { $ne: null, $eq: email }
+            email: { $ne: null, $eq: email },
+            isActive: true
         }).populate({ path: 'role', model: Customer })
         //if existed on db
         if (!user) {

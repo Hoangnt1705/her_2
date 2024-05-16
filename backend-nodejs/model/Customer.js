@@ -16,6 +16,9 @@ const CustomerSchema = new Schema(
             type: String,
             default: null
         },
+
+
+        
         description: {
             type: String,
             default: null

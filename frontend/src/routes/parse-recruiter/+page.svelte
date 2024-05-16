@@ -84,8 +84,9 @@
           headers: { authorization: `Bearer ${$accessToken}` },
         },
       )
-      let { data } = response.data
-      console.log(data)
+      let { data } = await response.data
+      console.log('>>>', data)
+      return true;
     } catch (error) {
       console.log(error)
     }

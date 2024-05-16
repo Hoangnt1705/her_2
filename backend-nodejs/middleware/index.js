@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import { sendError, sendServerError } from '../helper/client.js'
 import { TOKEN_LIST, TOKEN_BLACKLIST } from '../index.js'
 import { incr, expire, timeToLive } from '../service/redis.js';
-
+import {printIn} from '../service/consoleLog.js';
 
 /**
  * API rate limit 
@@ -47,7 +47,6 @@ export const verifyToken = async (req, res, next) => {
     try {
         const data = req.headers['authorization']
         const token = data?.split(" ")[1];
-        console.log(token)
         if (!token) return sendError(res, 'jwt must be provided.', 401)
 
         if (token in TOKEN_LIST || token in TOKEN_BLACKLIST)
