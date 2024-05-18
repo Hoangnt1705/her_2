@@ -34,7 +34,15 @@ export const checkAuthenticated = async (token, refresh) => {
     }
     console.log('data', data);
   } catch (error) {
-    console.log(error)
+    if (error.response.data.message === 'Unauthorzied.' && error.response.status === 401) {
+      console.log('error');
+      localStorage.removeItem(PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME);
+      localStorage.removeItem(PUBLIC_APP_LOCALSTORAGE_REFRESH_NAME);
+      localStorage.removeItem('login');
+      refreshToken.set(null);
+      accessToken.set(null);
+      user.set(null);
+    }
     return false
   }
   return true

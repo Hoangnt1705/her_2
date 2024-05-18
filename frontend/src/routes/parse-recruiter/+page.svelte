@@ -9,17 +9,26 @@
   import { fade } from 'svelte/transition'
   import ParseRecruiter from '$lib/components/ParseRecruiter.svelte'
   import { END_POINT } from '$lib/constants.js'
-  import { accessToken } from '$lib/stores.js';
-  import axios from 'axios';
+  import { accessToken, dataParseRecruiter } from '$lib/stores.js'
+  import axios from 'axios'
 
   export let data
   let selectedModel = 'gpt-3'
   let messageBoxHeight = '30px'
   let translateXContent = '0px'
   let inputParseRecruiter
+  let disabled = false
+  let btnFocus = ''
+  const focus = (node) => node.focus()
+  let text = ''
+  let typingSpeed = 50 // Adjust typing speed as needed
+
+  // Select a random placeholder text from the array
+  let randomIndex = Math.floor(Math.random() * data.placeholderTexts.length)
+  let placeholderText = data.placeholderTexts[randomIndex]
+  let inputHasValue = false
 
   $: $sidebar ? (translateXContent = '0px') : (translateXContent = '259px')
-
   // function selectModel(model) {
   //   selectedModel = model
   // }
@@ -31,13 +40,6 @@
   //     messageBoxHeight = '200px'
   //   }
   // }
-  let text = ''
-  let typingSpeed = 50 // Adjust typing speed as needed
-
-  // Select a random placeholder text from the array
-  let randomIndex = Math.floor(Math.random() * data.placeholderTexts.length)
-  let placeholderText = data.placeholderTexts[randomIndex]
-  let inputHasValue = false
 
   const typeWriter = () => {
     if (!inputHasValue && text.length < placeholderText.length) {
@@ -54,7 +56,6 @@
       }, 1500)
     }
   }
-
   const handleInputChange = (event) => {
     if (event.target.value.trim().length > 0) inputHasValue = true
   }
@@ -62,44 +63,70 @@
   const stopAutoWriter = () => {
     inputHasValue = true
   }
-  let countStaticPR = 0
-  const handleStaticPR = () => {
-    if (countStaticPR <= data.staticParseRecruiter.length - 1) {
-      data.staticParseRecruiter[countStaticPR].state = true
-      setTimeout(handleStaticPR, 500)
-    }
-    countStaticPR++
-  }
+
   const handleKeyDown = async (e) => {
-    if (e.key === 'Enter') return handleParseRecruiter()
-    else return
+    if (e.keyCode === 13 && !e.shiftKey) {
+      return handleParseRecruiter()
+    } else return
   }
   const handleParseRecruiter = async () => {
-    console.log(inputParseRecruiter)
+    if (!inputParseRecruiter?.trim()) {
+      return;
+    }
+    console.log(!inputParseRecruiter.trim())
     try {
-      const response = await axios.post(
-        `${END_POINT}/v1/parse-recruiter/`,
-        { data: inputParseRecruiter },
-        {
-          headers: { authorization: `Bearer ${$accessToken}` },
-        },
-      )
-      let { data } = await response.data
-      console.log('>>>', data)
-      return true;
+      disabled = true
+      let response = new Promise((resolve, reject) => {
+        axios
+          .post(
+            `${END_POINT}/v1/parse-recruiter/`,
+            { data: inputParseRecruiter.trim() },
+            {
+              headers: { authorization: `Bearer ${$accessToken}` },
+            },
+          )
+          .then((value) => {
+            if (value.status === 200) {
+              resolve(value)
+            } else {
+              reject(new Error('error'))
+            }
+            disabled = false
+          })
+          .catch((err) => {
+            reject(new Error(err.message))
+            disabled = false
+          })
+      })
+      let { data } = await response;
+      console.log(data)
+      dataParseRecruiter.set(data.data.result);
+      inputParseRecruiter = '';
+      await tick();
+      btnFocus.focus();
+      return data;
     } catch (error) {
       console.log(error)
     }
   }
-
+  // $: console.log( $dataParseRecruiter.data)
+  // $: console.log(typeof data.staticParseRecruiter)
   onDestroy(() => {
     stopAutoWriter()
   })
 
   onMount(() => {
-    typeWriter();
-    handleStaticPR();
-  })
+    typeWriter()
+  });
+
+
+
+
+
+
+
+
+
 
   // function handleUpdate(event) {
   //   isOpen = event.detail.isOpen
@@ -125,41 +152,51 @@
   <main class="main-page content-center">
     <Nav />
     <div
-      class="grid grid-cols-1 text-xl text-center leading-6 justify-center
+      class="grid grid-cols-1 text-xl leading-6 justify-center
       .max-h-1 wrap-view-parse-recruiter">
       <div class="view new-func-view">
         <div class="p-4 rounded-lg col-span-1">
           <div data-mdb-input-init class="form-outline">
             <div class="mx-auto">
               <textarea
+                {disabled}
                 id="infomation-recruiment"
                 placeholder={text}
                 bind:value={inputParseRecruiter}
                 on:input={handleInputChange}
                 on:keydown={handleKeyDown}
+                bind:this={btnFocus}
+                use:focus
+                style="clear: both;"
                 rows="8"
                 class="block p-2.5 w-full text-base text-gray-900 bg-gray-50
-                rounded-lg border border-gray-300 focus:ring-red-500
-                focus:border-red-500 " />
+                rounded-lg border border-gray-300 focus:ring-red-300
+                focus:border-red-200 " />
               <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 -->
             </div>
           </div>
         </div>
-        <div class="p-4 rounded-lg col-span-2">
+        <div class="p-4 rounded-lg col-span-2 text-center">
           <div class="inline-flex gap-2">
-            <button
+            <button 
               type="button"
-              class="flex py-2.5 px-6 text-base rounded-lg bg-red-500 text-white
-              cursor-pointer font-semibold text-center shadow-xs transition-all
-              duration-500 hover:bg-red-700"
-              on:click={handleParseRecruiter}>
+              on:click={handleParseRecruiter}
+              class="flex items-center gap-2 py-2.5 px-5 text-sm duration-500
+              text-white rounded-lg cursor-pointer font-semibold text-center
+              shadow-xs transition-all {!inputParseRecruiter?.trim() ? '' : 'bg-red-500 hover:bg-red-700'}"
+              style="{disabled ? 'cursor: not-allowed; background: #B91C1C' : ''}; {!inputParseRecruiter?.trim() ? 'cursor: auto; background-color: #B91C1C' : ''}">
+              {@html disabled ? svg.spinnerLoading : svg.btnParseRecruiter}
               Condense
-              {@html svg.btnParseRecruiter}
             </button>
           </div>
         </div>
+          
         <div class="p-4 rounded-lg col-span-2 font-bold">
-          <ParseRecruiter {data} />
+          {#if !disabled}
+          <ParseRecruiter data={$dataParseRecruiter? $dataParseRecruiter: ''} />
+          {:else}
+          {@html svg.loadingTablePR}
+          {/if}
         </div>
       </div>
     </div>

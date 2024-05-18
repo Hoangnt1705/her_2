@@ -40,16 +40,16 @@ const pyIo = io(SOCKET_URL + EVENT.parseRecruiter, {
 
 prRoute.post('/', rateLimitAPI, verifyToken, async (req, res) => {
     try {
-        const { data } = req.body;
+        let { data } = req.body;
 
         // get redis client
         const { instanceConnect: redisClient } = await getRedis();
 
         printIn(req.user)
         printIn(data)
+        data = data.trim();
 
         if (!data) return sendError(res, 'Data in missing')
-        // if (data.length < 50) return sendError(res, 'Can you ...')
 
         // Check if the data exists in the cache
         const cachedResult = await redisClient.get(data);
@@ -67,9 +67,11 @@ prRoute.post('/', rateLimitAPI, verifyToken, async (req, res) => {
                 pyIo.once('error', error => reject(error))
             });
             // Cache the result for future requests
-            redisClient.set(data, JSON.stringify(resFlask), {EX: 60});
+            redisClient.set(data, JSON.stringify(resFlask), { EX: 3600 });
 
             return sendSuccess(res, 'Data processed successfully', { result: resFlask });
+            // return sendSuccess(res, 'Data processed successfully', { result: 'Test' });
+
         }
     } catch (error) {
         console.log(error);

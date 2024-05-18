@@ -11,12 +11,12 @@ import _ from 'lodash';
 import { verifyToken } from '../middleware/index.js';
 
 import { clearTokenList } from '../service/jwt.js';
-import {printIn} from '../service/consoleLog.js';
 import { TOKEN_BLACKLIST, TOKEN_LIST } from "../index.js"
 import { sendError, sendServerError, sendSuccess, sendAutoMail, sendAutoSMS } from '../helper/client.js'
 import { JWT_EXPIRED, JWT_REFRESH_EXPIRED, VERIFY_OP } from '../constant.js'
 import { genarateOTP } from '../service/otp.js'
 import { renewPw } from '../service/password.js'
+import { printIn } from '../service/consoleLog.js';
 import {
     customerRegisterValidate, userVerifyOTP, userLoginValidate,
     userForgotPw, userChangePw
@@ -138,11 +138,14 @@ authRoute.post('/login', async (req, res) => {
  * @access public
  */
 authRoute.post('/verify-token', (req, res) => {
-    const { accessToken, refreshToken } = req.body
+    const { accessToken, refreshToken } = req.body;
 
     try {
         // kiểm tra accessToken có trong TOKEN_LIST? Để đảm bảo rằng hacker sẽ không lấy refresh token trong TOKEN_LIST để truy cập trái phép
-        if (accessToken in TOKEN_LIST || accessToken in TOKEN_BLACKLIST) return sendError(res, "Unauthorzied.", 401)
+        if (accessToken in TOKEN_LIST || accessToken in TOKEN_BLACKLIST) {
+            return sendError(res, "Unauthorzied.", 401)
+
+        }
         // kiểm tra xem access token người gửi có xác thực được không, nếu token vẫn hoạt động bình thường hoặc không hết hạn
         // sẽ gửi data về tiếp cho khách hàng
         const { payload } = jwt.verify(accessToken, process.env.JWT_SECRET_KEY, {
@@ -150,15 +153,15 @@ authRoute.post('/verify-token', (req, res) => {
         })
         return sendSuccess(res, "Verify token successfully.", {
             user: payload.user
-        })
+        });
+
     }
     catch (error) {
-        console.log(TOKEN_LIST[refreshToken].accessToken)
         // nếu accesstoken khách hàng bị lỗi sẽ kiểm tra xem khách hàng có tác động xấu vào token không,
         // check refresh token nếu tồn tại trong hệ thống sẽ lấy access token từ refresh token, nếu xác thực thành công
         // sẽ trả về lỗi bởi vì token khách hàng gửi lên sai mà check trong server thì lại true
-
         if (refreshToken && refreshToken in TOKEN_LIST) {
+            printIn('TOKEN_LIST2')
             try {
                 jwt.verify(TOKEN_LIST[refreshToken].accessToken, process.env.JWT_SECRET_KEY, {
                     complete: true
@@ -192,7 +195,7 @@ authRoute.post('/verify-token', (req, res) => {
             }
         }
         else {
-            // console.log('access-token is expired.')
+            printIn('access-token is expired.')
             return sendError(res, "Unauthorzied.", 401)
         }
     }

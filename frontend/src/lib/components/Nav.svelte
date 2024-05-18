@@ -38,7 +38,7 @@
               Condense Job Posting Information
               <!-- Condense Job Posting Information -->
             </div>
-            <div class="static-intern-ai-drop text-base text-gray-600">
+            <div class="static-intern-ai-drop text-sm text-gray-600">
               Great information Analysis Functionality
             </div>
           </div>
@@ -55,7 +55,7 @@
               class="bold-senior-ai-drop font-bold text-navy-700 dark:text-white">
               Senior AI
             </div>
-            <div class="static-senior-ai-drop text-base text-gray-600">
+            <div class="static-senior-ai-drop text-sm text-gray-600">
               Generate a Resume with AI Using Two-Way Data for Precision.
             </div>
             <button type='button' class='update-to-senior py-2.5 px-6 text-sm rounded-lg text-white cursor-pointer font-semibold text-center shadow-xs transition-all duration-500'>

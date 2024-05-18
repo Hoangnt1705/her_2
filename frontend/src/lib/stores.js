@@ -14,3 +14,4 @@ export const titleToast = writable(null);
 export const contentToast = writable(null);
 const initialScreenSize = browser ? { width: window.innerWidth, height: window.innerHeight } : { width: 0, height: 0 };
 export const screenSize = writable(initialScreenSize);
+export const dataParseRecruiter = writable(null);

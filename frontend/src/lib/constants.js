@@ -133,12 +133,34 @@ export const svg = {
 		C29.258,36.86,30.656,35.5,31.782,35.5z"/>
     </g>
     </svg>`
-    ,btnParseRecruiter: `<svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="6.5" y="6.5" width="9" height="13" rx="1.5" stroke="#fff"/>
-    <path d="M8.5 6C8.5 5.17157 9.17157 4.5 10 4.5H16C16.8284 4.5 17.5 5.17157 17.5 6V16C17.5 16.8284 16.8284 17.5 16 17.5" stroke="#fff"/>
+    ,btnParseRecruiter: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M3 14C3 11.1911 3 9.78661 3.67412 8.77772C3.96596 8.34096 4.34096 7.96596 4.77772 7.67412C5.78661 7 7.19108 7 10 7C12.8089 7 14.2134 7 15.2223 7.67412C15.659 7.96596 16.034 8.34096 16.3259 8.77772C17 9.78661 17 11.1911 17 14C17 16.8089 17 18.2134 16.3259 19.2223C16.034 19.659 15.659 20.034 15.2223 20.3259C14.2134 21 12.8089 21 10 21C7.19108 21 5.78661 21 4.77772 20.3259C4.34096 20.034 3.96596 19.659 3.67412 19.2223C3 18.2134 3 16.8089 3 14Z" stroke="#F8FAFC" stroke-width="1.6" class="my-path"></path>
+    <path d="M11 3H13C16.7712 3 18.6569 3 19.8284 4.17157C21 5.34315 21 7.22876 21 11V13" stroke="#F8FAFC" stroke-width="1.6" stroke-linecap="round" class="my-path"></path>
     </svg>`
     ,orMain: `<svg width="80px" height="80px" class="or-main" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M9 8L5 11.6923L9 16M15 8L19 11.6923L15 16" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>`
+    </svg>`,
+    spinnerLoading: ` <svg
+    class="animate-spin border-indigo-300"
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 30 30"
+    fill="none">
+    <circle
+      cx="15"
+      cy="15"
+      r="14"
+      stroke="#F8FAFC"
+      stroke-width="2"
+      stroke-dasharray="6 6" />
+    </svg>`,
+    loadingTablePR: `<div class="grid gap-3 " style="margin-top: 100px">
+    <div class="flex items-center justify-center gap-1.5">
+      <div class="w-3 h-3 rounded-full bg-neutral-50 animate-BounceDelayOne"></div>
+      <div class="w-3 h-3 rounded-full bg-neutral-50 animate-BounceDelayTwo"></div>
+      <div class="w-3 h-3 rounded-full bg-neutral-50 animate-BounceDelayThree"></div>
+    </div>
+    </div>`
 };
 

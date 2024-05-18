@@ -2,7 +2,7 @@ from flask import jsonify
 
 def send_error(emit, name_gate , message, code=401):
     response = {
-        "sussess": False,
+        "success": False,
         "message": message,
         "code": code,
     }

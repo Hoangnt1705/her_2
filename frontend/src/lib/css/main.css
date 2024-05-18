@@ -318,27 +318,32 @@ i.user-icon {
   border-bottom-right-radius: 5px;
 }
 
-/* ::-webkit-scrollbar {
+#infomation-recruiment::-webkit-scrollbar {
   width: 9px;
 }
 
-::-webkit-scrollbar-track {
+#infomation-recruiment::-webkit-scrollbar-track {
   background-color: transparent;
+  border-radius: 10px;
+  height: 90%;
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: transparent;
+#infomation-recruiment::-webkit-scrollbar-thumb {
+  background-color: var(--color-main);
+  border-radius: 5px;
+
 }
 
-:hover::-webkit-scrollbar-thumb {
-  background-color: var(--color-text) c3;
+#infomation-recruiment:hover::-webkit-scrollbar-thumb {
+  background-color: var(--color-main);
   border-radius: 5px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: var(--color-text);
+#infomation-recruiment::-webkit-scrollbar-thumb:hover {
+  background-color: #e0c3c3;
   border-radius: 5px;
-} */
+  cursor: pointer;
+}
 
 .main-page {
   /* scrollbar-color: red orange;
@@ -452,7 +457,7 @@ p {
 }
 
 .hide-navbar {
-  position: absolute;
+  position: relative;
 }
 
 .wrap-open-sidebar-full-screen {
@@ -527,7 +532,7 @@ p {
 }
 .static-intern-ai-drop,
 .static-senior-ai-drop {
-  font-weight: 600;
+  font-weight: 400;
   font-size: 12px;
 }
 
@@ -664,11 +669,14 @@ p {
   }
   .new-func-view {
     width: 100%;
+    margin-top: 0;
+
   }
   .wrap-view-parse-recruiter{
     overflow-y: auto;
   }
   .hide-navbar {
+    position: absolute;
     display: flex;
     background-color: #f5f5f5;
     position: relative;
