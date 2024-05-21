@@ -8,7 +8,7 @@
   --color-secondary: #f5f5f5;
   --color-secondary-fade: #17171700;
   --color-button-hover: #fbe6e6;
-  --color-button-hover-fade: rgba(255, 255, 255, 0.5);
+  --color-button-hover-fade: rgba(255, 255, 255, 0.2);
   --color-user-icon: #8e0000;
   --color-groupings: #333333;
   --color-gpt-icon: #000000;
@@ -87,6 +87,7 @@ button {
   background: var(--color-button-hover);
 }
 
+
 .sidebar-controls {
   display: flex;
   gap: 10px;
@@ -107,24 +108,29 @@ button {
   flex: 1;
 }
 
-.conversations {
-  width: calc(100% + 8px);
-  overflow-y: scroll;
-}
-
 .new-func-view {
   width: 80%;
   margin: 0 auto;
   margin-top: 30px;
 
 }
+.edit-buttons {
+  display: none;
+  position: absolute;
+  right: 8px;
+  top: 0;
+}
 
-.conversations,
-.conversations li {
-  list-style: none;
-  list-style-type: none;
-  margin: 0;
+.edit-buttons button {
+  border: none;
   padding: 0;
+  margin: 13px 1px 13px 1px;
+  opacity: 0.7;
+}
+
+.edit-buttons button:hover {
+  background: none;
+  opacity: 1;
 }
 
 .conversations li {
@@ -145,13 +151,6 @@ button {
 
 .conversations li.active > button {
   background: var(--color-main);
-}
-
-.edit-buttons {
-  display: none;
-  position: absolute;
-  right: 8px;
-  top: 0;
 }
 
 .conversations li:hover .edit-buttons {
@@ -191,17 +190,7 @@ button {
   );
 }
 
-.edit-buttons button {
-  border: none;
-  padding: 0;
-  margin: 13px 1px 13px 1px;
-  opacity: 0.7;
-}
 
-.edit-buttons button:hover {
-  background: none;
-  opacity: 1;
-}
 
 .conversations li.grouping {
   color: var(--color-groupings);
@@ -708,3 +697,5 @@ p {
     margin-right: 0;
   }
 }
+
+

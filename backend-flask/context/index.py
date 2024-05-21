@@ -58,9 +58,13 @@ tools = [
                     "country": {
                         "type": "string",
                         "description": "The country."
+                    },
+                     "title": {
+                        "type": "string",
+                        "description": "Create a title for the prompt."
                     }
                 },
-                "required": ["is_remote", "salary_min", "salary_max", "contract", "role_name", "benefits", "notes", "experience", "recruiter", "next_step", "holiday", "city", "country"],
+                "required": ["is_remote", "salary_min", "salary_max", "contract", "role_name", "benefits", "notes", "experience", "recruiter", "next_step", "holiday", "city", "country", "title"],
             },
         }
     }

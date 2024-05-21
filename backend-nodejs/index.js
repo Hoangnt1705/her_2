@@ -18,6 +18,7 @@ import authRoute from './routes/auth.js'; // Assuming this is the correct route 
 import adminRoute from "./routes/admin/index.js";
 import userRoute from "./routes/user.js";
 import parseRecruiter from './routes/parseRecruiter.js';
+import chat from './routes/chat.js';
 import { verifyToken } from './middleware/index.js';
 import { initRedis, getRedis } from "./db/index.js";
 
@@ -105,6 +106,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
   .use('/api/auth', authRoute)
   .use('/api/user', userRoute)
   .use('/api/v1/parse-recruiter', parseRecruiter)
+  .use('/api/v1/chat',chat);
 app.use('/*', async (req, res) => {
   res.status(501).send("Don't implement.")
 })

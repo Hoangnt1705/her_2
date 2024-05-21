@@ -44,7 +44,7 @@
       </div>
       <div class="flex parse-recruiter">
         <a
-          href="/parse-recruiter"
+          href="/parse-recruiter" data-sveltekit-reload
           class="relative h-[200px] w-[250px] border border-solid
           border-gray-200 rounded-2xl bg-white p-4 transition-all duration-500
           col-span-12 xl:p-7 lg:col-span-3 md:col-span-6 shadow-none

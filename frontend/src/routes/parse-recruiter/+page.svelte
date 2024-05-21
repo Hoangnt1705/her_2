@@ -7,9 +7,9 @@
   import { svg } from '$lib/constants.js'
   import { browser } from '$app/environment'
   import { fade } from 'svelte/transition'
-  import ParseRecruiter from '$lib/components/ParseRecruiter.svelte'
   import { END_POINT } from '$lib/constants.js'
   import { accessToken, dataParseRecruiter } from '$lib/stores.js'
+  import { goto } from '$app/navigation'
   import axios from 'axios'
 
   export let data
@@ -46,8 +46,8 @@
       text = placeholderText.slice(0, text.length + 1)
       setTimeout(typeWriter, typingSpeed)
     } else {
+      text = ''
       setTimeout(() => {
-        text = ''
         placeholderText =
           data.placeholderTexts[
             Math.floor(Math.random() * data.placeholderTexts.length)
@@ -99,18 +99,17 @@
           })
       })
       let { data } = await response;
-      console.log(data)
-      dataParseRecruiter.set(data.data.result);
+      // post data into database 
       inputParseRecruiter = '';
       await tick();
       btnFocus.focus();
+      goto(`/parse-recruiter/${data.data.result}`)
       return data;
     } catch (error) {
       console.log(error)
     }
   }
-  // $: console.log( $dataParseRecruiter.data)
-  // $: console.log(typeof data.staticParseRecruiter)
+
   onDestroy(() => {
     stopAutoWriter()
   })
@@ -119,21 +118,13 @@
     typeWriter()
   });
 
-
-
-
-
-
-
-
-
-
   // function handleUpdate(event) {
   //   isOpen = event.detail.isOpen
   // }
 </script>
 
 <svelte:head>
+  
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
@@ -191,13 +182,7 @@
           </div>
         </div>
           
-        <div class="p-4 rounded-lg col-span-2 font-bold">
-          {#if !disabled}
-          <ParseRecruiter data={$dataParseRecruiter? $dataParseRecruiter: ''} />
-          {:else}
-          {@html svg.loadingTablePR}
-          {/if}
-        </div>
+       
       </div>
     </div>
   </main>

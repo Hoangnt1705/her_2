@@ -68,7 +68,7 @@ def parse_recruiter(data_parse_recruiter):
         # Verify and decode the JWT token
         decoded_token = jwt.decode(token[7:], SECRET_KEY, algorithms=['HS256'])
         messages = []
-        messages.append({"role": "system", "content": "Parse recruiter messages to JSON with parameters: is_remote, salary_min, salary_max, contract (boolean), role_name, benefits (array), notes, experience (integer), recruiter, next_step, holidays (integer), response, city, and country. Respond with parsed JSON only, setting NULL for missing data. Do not include any additional prose, notes, or reasoning."})
+        messages.append({"role": "system", "content": "Parse recruiter messages to JSON with parameters: is_remote, salary_min, salary_max, contract (boolean), role_name, benefits (array), notes, experience (integer), recruiter, next_step, holidays (integer), response, city, country and title. Respond with parsed JSON only, setting NULL for missing data. Do not include any additional prose, notes, or reasoning."})
         messages.append({"role": "user", "content": data_parse_recruiter['msg']})
         chat_response = chat_completion_request(
             messages, tools=tools

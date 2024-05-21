@@ -2,7 +2,7 @@
   import { fade } from 'svelte/transition'
   import { onMount } from 'svelte'
   export let data;
-  let dataSuccess = data.data;
+  let dataSuccess = data;
   let countStaticPR = 0
   // const handleStaticPR = () => {
   //   if (countStaticPR <= dataSuccess.length - 1) {
@@ -35,10 +35,10 @@
   <div class="flex-col justify-center items-center w-[100%]">
     <div
       class="relative flex flex-col items-center rounded-[20px] mx-auto bg-white
-      bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800
+      bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-slate-50
       dark:text-white dark:!shadow-none p-3">
       <div class="mt-2 mb-8 w-full text-center">
-        <h4 class="px-2 text-xl font-bold text-navy-700 dark:text-white">
+        <h4 class="px-2 text-xl font-bold text-navy-700 dark:text-navy-700">
           {dataSuccess.recruiter}
         </h4>
       </div>
@@ -50,9 +50,9 @@
               transition:fade
               class="flex flex-col items-start justify-center rounded-2xl
               bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500
-              dark:!bg-navy-700 dark:shadow-none text-left">
-              <p class="text-sm text-gray-600">{key}</p>
-              <p class="text-base font-medium text-navy-700 dark:text-white">
+               dark:shadow-none text-left">
+              <p class="text-sm text-gray-600" style="color: #a3aed0 !important">{key}</p>
+              <p class="text-base font-medium text-navy-700 ">
                 {#if value === null}
                   No
                 {:else if value === false}No{:else}{value}{/if}
@@ -92,9 +92,8 @@
 {/if}
 
 <svelte:head>
-
-  <link
+  <!-- <link
     rel="stylesheet"
-    href="https://horizon-tailwind-react-git-tailwind-components-horizon-ui.vercel.app/static/css/main.ad49aa9b.css" />
+    href="https://horizon-tailwind-react-git-tailwind-components-horizon-ui.vercel.app/static/css/main.ad49aa9b.css" /> -->
 
 </svelte:head>

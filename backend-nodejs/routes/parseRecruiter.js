@@ -18,15 +18,10 @@ const adminFlaskAPI = {
 };
 
 // Generate a JWT token with the user data and secret key
-let tokenFlaskAPI;
-if (!tokenFlaskAPI) {
-    tokenFlaskAPI = jwt.sign(adminFlaskAPI, process.env.HALF_KEY_JWT_SERVER_FLASK, { expiresIn: '2h' });
-}
-setInterval(() => {
-    tokenFlaskAPI = jwt.sign(adminFlaskAPI, process.env.HALF_KEY_JWT_SERVER_FLASK, { expiresIn: '2h' });
-}, 7200000);
 
-const pyIo = io(SOCKET_URL + EVENT.parseRecruiter, {
+let tokenFlaskAPI = jwt.sign(adminFlaskAPI, process.env.HALF_KEY_JWT_SERVER_FLASK);
+
+let pyIo = io(SOCKET_URL + EVENT.parseRecruiter, {
     reconnection: true, extraHeaders: {
         "Authorization": `Bearer ${tokenFlaskAPI}` // Use standard authorization header
     }, transports: ['websocket', 'polling']
@@ -34,7 +29,7 @@ const pyIo = io(SOCKET_URL + EVENT.parseRecruiter, {
 
 /**
  * @route POST /api/v1/parse-recruiter/
- * @description get api ai parse recruiter
+ * @description get api ai parse recruiter, store data, and return id data 
  * @access private
  */
 
@@ -45,16 +40,16 @@ prRoute.post('/', rateLimitAPI, verifyToken, async (req, res) => {
         // get redis client
         const { instanceConnect: redisClient } = await getRedis();
 
-        printIn(req.user)
-        printIn(data)
         data = data.trim();
 
-        if (!data) return sendError(res, 'Data in missing')
+        if (!data) return sendError(res, 'Data in missing');
+
+        let resFlask;
 
         // Check if the data exists in the cache
         const cachedResult = await redisClient.get(data);
         if (cachedResult) {
-            return sendSuccess(res, 'Data retrieved from cache.', { result: JSON.parse(cachedResult) });
+            resFlask = JSON.parse(cachedResult);
         }
         else {
             pyIo.emit('json', {
@@ -62,47 +57,56 @@ prRoute.post('/', rateLimitAPI, verifyToken, async (req, res) => {
             });
             // Wait for the 'json' event response from the server
 
-            const resFlask = await new Promise((resolve, reject) => {
+            resFlask = await new Promise((resolve, reject) => {
                 pyIo.once('json', data => resolve(data));
                 pyIo.once('error', error => reject(error))
             });
             // Cache the result for future requests
             redisClient.set(data, JSON.stringify(resFlask), { EX: 3600 });
+        };
 
-            return sendSuccess(res, 'Data processed successfully', { result: resFlask });
-            // return sendSuccess(res, 'Data processed successfully', { result: 'Test' });
+        const document = await ParseRecruiterDocument.create({
+            sender: data,
+            receiver: resFlask,
 
-        }
+        });
+        const chat = await ParseRecruiterChat.create({
+            title: resFlask.data?.title ? resFlask.data.title : 'error',
+            user: req.user.id,
+            document: document._id,
+        });
+        return sendSuccess(res, cachedResult ? 'Data retrieved from cache.' : 'Data processed successfully',
+            { result: chat._id });
+
     } catch (error) {
         console.log(error);
         sendError(res, error);
     }
 });
 
+
 /**
- * @route POST /api/v1/parse-recruiter/store-data-parse-recruiter
- * @description post data parse recruiter after get data AI to /api/v1/parse-recruiter
+ * @route GET /api/v1/parse-recruiter/document
+ * @description get data parse recruiter by id
  * @access private
  */
 
-prRoute.post('/store-data-parse-recruiter', verifyToken, async (req, res) => {
+prRoute.get('/document/:id', async (req, res) => {
     try {
-        const chat = await ParseRecruiterChat.create({
-            title: 'hello',
-            user: req.user.id
+        const { id } = req.params;
+        const test = await ParseRecruiterChat.findById(id).populate({
+            path: 'document',
+            model: ParseRecruiterDocument
         });
+        console.log(test)
 
-        const document = await ParseRecruiterDocument.create({
-            sender: data,
-            receiver: resFlask,
-            chat: chat._id,
+        return sendSuccess(res, 'okee', { result: test._doc })
 
-        });
-        return sendSuccess(res, 'Create new data pr successfully', { chat, document })
     } catch (error) {
         console.log(error);
         sendError(res, error);
     };
 });
+
 
 export default prRoute;

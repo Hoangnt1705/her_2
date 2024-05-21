@@ -12,6 +12,9 @@ export default {
         BounceDelayTwo: 'bounce 1s 0.4s infinite',
         BounceDelayThree: 'bounce 1s 0.6s infinite',
         },
+        colors: {
+          'navy-700': '#1b254b',
+        },
     },
   },
   variants: {

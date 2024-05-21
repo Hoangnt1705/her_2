@@ -18,6 +18,7 @@ export const handleUser = async user => {
                 model: isStaff ? Staff : (isCustomer ? Customer : "")
             }
         )
+        
         return { ...user._doc }
     } catch (error) {
         console.log(error)

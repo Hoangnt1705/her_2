@@ -10,11 +10,6 @@ const parseRecruiterDocumentSchema = new Schema(
         receiver: {
             type: Schema.Types.Mixed,
             required: true
-        },
-        chat: {
-            type: Schema.Types.ObjectId,
-            ref: 'parse_recruiter_chats',
-            required: true
         }
     },
     { timestamps: true } // This option should be passed as the second argument

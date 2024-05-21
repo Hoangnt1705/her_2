@@ -10,11 +10,11 @@
   // const writableStore = writable(0)
   // setContext('myContext', writableStore)
   export let data;
-  const path = ['/homepage', '/account/login']
+  const path = ['/']
 </script>
 
 <DefaultLayOut>
-  {#if !path.includes($page.url.pathname)}
+  {#if path.includes($page.url.pathname)}
     <section class="session-main-page">
       <Sidebar isHovered={data.isHovered}/>
       <slot />
