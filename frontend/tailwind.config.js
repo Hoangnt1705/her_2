@@ -1,8 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    "./index.html",
-    "./src/**/*.{svelte,js,ts}",
+    './index.html',
+    './src/**/*.{svelte,js,ts}',
+    'node_modules/preline/dist/*.js',
   ],
 
   theme: {
@@ -25,7 +26,9 @@ export default {
       pattern: /bg-(amber|emerald|red)-700/,
     }
   ],
-  plugins: [],
-
+  plugins: [
+    // require('@tailwindcss/forms'),
+      require('preline/plugin'),
+  ],
 }
 

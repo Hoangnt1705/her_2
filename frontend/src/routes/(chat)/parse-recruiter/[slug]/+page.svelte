@@ -1,6 +1,6 @@
 <script>
     import '$lib/css/main.css'
-    import { getContext, onMount, setContext, tick, onDestroy } from 'svelte'
+    import { getContext, onMount, setContext, tick, onDestroy, afterUpdate, beforeUpdate } from 'svelte'
     import Nav from '$lib/components/Nav.svelte'
     import { sidebar } from '$lib/stores.js'
     import { invalidateAll } from '$app/navigation'
@@ -10,7 +10,11 @@
     import ParseRecruiter from '$lib/components/ParseRecruiter.svelte'
     import { END_POINT } from '$lib/constants.js'
     import { accessToken, dataParseRecruiter } from '$lib/stores.js'
+    import {getDataChat, parseRecruiterDocument} from '$lib/context/MainContext.js';
+
     import axios from 'axios'
+  
+    export let data;
   
     let selectedModel = 'gpt-3'
     let messageBoxHeight = '30px'
@@ -21,7 +25,7 @@
     const focus = (node) => node.focus()
   
     // Select a random placeholder text from the array
-    $: console.log('>>>>>>>>>>>>>>>>>>>>>>>>', $dataParseRecruiter)
+    // $: console.log('>>>>>>>>>>>>>>>>>>>>>>>>', $dataParseRecruiter)
 
     let inputHasValue = false
   
@@ -49,59 +53,47 @@
       } else return
     }
     const handleParseRecruiter = async () => {
-      if (!inputParseRecruiter?.trim()) {
-        return;
-      }
-      console.log(!inputParseRecruiter.trim())
-      try {
-        disabled = true
-        // let response = new Promise((resolve, reject) => {
-        //   axios
-        //     .post(
-        //       `${END_POINT}/v1/parse-recruiter/`,
-        //       { data: inputParseRecruiter.trim() },
-        //       {
-        //         headers: { authorization: `Bearer ${$accessToken}` },
-        //       },
-        //     )
-        //     .then((value) => {
-        //       if (value.status === 200) {
-        //         resolve(value)
-        //       } else {
-        //         reject(new Error('error'))
-        //       }
-        //       disabled = false
-        //     })
-        //     .catch((err) => {
-        //       reject(new Error(err.message))
-        //       disabled = false
-        //     })
-        // })
-        // let { data } = await response;
-        // console.log(data)
-        // dataParseRecruiter.set(data.data.result);
-        // // post data into database 
-        // const intoDatabase = await axios
-        //     .post(
-        //       `${END_POINT}/v1/parse-recruiter/store-data-parse-recruiter`,
-        //       {
-        //         sender: inputParseRecruiter.trim(),
-        //         receiver: data.data.result
-        //       },
-        //       {
-        //         headers: { authorization: `Bearer ${$accessToken}` },
-        //       },
-        //     );
-        // let dat = intoDatabase.data.data.result;
-        // inputParseRecruiter = '';
-        // await tick();
-        // btnFocus.focus();
-        // console.log('dataIntoDatabase', dat);
-        // return data;
-      } catch (error) {
-        console.log(error)
-      }
+    if (!inputParseRecruiter?.trim()) {
+      return;
     }
+    console.log(!inputParseRecruiter.trim())
+    try {
+      disabled = true
+      let response = new Promise((resolve, reject) => {
+        axios
+          .post(
+            `${END_POINT}/v1/parse-recruiter/`,
+            { data: inputParseRecruiter.trim(), cid: data.cid },
+            {
+              headers: { authorization: `Bearer ${$accessToken}` },
+            },
+          )
+          .then((value) => {
+            if (value.status === 200) {
+              resolve(value)
+            } else {
+              reject(new Error('error'))
+            }
+            disabled = false
+          })
+          .catch((err) => {
+            reject(new Error(err.message))
+            disabled = false
+          })
+      })
+      let ok = await response;
+      data.data = [ok.data.data.result, ...data.data]
+      console.log('>>>>>',ok.data.data.result);
+      console.log('data.data', data.data);
+      // post data into database 
+      inputParseRecruiter = '';
+      await tick();
+      btnFocus.focus();
+      return data;
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
     // function handleUpdate(event) {
     //   isOpen = event.detail.isOpen
@@ -126,7 +118,7 @@
 
     <main class="main-page content-center">
       <Nav />
-      <div
+      <div 
         class="grid grid-cols-1 text-xl leading-6 justify-center
         .max-h-1 wrap-view-parse-recruiter">
         <div class="view new-func-view">
@@ -164,14 +156,16 @@
               </button>
             </div>
           </div>
+
+        
             
           <div class="p-4 rounded-lg col-span-2 font-bold">
-            {#if !disabled}
-            <ParseRecruiter data={$dataParseRecruiter? $dataParseRecruiter: ''} />
-            
-            {:else}
-            {@html svg.loadingTablePR}
+            {#if disabled}
+            <div style="margin-bottom: 50px">
+              {@html svg.loadingTablePR}            
+            </div>
             {/if}
+            <ParseRecruiter data={data.data}/>
           </div>
         </div>
       </div>

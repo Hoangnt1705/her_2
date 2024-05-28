@@ -16,10 +16,11 @@
 <DefaultLayOut>
   {#if path.includes($page.url.pathname)}
     <section class="session-main-page">
-      <Sidebar isHovered={data.isHovered}/>
+      <!-- <Sidebar/> -->
       <slot />
     </section>
   {:else}
     <slot />
   {/if}
 </DefaultLayOut>
+

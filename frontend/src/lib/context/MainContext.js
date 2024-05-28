@@ -2,8 +2,11 @@ import {
   PUBLIC_APP_LOCALSTORAGE_REFRESH_NAME,
   PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME,
 } from '$env/static/public'
-import { user, refreshToken, accessToken } from '$lib/stores.js'
+
+import { user, refreshToken, accessToken, historyChat, statusSend } from '$lib/stores.js'
 import { END_POINT } from '$lib/constants.js'
+import { browser } from '$app/environment';
+import { error } from '@sveltejs/kit';
 
 import axios from 'axios'
 
@@ -27,6 +30,7 @@ export const checkAuthenticated = async (token, refresh) => {
     const { data } = res.data
     user.set(data.user)
     if (data.accessToken) {
+      localStorage.setItem(PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME, data.accessToken);
       accessToken.set(data.accessToken)
     } else {
       accessToken.set(token)
@@ -48,7 +52,7 @@ export const checkAuthenticated = async (token, refresh) => {
   return true
 }
 
-export const logOutHandle = async (_accessToken) => {
+export const logOutHandle = async (_accessToken, _path) => {
   const refreshTokenLocal = localStorage.getItem(PUBLIC_APP_LOCALSTORAGE_REFRESH_NAME);
   try {
     await axios.post(`${END_POINT}/auth/logout`,
@@ -69,7 +73,35 @@ export const logOutHandle = async (_accessToken) => {
     localStorage.removeItem('login');
     refreshToken.set(null);
     accessToken.set(null);
+    historyChat.set([]);
     user.set(null);
+    window.location.href = '/';
   }
 }
 
+export const getDataChat = async (uid) => {
+  try {
+    const response = await axios.get(`${END_POINT}/v1/chat?uid=${uid}`);
+    const { data } = response.data;
+    historyChat.set(data.listChat);
+    return data;
+  } catch (error) {
+    return { error }
+  }
+}
+
+export const parseRecruiterDocument = async (params) => {
+  try {
+    const response = await axios.get(`${END_POINT}/v1/parse-recruiter/document/${params.slug}`);
+
+    const { data } = response.data;
+    statusSend.update(s => s = response.status);
+    if (!data) {
+      throw error(404);
+    }
+
+    return { data: data.result };
+  } catch (err) {
+    return { error: err };
+  }
+};

@@ -29,6 +29,7 @@
   --color-border2: #292d32;
   --color-user-message-border: #2f353d;
   --color-pink-very-light: #fdf6f6;
+  --green-light: #e2e8f0;
 }
 
 .session-main-page {
@@ -111,11 +112,11 @@ button {
 .new-func-view {
   width: 80%;
   margin: 0 auto;
-  margin-top: 30px;
+  margin-top: 50px;
 
 }
 .edit-buttons {
-  display: none;
+  display: none ;
   position: absolute;
   right: 8px;
   top: 0;
@@ -141,23 +142,28 @@ button {
   margin-right: 7px;
 }
 
-.conversations li > button {
-  width: 100%;
+.conversations li > input[type='text'] {
+    width: 80%;
+}
+
+.conversations li > input {
   border: none;
   font-size: 0.9em;
   white-space: nowrap;
   overflow: hidden;
 }
 
-.conversations li.active > button {
+.conversations li.active > input {
   background: var(--color-main);
 }
 
-.conversations li:hover .edit-buttons {
+.conversations li .edit-buttons {
   display: flex;
 }
-
-.fade {
+.ac{
+  display: none;
+}
+.fade, .fade-all {
   position: absolute;
   right: 0;
   top: 0;
@@ -172,7 +178,6 @@ button {
     var(--color-secondary) 50%
   );
 }
-
 .conversations li.active .fade {
   background: linear-gradient(
     90deg,
@@ -181,7 +186,7 @@ button {
   );
 }
 
-.conversations li:hover .fade {
+.conversations li .fade {
   width: 80px;
   background: linear-gradient(
     90deg,
@@ -191,6 +196,29 @@ button {
 }
 
 
+
+
+
+
+.conversation-button.active {
+  background-color: var(--color-button-hover); /* Example background color */
+  color: #1b254b; /* Example text color */
+  border-radius: 4px;
+}
+
+
+
+.focus-border-black:focus, .focus-border-black:focus-visible {
+  border-color: black !important;
+  outline: none !important; /* Remove default focus outline */
+  box-shadow: none !important; /* Remove any potential box-shadow */
+  border-radius: 2px;
+}
+
+.conversation-button {
+  display: block;
+  transition: background-color 0.1s ease;
+}
 
 .conversations li.grouping {
   color: var(--color-groupings);
@@ -219,7 +247,7 @@ i.user-icon {
 }
 
 .gpt.user-icon {
-  background: var(--color-gpt-icon);
+  background: var(--color-gpt-icon); 
 }
 
 .user-menu {
@@ -651,9 +679,12 @@ p {
   .new-write {
     display: block;
   }
+  .modal-css{
+    z-index: 99999999;
+  }
 
   .wrap-sidebar {
-    z-index: 999999;
+    z-index: 9999;
     position: absolute;
   }
   .new-func-view {
@@ -699,3 +730,11 @@ p {
 }
 
 
+.modal-css{
+  z-index: 999999;
+}
+.test11{
+  opacity: 0.46;
+  background-color: rgb(33, 33, 33);
+
+}

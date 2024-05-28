@@ -7,16 +7,15 @@ const parseRecruiterChatSchema = new Schema(
             type: String,
             required: true
         },
-        document: {
-            type: Schema.Types.ObjectId,
-            ref: 'parse_recruiter_documents',
-            required: true
+        deleted: {
+            type: Boolean,
+            required: true,
+            default: false,
         },
         user: {
             type: Schema.Types.ObjectId,
             ref: 'users'
         },
-
     },
     { timestamps: true }
 

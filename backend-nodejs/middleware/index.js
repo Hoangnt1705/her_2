@@ -54,15 +54,15 @@ export const verifyToken = async (req, res, next) => {
 
         const { payload } = jwt.verify(token, process.env.JWT_SECRET_KEY, {
             complete: true
-        })
-
+        });
         if (!payload.user) return sendError(res, "Unauthorized.", 401)
 
         req.verifyToken = token
         req.user = payload.user
-        next()
+        next();
 
     } catch (error) {
+        console.log(error)
         return sendError(res, 'jwt expired.', 401)
     }
 }

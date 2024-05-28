@@ -13,26 +13,59 @@ import { getRedis } from '../db/index.js';
 const chatRoute = express.Router()
 
 /**
- * @route GET /api/v1/parse-recruiter/document
- * @description get list chat parse recruiter and CV with AI
+ * @route GET /api/v1/chat
+ * @description get list chatS parse recruiter and CV with AI
  * @access private
  */
 
-chatRoute.get('/chat', async (req, res) => {
+chatRoute.get('/', async (req, res) => {
+    const { uid } = req.query;
+    console.log('uid', uid)
     try {
-        const { id } = req.params;
-        const test = await ParseRecruiterChat.findById(id).populate({
-            path: 'document',
-            model: ParseRecruiterDocument
-        });
-        console.log(test)
+        const pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 0
+        const page = req.query.page ? parseInt(req.query.page) : 0
+        const length = await ParseRecruiterChat.countDocuments
+            ({ $and: [{ user: { $ne: null, $eq: uid } }, { title: { $ne: 'error' }}, {deleted: {$ne: true}} ]});
+        const listChat = await ParseRecruiterChat.find
+            ({ $and: [{ user: { $ne: null, $eq: uid } }, { title: { $ne: 'error' }}, {deleted: {$ne: true}} ]}).sort({ updatedAt: -1 });
 
-        return sendSuccess(res, 'okee', { result: test._doc })
+        return sendSuccess(res, '', { length, listChat })
 
     } catch (error) {
         console.log(error);
         sendError(res, error);
     };
+});
+
+/**
+ * @route PUT /api/v1/chat/description-chat-sidebar
+ * @description update title chat in sidebar
+ * @access private
+ */
+chatRoute.put('/description-chat-sidebar', verifyToken, async (req, res) => {
+    const { cid, title } = req.body;
+    try {
+        const chat = await ParseRecruiterChat.findByIdAndUpdate(cid, { title });
+        return sendSuccess(res, "update chat successfully.", {chat})
+    } catch (error) {
+        return sendError(res, error);
+    }
+})
+
+/**
+ * @route PUT /api/v1/chat/description-chat-sidebar/delete
+ * @description delete chat in sidebar
+ * @access private
+ */
+
+chatRoute.put('/description-chat-sidebar/delete', verifyToken, async (req, res) => {
+    const {cid}  = req.body;
+    try {
+        await ParseRecruiterChat.findByIdAndUpdate(cid, { deleted: true });
+        return sendSuccess(res, "delete chat successfully.")
+    } catch (error) {
+        return sendError(res, error);
+    }
 });
 
 export default chatRoute;

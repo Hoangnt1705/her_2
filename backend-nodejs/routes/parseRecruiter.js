@@ -9,6 +9,8 @@ import ParseRecruiterChat from '../model/ParseRecruiterChat.js';
 import ParseRecruiterDocument from '../model/ParseRecruiterDocument.js';
 import { getRedis } from '../db/index.js';
 
+
+
 const prRoute = express.Router()
 
 // User data to include in the token payload
@@ -35,8 +37,8 @@ let pyIo = io(SOCKET_URL + EVENT.parseRecruiter, {
 
 prRoute.post('/', rateLimitAPI, verifyToken, async (req, res) => {
     try {
-        let { data } = req.body;
-
+        let { data, cid } = req.body;
+        console.log('cid', cid)
         // get redis client
         const { instanceConnect: redisClient } = await getRedis();
 
@@ -64,20 +66,23 @@ prRoute.post('/', rateLimitAPI, verifyToken, async (req, res) => {
             // Cache the result for future requests
             redisClient.set(data, JSON.stringify(resFlask), { EX: 3600 });
         };
+        let chat;
+        if (!cid) {
+            chat = await ParseRecruiterChat.create({
+                title: resFlask.data?.title ? resFlask.data.title : 'error',
+                user: req.user.id,
+            });
+        };
 
         const document = await ParseRecruiterDocument.create({
             sender: data,
             receiver: resFlask,
+            chat: cid ? cid : chat._id,
 
         });
-        const chat = await ParseRecruiterChat.create({
-            title: resFlask.data?.title ? resFlask.data.title : 'error',
-            user: req.user.id,
-            document: document._id,
-        });
+
         return sendSuccess(res, cachedResult ? 'Data retrieved from cache.' : 'Data processed successfully',
-            { result: chat._id });
-
+            { result: cid ? document : chat });
     } catch (error) {
         console.log(error);
         sendError(res, error);
@@ -91,22 +96,22 @@ prRoute.post('/', rateLimitAPI, verifyToken, async (req, res) => {
  * @access private
  */
 
-prRoute.get('/document/:id', async (req, res) => {
+prRoute.get('/document/:cid', async (req, res) => {
     try {
-        const { id } = req.params;
-        const test = await ParseRecruiterChat.findById(id).populate({
-            path: 'document',
-            model: ParseRecruiterDocument
-        });
-        console.log(test)
+        const { cid } = req.params;
+        const document = await ParseRecruiterDocument.find({ chat: { $ne: null, $eq: cid } }).populate({
+            path: 'chat',
+            model: ParseRecruiterChat
+        }).sort({ updatedAt: -1 });
 
-        return sendSuccess(res, 'okee', { result: test._doc })
+        return sendSuccess(res, 'okee', { result: document })
 
     } catch (error) {
         console.log(error);
         sendError(res, error);
     };
 });
+
 
 
 export default prRoute;

@@ -4,7 +4,6 @@
   import { onMount } from 'svelte'
   import { accessToken, user } from '$lib/stores.js'
   
-  $: console.log($accessToken)
 </script>
 
 <style>
@@ -17,7 +16,7 @@
   .button-22 {
     align-items: center;
     appearance: button;
-    background-color: #7db9d9;
+    background-color: #22D3EE;
     border-radius: 8px;
     border-style: none;
     box-shadow: rgba(255, 255, 255, 0.26) 0 1px 2px inset;
@@ -47,7 +46,7 @@
   }
 
   .button-22:hover {
-    background-color: #5c636a;
+    background-color: #0891B2;
   }
   p{
     line-height: 20px !important;

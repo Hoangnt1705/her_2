@@ -34,7 +34,7 @@
 </svelte:head>
 {#if browser}
   <main class="main-page overflow-auto">
-    <Nav hiddenNavItems={true} />
+    <!-- <Nav hiddenNavItems={true} /> -->
     <div
       class="grid grid-cols-2 h-[95%] m-[auto] .max-h-1 gap-4 font-bold
       leading-6 items-center view new-func-view -margin-choose-model"
@@ -44,13 +44,13 @@
       </div>
       <div class="flex parse-recruiter">
         <a
-          href="/parse-recruiter" data-sveltekit-reload
-          class="relative h-[200px] w-[250px] border border-solid
+          href="/parse-recruiter" data-sveltekit-preload-data
+          class="relative h-[200px] w-[350px] border border-solid
           border-gray-200 rounded-2xl bg-white p-4 transition-all duration-500
           col-span-12 xl:p-7 lg:col-span-3 md:col-span-6 shadow-none
           transition-shadow duration-300 cursor-pointer hover:shadow-lg
           hover:shadow-gray-400 w">
-          <div class=" mb-6 " data-sveltekit-preload-data>
+          <div class=" mb-6 ">
             {@html svg.internAi}
           </div>
           <h4
@@ -68,7 +68,7 @@
           {@html svg.orMain}
         </div>
         <a
-          class="relative h-[200px] w-[250px] border border-solid
+          class="relative h-[200px] w-[350px] border border-solid
           border-gray-200 rounded-2xl p-4 transition-all duration-500
           col-span-12 xl:p-7 lg:col-span-3 md:col-span-6 bg-white shadow-none
           transition-shadow duration-300 cursor-pointer hover:shadow-lg
@@ -89,8 +89,8 @@
         </a>
       </div>
       <div class="relative " style="position: absolute;
-      right: 0;
-      bottom: 10%;">
+        right: 0;
+        bottom: 10%;">
         <div class="absolute right-6 bottom-6 group z-50 speeddial-button" aria-hidden="true"
         on:mouseover={handleHover}
         on:focus={handleHover}

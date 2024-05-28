@@ -8,7 +8,7 @@
   import { browser } from '$app/environment'
   import { fade } from 'svelte/transition'
   import { END_POINT } from '$lib/constants.js'
-  import { accessToken, dataParseRecruiter } from '$lib/stores.js'
+  import { accessToken, historyChat } from '$lib/stores.js'
   import { goto } from '$app/navigation'
   import axios from 'axios'
 
@@ -103,7 +103,12 @@
       inputParseRecruiter = '';
       await tick();
       btnFocus.focus();
-      goto(`/parse-recruiter/${data.data.result}`)
+      await tick();
+      historyChat.update(currentHistory => {
+        currentHistory.unshift(data.data.result);
+        return currentHistory;
+      })
+      goto(`/parse-recruiter/${data.data.result._id}`)
       return data;
     } catch (error) {
       console.log(error)
@@ -121,6 +126,7 @@
   // function handleUpdate(event) {
   //   isOpen = event.detail.isOpen
   // }
+  $: console.log('>>>', $historyChat )
 </script>
 
 <svelte:head>
