@@ -20,4 +20,5 @@ export const pageSize = writable(null);
 export const page = writable(null);
 // Store to manage the modal state
 export const showModal = writable(false);
-export const statusSend = writable(true);
+export const statusSend = writable(null);
+export const recruiterData = writable(null);

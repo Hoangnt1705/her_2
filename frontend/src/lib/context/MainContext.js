@@ -95,12 +95,11 @@ export const parseRecruiterDocument = async (params) => {
     const response = await axios.get(`${END_POINT}/v1/parse-recruiter/document/${params.slug}`);
 
     const { data } = response.data;
-    statusSend.update(s => s = response.status);
     if (!data) {
       throw error(404);
     }
 
-    return { data: data.result };
+    return { data: data.result, status: data.success };
   } catch (err) {
     return { error: err };
   }

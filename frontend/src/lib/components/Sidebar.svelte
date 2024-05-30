@@ -32,7 +32,9 @@ import {
 } from 'svelte-materialify';
 import {
     onMount,
-    tick
+    tick,
+    beforeUpdate,
+    afterUpdate
 } from 'svelte';
 import {
     svg,
@@ -101,12 +103,31 @@ $: console.log($historyChat)
 let activeChatId = null;
 
 // Function to set the active chat ID based on the current URL
-onMount(async () => {
-    const currentPath = $page.url.pathname;
+
+let currentPath = $page.url.pathname;
+let hasUpdated = false;
+
+beforeUpdate(() => {
+    if ($page.url.pathname) {
+        currentPath = $page.url.pathname;
+    }
+});
+
+afterUpdate(async () => {
+    // Prevent running the logic if it has already run for the current state
+    if (hasUpdated) {
+        hasUpdated = false; // Reset for next update cycle
+        return;
+    }
+
     const match = currentPath.match(/\/parse-recruiter\/(\w+)/);
+    console.log('match', match);  // This should now log only once per update cycle
+
     if (match) {
         activeChatId = match[1];
     }
+
+    hasUpdated = true; // Set the flag to prevent redundant updates
 });
 
 function handleClick(chatId, url) {
@@ -203,7 +224,7 @@ const updateTitleChat = async (e) => {
                     type="button"
                     aria-current={$page.url.pathname === `/parse-recruiter/${chat._id}`}
                     class:active="{activeChatId === chat._id}"
-
+                    data-sveltekit-reload
                     class="conversation-button w-full text-left cursor-pointer gap-x-2 py-3 px-4"
                     on:click={() => handleClick(chat._id, `/parse-recruiter/${chat._id}`)}
                     data-sveltekit-preload-code

@@ -8,6 +8,8 @@ import {
     afterUpdate,
     tick
 } from 'svelte'
+import { fly, slide } from 'svelte/transition';
+
 import {
     user
 } from '$lib/stores.js';
@@ -15,6 +17,7 @@ import CollapseChat from '$lib/components/CollapseChat.svelte';
 import {
     statusSend
 } from '$lib/stores.js';
+import { send, receive } from '$lib/utils/transition.js';
 
 export let data;
 
@@ -64,14 +67,29 @@ $: for (let i = 0; i < arrayRename.length; i++) {
 // $: handleStaticPR();
 onMount(() => {
     // handleStaticPR();
+    
 })
+$:if($statusSend){
+    scrollTo();
+    statusSend.set(null);
+}
+
+const scrollTo = async () => {
+    await tick(); // Ensure DOM updates are complete
+    let element = document.getElementById(`sender-${data[0]._id}`);
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+    }
+    await tick(); 
+    element = null;
+}
 </script>
 
 <!-- Chat Bubble -->
-<ul class="space-y-5">
+<ul class="space-y-5" style="scroll-behavior: smooth;">
     {#each data as doc (doc._id)}
     <!-- Chat -->
-    <li class="max-w-lg flex gap-x-2 sm:gap-x-4 me-11" >
+    <li class="max-w-lg flex gap-x-2 sm:gap-x-4 me-11" id="sender-{doc._id}" in:fly={{ duration: 200}} out:send={{ key: doc._id }}>
         <img class="inline-block size-9 rounded-full" src={$user.role.avatarUrl} alt="Sender Avatar">
         <div>
             <!-- Card -->
@@ -85,15 +103,7 @@ onMount(() => {
                 </div>
             </div>
             <!-- End Card -->
-            {#if $statusSend}
-            <span class="mt-1.5 flex items-center gap-x-1 text-xs text-gray-500 dark:text-neutral-500">
-                <svg class="flex-shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 6 7 17l-5-5"></path>
-                    <path d="m22 10-7.5 7.5L13 16"></path>
-                </svg>
-                Sent
-            </span>
-            {:else}
+            {#if $statusSend === 404}
             <span class="mt-1.5 flex items-center gap-x-1 text-xs text-red-500">
                 <svg class="flex-shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
@@ -102,13 +112,21 @@ onMount(() => {
                 </svg>
                 Not sent
             </span>
+            {:else}
+              <span class="mt-1.5 flex items-center gap-x-1 text-xs text-gray-500 dark:text-neutral-500">
+                <svg class="flex-shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 7 17l-5-5"></path>
+                    <path d="m22 10-7.5 7.5L13 16"></path>
+                </svg>
+                Sent
+            </span>
             {/if}
         </div>
     </li>
     <!-- End Chat -->
 
     <!-- Chat -->
-    <li class="flex ms-auto gap-x-2 sm:gap-x-4">
+    <li class="flex ms-auto gap-x-2 sm:gap-x-4" in:fly={{ y: 100, duration:1000 }} out:send={{ key: doc._id }} >
         {#if doc.receiver.data}
 
         <div class="flex-col justify-center items-center w-[100%]">

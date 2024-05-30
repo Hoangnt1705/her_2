@@ -8,7 +8,7 @@
   import { browser } from '$app/environment'
   import { fade } from 'svelte/transition'
   import { END_POINT } from '$lib/constants.js'
-  import { accessToken, historyChat } from '$lib/stores.js'
+  import { accessToken, historyChat, statusSend } from '$lib/stores.js'
   import { goto } from '$app/navigation'
   import axios from 'axios'
 
@@ -71,49 +71,50 @@
   }
   const handleParseRecruiter = async () => {
     if (!inputParseRecruiter?.trim()) {
-      return;
+        return;
     }
-    console.log(!inputParseRecruiter.trim())
+
+    // Disable the button
+    disabled = true;
+
     try {
-      disabled = true
-      let response = new Promise((resolve, reject) => {
-        axios
-          .post(
+        const response = await axios.post(
             `${END_POINT}/v1/parse-recruiter/`,
             { data: inputParseRecruiter.trim() },
             {
-              headers: { authorization: `Bearer ${$accessToken}` },
-            },
-          )
-          .then((value) => {
-            if (value.status === 200) {
-              resolve(value)
-            } else {
-              reject(new Error('error'))
+                headers: { authorization: `Bearer ${$accessToken}` },
             }
-            disabled = false
-          })
-          .catch((err) => {
-            reject(new Error(err.message))
-            disabled = false
-          })
-      })
-      let { data } = await response;
-      // post data into database 
-      inputParseRecruiter = '';
-      await tick();
-      btnFocus.focus();
-      await tick();
-      historyChat.update(currentHistory => {
-        currentHistory.unshift(data.data.result);
-        return currentHistory;
-      })
-      goto(`/parse-recruiter/${data.data.result._id}`)
-      return data;
+        );
+
+        // Check if the response status is successful
+        if (response.status === 200) {
+            // Update UI with the response data
+            statusSend.set(response.status);
+            inputParseRecruiter = '';
+            await tick(); // Wait for Svelte to update the DOM
+            btnFocus.focus(); // Focus on the button
+
+            // Add the parsed result to historyChat
+            historyChat.update(currentHistory => {
+                currentHistory.unshift(response.data.data.result);
+                return currentHistory;
+            });
+
+            // Navigate to the new page
+            goto(`/parse-recruiter/${response.data.data.result._id}`);
+        } else {
+            // Handle unsuccessful response status
+            console.error('Error:', response.statusText);
+        }
     } catch (error) {
-      console.log(error)
+        // Handle errors
+        console.error('Error:', error.message);
+    } finally {
+        // Re-enable the button after request completes (success or failure)
+        disabled = false;
     }
-  }
+};
+
 
   onDestroy(() => {
     stopAutoWriter()

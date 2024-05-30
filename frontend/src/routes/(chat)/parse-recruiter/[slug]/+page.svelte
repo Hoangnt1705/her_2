@@ -9,7 +9,7 @@
     import { fade } from 'svelte/transition'
     import ParseRecruiter from '$lib/components/ParseRecruiter.svelte'
     import { END_POINT } from '$lib/constants.js'
-    import { accessToken, dataParseRecruiter } from '$lib/stores.js'
+    import { accessToken, dataParseRecruiter, statusSend } from '$lib/stores.js'
     import {getDataChat, parseRecruiterDocument} from '$lib/context/MainContext.js';
 
     import axios from 'axios'
@@ -22,7 +22,8 @@
     let inputParseRecruiter
     let disabled = false
     let btnFocus = ''
-    const focus = (node) => node.focus()
+    const focus = (node) => node.focus();
+    
   
     // Select a random placeholder text from the array
     // $: console.log('>>>>>>>>>>>>>>>>>>>>>>>>', $dataParseRecruiter)
@@ -81,9 +82,10 @@
             disabled = false
           })
       })
-      let ok = await response;
-      data.data = [ok.data.data.result, ...data.data]
-      console.log('>>>>>',ok.data.data.result);
+      let get = await response;
+      statusSend.set(get.status);
+      data.data = [get.data.data.result, ...data.data]
+      console.log('>>>>>',get.data.data.result);
       console.log('data.data', data.data);
       // post data into database 
       inputParseRecruiter = '';
@@ -98,6 +100,10 @@
     // function handleUpdate(event) {
     //   isOpen = event.detail.isOpen
     // }
+    let div;
+    afterUpdate(() => {
+      div.scrollTo(0, 0);
+    });
   </script>
   
   <svelte:head>
@@ -116,9 +122,9 @@
     
   </svelte:head>
 
-    <main class="main-page content-center">
+    <main class="main-page content-center" bind:this={div}>
       <Nav />
-      <div 
+      <div
         class="grid grid-cols-1 text-xl leading-6 justify-center
         .max-h-1 wrap-view-parse-recruiter">
         <div class="view new-func-view">
