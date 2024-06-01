@@ -3,7 +3,7 @@ import {
   PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME,
 } from '$env/static/public'
 
-import { user, refreshToken, accessToken, historyChat, statusSend } from '$lib/stores.js'
+import { user, refreshToken, accessToken, historyChat, statusSend, lengthChat } from '$lib/stores.js'
 import { END_POINT } from '$lib/constants.js'
 import { browser } from '$app/environment';
 import { error } from '@sveltejs/kit';
@@ -79,11 +79,22 @@ export const logOutHandle = async (_accessToken, _path) => {
   }
 }
 
-export const getDataChat = async (uid) => {
+export const getDataChat = async (uid, _page) => {
   try {
-    const response = await axios.get(`${END_POINT}/v1/chat?uid=${uid}`);
+    const response = await axios.get(`${END_POINT}/v1/chat?uid=${uid}&page=${_page}`);
     const { data } = response.data;
-    historyChat.set(data.listChat);
+    if (_page) {
+      historyChat.update(c => {
+        data.listChat.forEach(obj => {
+          c = [...c, obj];
+        })
+        return c;
+      })
+    }
+    else {
+      historyChat.set(data.listChat);
+    }
+    lengthChat.set(data.length);
     return data;
   } catch (error) {
     return { error }

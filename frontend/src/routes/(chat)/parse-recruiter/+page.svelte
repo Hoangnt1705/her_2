@@ -101,7 +101,7 @@
             });
 
             // Navigate to the new page
-            goto(`/parse-recruiter/${response.data.data.result._id}`);
+            await  goto(`/parse-recruiter/${response.data.data.result._id}`);
         } else {
             // Handle unsuccessful response status
             console.error('Error:', response.statusText);

@@ -16,8 +16,7 @@ const initialScreenSize = browser ? { width: window.innerWidth, height: window.i
 export const screenSize = writable(initialScreenSize);
 export const dataParseRecruiter = writable(null);
 export const historyChat = writable(null);
-export const pageSize = writable(null);
-export const page = writable(null);
+export const lengthChat = writable(null);
 // Store to manage the modal state
 export const showModal = writable(false);
 export const statusSend = writable(null);

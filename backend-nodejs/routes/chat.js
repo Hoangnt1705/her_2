@@ -22,13 +22,15 @@ chatRoute.get('/', async (req, res) => {
     const { uid } = req.query;
     console.log('uid', uid)
     try {
-        const pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 0
+        const pageSize = 15
         const page = req.query.page ? parseInt(req.query.page) : 0
         const length = await ParseRecruiterChat.countDocuments
             ({ $and: [{ user: { $ne: null, $eq: uid } }, { title: { $ne: 'error' }}, {deleted: {$ne: true}} ]});
         const listChat = await ParseRecruiterChat.find
-            ({ $and: [{ user: { $ne: null, $eq: uid } }, { title: { $ne: 'error' }}, {deleted: {$ne: true}} ]}).sort({ updatedAt: -1 });
-
+            ({ $and: [{ user: { $ne: null, $eq: uid } }, { title: { $ne: 'error' }}, {deleted: {$ne: true}} ]})
+            .limit(pageSize)
+            .skip(page)
+            .sort({ updatedAt: -1 });
         return sendSuccess(res, '', { length, listChat })
 
     } catch (error) {

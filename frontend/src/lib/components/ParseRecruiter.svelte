@@ -89,7 +89,7 @@ const scrollTo = async () => {
 <ul class="space-y-5" style="scroll-behavior: smooth;">
     {#each data as doc (doc._id)}
     <!-- Chat -->
-    <li class="max-w-lg flex gap-x-2 sm:gap-x-4 me-11" id="sender-{doc._id}" in:fly={{ duration: 200}} out:send={{ key: doc._id }}>
+    <li class="max-w-lg flex gap-x-2 sm:gap-x-4 me-11" id="sender-{doc._id}" out:send={{ key: doc._id }}>
         <img class="inline-block size-9 rounded-full" src={$user.role.avatarUrl} alt="Sender Avatar">
         <div>
             <!-- Card -->
@@ -126,7 +126,8 @@ const scrollTo = async () => {
     <!-- End Chat -->
 
     <!-- Chat -->
-    <li class="flex ms-auto gap-x-2 sm:gap-x-4" in:fly={{ y: 100, duration:1000 }} out:send={{ key: doc._id }} >
+    <!-- in:fly={{ y: 100, duration:1000 }} -->
+    <li class="flex ms-auto gap-x-2 sm:gap-x-4" out:send={{ key: doc._id }} >
         {#if doc.receiver.data}
 
         <div class="flex-col justify-center items-center w-[100%]">
