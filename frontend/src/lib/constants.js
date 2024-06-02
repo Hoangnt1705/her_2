@@ -164,3 +164,12 @@ export const svg = {
     </div>`
 };
 
+
+export const currencyFormat = (locale, currency_symbol, salary) => {
+    const currency = new Intl.NumberFormat(locale, {
+        style: "currency",
+        currency: currency_symbol,
+        minimumFractionDigits: 0
+    });
+    return currency.format(salary);
+}

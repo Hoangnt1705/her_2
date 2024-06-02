@@ -23,7 +23,7 @@
   const success = () => {
     iconNotification.set(iconsNotification.success)
     visible.update((v) => (v = !v))
-    titleToast.set('Successfully Sign in!')
+    titleToast.set('Sign in successfully!')
     contentToast.set('Hope you will have a good experience using the service✨')
     setTimeout(() => {
       visible.update((v) => (v = !v))

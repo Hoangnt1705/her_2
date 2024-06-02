@@ -8,7 +8,10 @@ import {
     afterUpdate,
     tick
 } from 'svelte'
-import { fly, slide } from 'svelte/transition';
+import {
+    fly,
+    slide
+} from 'svelte/transition';
 
 import {
     user
@@ -17,8 +20,11 @@ import CollapseChat from '$lib/components/CollapseChat.svelte';
 import {
     statusSend
 } from '$lib/stores.js';
-import { send, receive } from '$lib/utils/transition.js';
-
+import {
+    send,
+    receive
+} from '$lib/utils/transition.js';
+import { currencyFormat } from '$lib/constants.js';
 export let data;
 
 let countStaticPR = 0
@@ -67,9 +73,9 @@ $: for (let i = 0; i < arrayRename.length; i++) {
 // $: handleStaticPR();
 onMount(() => {
     // handleStaticPR();
-    
+
 })
-$:if($statusSend){
+$: if ($statusSend) {
     scrollTo();
     statusSend.set(null);
 }
@@ -78,11 +84,14 @@ const scrollTo = async () => {
     await tick(); // Ensure DOM updates are complete
     let element = document.getElementById(`sender-${data[0]._id}`);
     if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        element.scrollIntoView({
+            behavior: 'smooth'
+        });
     }
-    await tick(); 
+    await tick();
     element = null;
 }
+
 </script>
 
 <!-- Chat Bubble -->
@@ -113,7 +122,7 @@ const scrollTo = async () => {
                 Not sent
             </span>
             {:else}
-              <span class="mt-1.5 flex items-center gap-x-1 text-xs text-gray-500 dark:text-neutral-500">
+            <span class="mt-1.5 flex items-center gap-x-1 text-xs text-gray-500 dark:text-neutral-500">
                 <svg class="flex-shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M18 6 7 17l-5-5"></path>
                     <path d="m22 10-7.5 7.5L13 16"></path>
@@ -142,7 +151,8 @@ const scrollTo = async () => {
                 </div>
                 <div class="w-full columns-2 md:columns-3 xl:columns-4 gap-3 ">
                     {#each Object.entries(doc.receiver.data) as [key, value]}
-                    {#if key !== 'recruiter'}
+                    {#if key !== 'recruiter' && key !== "unit_of_time_for_position_experience"
+                    && key !=="title" && key !== "unit_of_time_for_holidays" && key !== "currency_format"}
                     <div class=" break-inside-avoid mb-4">
                         <div
                             transition:fade
@@ -153,7 +163,44 @@ const scrollTo = async () => {
                             <p class="text-base font-medium text-navy-700 ">
                                 {#if value === null}
                                 No
-                                {:else if value === false}No{:else}{value}{/if}
+                                {:else if value === false}
+                                No
+                                {:else if key === "salary min" || key === "salary max"}
+                                    {#each Object.entries(doc.receiver.data) as [additionalKey, additionalValue]}
+                                        {#if additionalKey === "currency_format"}
+                                            {#if additionalValue === "VND"}
+                                            {currencyFormat("vi-VN", additionalValue, value)}
+                                            {:else if additionalValue === "USD"}
+                                            {currencyFormat("en-US", additionalValue, value)}
+                                            {:else}
+                                            {value} {additionalValue}
+                                            {/if}
+                                        {/if}
+                                    {/each}
+                                {:else}
+                                {value}
+                                {#if key === "experience"}
+                                    {#each Object.entries(doc.receiver.data) as [additionalKey, additionalValue]}
+                                    {#if additionalKey === "unit_of_time_for_position_experience"}
+                                    {#if value === 1}
+                                    {additionalValue}
+                                    {:else}
+                                    {additionalValue}s
+                                    {/if}
+                                    {/if}
+                                    {/each}
+                                {:else if key === "holidays"}
+                                    {#each Object.entries(doc.receiver.data) as [additionalKey, additionalValue]}
+                                    {#if additionalKey === "unit_of_time_for_holidays"}
+                                    {#if value === 1}
+                                    {additionalValue}
+                                    {:else}
+                                    {additionalValue}s
+                                    {/if}
+                                    {/if}
+                                    {/each}
+                                {/if}
+                                {/if}
                             </p>
                         </div>
                     </div>

@@ -643,7 +643,9 @@ p {
 
 
 @media screen and (max-width: 768px) {
-
+  .new-chat:hover {
+    background: none;
+  }
   .or-main{
     margin: auto;
     transform: rotate(90deg);

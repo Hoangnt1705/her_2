@@ -139,6 +139,7 @@
                   on:keydown={handleKeyDown}
                   bind:this={btnFocus}
                   use:focus
+                  placeholder="Paste Recruitment Information"
                   style="clear: both;"
                   rows="8"
                   class="block p-2.5 w-full text-base text-gray-900 bg-gray-50

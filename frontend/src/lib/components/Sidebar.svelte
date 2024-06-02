@@ -73,6 +73,7 @@ let openSidebarResponsive = $sidebar;
 let editingId = null;
 let deleteId = null;
 let chatTitleSideBar = null;
+let specificButton;
 let focusBind;
 $: openSidebarResponsive = $sidebar;
 $: active = !$sidebar;
@@ -136,9 +137,7 @@ const updateTitleChat = async () => {
                 authorization: `Bearer ${$accessToken}`
             }
         });
-        const {
-            data
-        } = response.data;
+        const { data } = response.data;
         historyChat.update(chats => {
             const chat = chats.find(chat => chat._id === editingId);
             if (chat) {
@@ -178,6 +177,7 @@ beforeUpdate(() => {
 });
 
 afterUpdate(async () => {
+    await tick();
     updateActiveChat();
 });
 
@@ -194,7 +194,7 @@ const handleNewPageClick = async () => {
             <div class="sidebar-controls">
                 <button class="new-chat" on:click={() => goto('/')} aria-label="New chat">
                     <i class="fa fa-plus" />
-                    New chat
+                    New conversation
                 </button>
             </div>
             {#await promise}
@@ -224,20 +224,26 @@ const handleNewPageClick = async () => {
                 <li class="inline-flex items-center text-sm font-medium text-gray-800 my-1" out:send={{ key: chat._id }} id="chat-{chat._id}">
                     {#if editingId === chat._id}
                     <input
+                        on:blur={ async (event) => {
+                            // Check if the blur event target is the specific button
+                            if (!event.relatedTarget || event.relatedTarget.tagName !== 'BUTTON' || event.relatedTarget !== specificButton) {
+                                await tick();
+                                editingId = null;
+                            }
+                        }}
                         type="text"
                         aria-current={$page.url.pathname === `/parse-recruiter/${chat._id}`}
                         class:active="{activeChatId === chat._id}"
-                        on:click={() => handleClick(chat._id, `/parse-recruiter/${chat._id}`)}
 
-                    class="conversation-button text-left gap-x-2 py-3 px-4 overflow-hidden focus-border-black"
-                    data-sveltekit-preload-code
-                    bind:value={chatTitleSideBar}
-                    on:keydown={async (e) => {
-                    if (e.key !== 'Enter') return;
-                    updateTitleChat();
-                    }}
-                    bind:this={focusBind}
-                    >
+                        class="conversation-button text-left gap-x-2 py-3 px-4 overflow-hidden focus-border-black"
+                        data-sveltekit-preload-code
+                        bind:value={chatTitleSideBar}
+                        on:keydown={async (e) => {
+                        if (e.key !== 'Enter') return;
+                        updateTitleChat();
+                        }}
+                        bind:this={focusBind}
+                        >
                     {:else}
                     <input
                         style="overflow: hidden"
@@ -274,7 +280,7 @@ const handleNewPageClick = async () => {
                             </svg>
                         </button>
                         {:else}
-                        <button on:click={() => updateTitleChat()}>
+                        <button on:click={() => updateTitleChat()} bind:this={specificButton}>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M3 11C3 7.22876 3 5.34315 4.17157 4.17157C5.34315 3 7.22876 3 11 3H13C16.7712 3 18.6569 3 19.8284 4.17157C21 5.34315 21 7.22876 21 11V13C21 16.7712 21 18.6569 19.8284 19.8284C18.6569 21 16.7712 21 13 21H11C7.22876 21 5.34315 21 4.17157 19.8284C3 18.6569 3 16.7712 3 13V11Z" stroke="black" stroke-width="1.6" class="my-path"></path>
                                 <path d="M16.6704 9.39893L12.3611 13.7082C11.6945 14.3749 11.3611 14.7082 10.9469 14.7082C10.5327 14.7082 10.1994 14.3749 9.53269 13.7082L8 12.1755" stroke="black" stroke-width="1.6" stroke-linecap="round" class="my-path"></path>
@@ -286,7 +292,7 @@ const handleNewPageClick = async () => {
                 {/each}
                 {#if $historyChat.length < $lengthChat}
                 <div class="flex w-full items-center h-14">
-                    <div class="flex-1 border-b border-gray-700"></div>
+                    <div class="flex-1"></div>
                     <button on:click={() => handleNewPageClick()}
                      class="w-7 h-7 flex items-center justify-center bg-gray-700 rounded-xl shadow-sm border border-gray-700 cursor-pointer">
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 22 22" fill="none">
@@ -295,7 +301,7 @@ const handleNewPageClick = async () => {
                         </g>
                       </svg>
                     </button>
-                    <div class="flex-1 border-b border-gray-700"></div>
+                    <div class="flex-1"></div>
                 </div>
                 {/if}
             </ul>
@@ -305,7 +311,9 @@ const handleNewPageClick = async () => {
             {/await}
         </div>
         {#if $user && $user?.role}
-        <UserMenu user={$user} accessToken={$accessToken}/>
+        <div out:send>
+            <UserMenu user={$user} accessToken={$accessToken}/>
+        </div>
             {:else}
             <ButtonLogin />
             {/if}

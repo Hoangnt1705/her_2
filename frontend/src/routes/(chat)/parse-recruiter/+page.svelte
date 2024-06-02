@@ -46,7 +46,7 @@
       text = placeholderText.slice(0, text.length + 1)
       setTimeout(typeWriter, typingSpeed)
     } else {
-      text = ''
+      text = 'Paste Recruitment Information';
       setTimeout(() => {
         placeholderText =
           data.placeholderTexts[
@@ -57,7 +57,7 @@
     }
   }
   const handleInputChange = (event) => {
-    if (event.target.value.trim().length > 0) inputHasValue = true
+    if (event.target.value.trim().length > 0) inputHasValue = true;
   }
 
   const stopAutoWriter = () => {
@@ -65,9 +65,11 @@
   }
 
   const handleKeyDown = async (e) => {
+    if (e.keyCode === 13 && e.shiftKey) inputHasValue = true;
     if (e.keyCode === 13 && !e.shiftKey) {
       return handleParseRecruiter()
-    } else return
+    }
+    else return 
   }
   const handleParseRecruiter = async () => {
     if (!inputParseRecruiter?.trim()) {
