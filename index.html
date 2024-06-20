@@ -1,412 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <title>ChatGPT Clone</title>
+  <title>Generate PDF</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    /* General styles */
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Heading styles */
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      align-items: center;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    /* Paragraph styles */
+    p {
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+
+    /* List styles */
+    ul {
+      list-style-type: disc;
+      margin-left: 20px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+  </style>
 </head>
 <body>
-    <nav id="sidebar">
-        <div class="float-top">
-            <div class="sidebar-controls">
-                <button class="new-chat"><i class="fa fa-plus"></i> New conversation</button>
-                <button class="hide-sidebar"><i class="fa fa-chevron-left"></i></button>
-            </div>
-            <ul class="conversations">
-                <li class="grouping">Today</li>
-                <li class="active">
-                    <button class="conversation-button"><i class="fa fa-message fa-regular"></i> This is a conversation title</button>
-                    <div class="fade"></div>
-                    <div class="edit-buttons">
-                        <button><i class="fa fa-edit"></i></button>
-                        <button><i class="fa fa-trash"></i></button>
-                    </div>
-                </li>
-                <li class="grouping">Yesterday</li>
-                <li>
-                    <button class="conversation-button"><i class="fa fa-message fa-regular"></i> This is a conversation title</button>
-                    <div class="fade"></div>
-                    <div class="edit-buttons">
-                        <button><i class="fa fa-edit"></i></button>
-                        <button><i class="fa fa-trash"></i></button>
-                    </div>
-                </li>
-                <li>
-                    <button class="conversation-button"><i class="fa fa-message fa-regular"></i> This is a very super long conversation title that doesn't fit</button>
-                    <div class="fade"></div>
-                    <div class="edit-buttons">
-                        <button><i class="fa fa-edit"></i></button>
-                        <button><i class="fa fa-trash"></i></button>
-                    </div>
-                </li>
-                <li class="grouping">Previous 7 days</li>
-                <li>
-                    <button class="conversation-button"><i class="fa fa-message fa-regular"></i> This is a conversation title</button>
-                    <div class="fade"></div>
-                    <div class="edit-buttons">
-                        <button><i class="fa fa-edit"></i></button>
-                        <button><i class="fa fa-trash"></i></button>
-                    </div>
-                </li>
-                <li>
-                    <button class="conversation-button"><i class="fa fa-message fa-regular"></i> This is a conversation title</button>
-                    <div class="fade"></div>
-                    <div class="edit-buttons">
-                        <button><i class="fa fa-edit"></i></button>
-                        <button><i class="fa fa-trash"></i></button>
-                    </div>
-                </li>
-                <li>
-                    <button class="conversation-button"><i class="fa fa-message fa-regular"></i> This is a conversation title</button>
-                    <div class="fade"></div>
-                    <div class="edit-buttons">
-                        <button><i class="fa fa-edit"></i></button>
-                        <button><i class="fa fa-trash"></i></button>
-                    </div>
-                </li>
-                <li>
-                    <button class="conversation-button"><i class="fa fa-message fa-regular"></i> This is a conversation title</button>
-                    <div class="fade"></div>
-                    <div class="edit-buttons">
-                        <button><i class="fa fa-edit"></i></button>
-                        <button><i class="fa fa-trash"></i></button>
-                    </div>
-                </li>
-                <li>
-                    <button class="conversation-button"><i class="fa fa-message fa-regular"></i> This is a conversation title</button>
-                    <div class="fade"></div>
-                    <div class="edit-buttons">
-                        <button><i class="fa fa-edit"></i></button>
-                        <button><i class="fa fa-trash"></i></button>
-                    </div>
-                </li>
-                <li>
-                    <button class="conversation-button"><i class="fa fa-message fa-regular"></i> This is a conversation title</button>
-                    <div class="fade"></div>
-                    <div class="edit-buttons">
-                        <button><i class="fa fa-edit"></i></button>
-                        <button><i class="fa fa-trash"></i></button>
-                    </div>
-                </li>
-                <li>
-                    <button class="conversation-button"><i class="fa fa-message fa-regular"></i> This is a conversation title</button>
-                    <div class="fade"></div>
-                    <div class="edit-buttons">
-                        <button><i class="fa fa-edit"></i></button>
-                        <button><i class="fa fa-trash"></i></button>
-                    </div>
-                </li>
-                <li>
-                    <button class="conversation-button"><i class="fa fa-message fa-regular"></i> This is a conversation title</button>
-                    <div class="fade"></div>
-                    <div class="edit-buttons">
-                        <button><i class="fa fa-edit"></i></button>
-                        <button><i class="fa fa-trash"></i></button>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="user-menu">
-            <button>
-                <i class="user-icon">u</i>
-                username
-                <i class="fa fa-ellipsis dots"></i>
-            </button>
-            <ul>
-                <li><button>My plan</button></li>
-                <li><button>Custom instructions</button></li>
-                <li><button>Settings &amp; Beta</button></li>
-                <li><button>Log out</button></li>
-            </ul>
-        </div>
-    </nav>
-    <main>
-        <div class="view new-chat-view">
-            <div class="model-selector">
-                <button class="gpt-3 selected">
-                    <i class="fa fa-bolt"></i> GPT-3.5
-                    <div class="model-info">
-                        <div class="model-info-box">
-                            <p>Our fastest model, great for most every day tasks.</p>
+  <button onclick="generatePDF()">Generate PDF</button>
+  <div id="cv-content">
+    <!-- Your HTML content for the CV goes here -->
+    <h1>Your Name</h1>
+    <p>Home Street Address • City, State Zip • name@college.harvard.edu • phone number</p>
 
-                            <p class="secondary">Available to Free and Plus users</p>
-                        </div>
-                    </div>
-                </button>
-                <button class="gpt-4">
-                    <i class="fa fa-wand-magic-sparkles"></i> GPT-4
-                    <div class="model-info">
-                        <div class="model-info-box">
-                            <p>Our most capable model, great for creative stuff.</p>
+    <h2>Education</h2>
+    <p>HARVARD UNIVERSITY Cambridge, MA</p>
+    <p>Degree, Concentration. GPA [Note: Optional] Graduation Date</p>
+    <p>Thesis [Note: Optional]</p>
+    <p>Relevant Coursework: [Note: Optional. Awards and honors can also be listed here.]</p>
+    <p>STUDY ABROAD [Note: If Applicable] City, Country</p>
+    <p>Study abroad coursework in _____. Month Year – Month Year</p>
+    <p>NAME OF HIGH SCHOOL City, State</p>
+    <p>[Note: May include GPA, SAT scores, or academic honors an employer may want to know] Graduation Date</p>
 
-                            <p class="secondary">Available for Plus users.</p>
-                        </div>
-                    </div>
-                </button>
-            </div>
+    <h2>Experience</h2>
+    <p>ORGANIZATION City, State</p>
+    <p>Position Title Month Year – Month Year</p>
+    <ul>
+      <li>Beginning with your most recent position, describe your experience, skills, and resulting outcomes in bullet or paragraph form.</li>
+      <li>Begin each line with an action verb and include details that will help the reader understand your accomplishments, skills, knowledge, abilities, or achievements.</li>
+      <li>Quantify where possible.</li>
+      <li>Do not use personal pronouns; each line should be a phrase rather than full sentence.</li>
+    </ul>
+    <p>ORGANIZATION City, State</p>
+    <p>Position Title Month Year – Month Year</p>
+    <ul>
+      <li>With your next-most recent position, describe your experience, skills, and resulting outcomes in bullet or paragraph form.</li>
+      <li>Begin each line with an action verb and include details that will help the reader understand your accomplishments, skills, knowledge, abilities, or achievements.</li>
+      <li>Quantify where possible.</li>
+      <li>Do not use personal pronouns; each line should be a phrase rather than full sentence.</li>
+    </ul>
 
-            <div class="logo">
-                ChatWTF
-            </div>
-        </div>
+    <h2>Leadership and Activities</h2>
+    <p>ORGANIZATION City, State</p>
+    <p>Role Month Year – Month Year</p>
+    <ul>
+      <li>This section can be formatted similarly to the Experience section, or you can omit descriptions for activities.</li>
+      <li>If this section is more relevant to the opportunity you are applying for, consider moving this above your Experience section.</li>
+    </ul>
 
-        <div class="view conversation-view">
-            <div class="model-name">
-                <i class="fa fa-bolt"></i> Default (GPT-3.5)
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-            <div class="user message">
-                <div class="identity">
-                    <i class="user-icon">u</i>
-                </div>
-                <div class="content">
-                    <p>Hello, how are you?</p>
-                </div>
-            </div>
-            <div class="assistant message">
-                <div class="identity">
-                    <i class="gpt user-icon">G</i>
-                </div>
-                <div class="content">
-                    <p>I'm doing well, thank you!</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="message-form">
-            <div class="message-wrapper">
-                <textarea id="message" rows="1" placeholder="Send a message"></textarea>
-                <button class="send-button"><i class="fa fa-paper-plane"></i></button>
-            </div>
-            <div class="disclaimer">This is a ChatGPT UI Clone for personal use and educational purposes only.</div>
-        </div>
-    </main>
-    <script src="script.js"></script>
+    <h2>Skills &amp; Interests [Note: Optional]</h2>
+    <p>Technical: List computer software and programming languages</p>
+    <p>Language: List foreign languages and your level of fluency</p>
+    <p>Laboratory: List scientific / research lab techniques or tools [If Applicable]</p>
+    <p>Interests: List activities you enjoy that may spark interview conversation</p>
+  </div>
+  <script>
+    function generatePDF() {
+      const cvContent = document.getElementById('cv-content');
+      const options = {
+        margin: [20, 20, 20, 20], // [top, left, bottom, right]
+        filename: 'cv.pdf',
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      html2pdf().set(options).from(cvContent).save();
+    }
+  </script>
 </body>
 </html>

@@ -103,7 +103,11 @@ export const getDataChat = async (uid, _page) => {
 
 export const parseRecruiterDocument = async (params) => {
   try {
-    const response = await axios.get(`${END_POINT}/v1/parse-recruiter/document/${params.slug}`);
+    const response = await axios.get(`${END_POINT}/v1/parse-recruiter/document/${params.slug}`,
+      {
+        headers: { authorization: `Bearer ${localStorage.getItem(PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME)}` }
+      }
+    );
 
     const { data } = response.data;
     if (!data) {

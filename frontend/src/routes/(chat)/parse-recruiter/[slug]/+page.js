@@ -1,5 +1,6 @@
 import { parseRecruiterDocument } from '$lib/context/MainContext.js';
 import { error } from '@sveltejs/kit';
+export const ssr = false;
 
 export const load = async ({ params }) => {
   try {

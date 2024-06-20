@@ -68,6 +68,7 @@
           {@html svg.orMain}
         </div>
         <a
+          href="/resume-ai" data-sveltekit-preload-data
           class="relative h-[200px] w-[350px] border border-solid
           border-gray-200 rounded-2xl p-4 transition-all duration-500
           col-span-12 xl:p-7 lg:col-span-3 md:col-span-6 bg-white shadow-none
@@ -79,7 +80,7 @@
           <h4
             class="text-sm font-semibold mb-2 capitalize transition-all
             duration-500 ">
-            Senior AI
+            Resume AI
           </h4>
           <p
             class="text-xs font-normal text-gray-500 transition-all duration-500

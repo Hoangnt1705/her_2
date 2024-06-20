@@ -20,7 +20,6 @@ const chatRoute = express.Router()
 
 chatRoute.get('/', async (req, res) => {
     const { uid } = req.query;
-    console.log('uid', uid)
     try {
         const pageSize = 15
         const page = req.query.page ? parseInt(req.query.page) : 0

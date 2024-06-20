@@ -6,6 +6,7 @@
   import Typed from 'typed.js'
   import { Skeleton } from 'svelte-loading-skeleton'
   import { browser } from '$app/environment'
+  import { goto } from '$app/navigation'
 
   export let data
 
@@ -32,7 +33,7 @@
   $: pathname = $page.url.pathname
 </script>
 
-<main class="main-homepage" data-sveltekit-reload>
+<main class="main-homepage">
   <header>
     <a href="#" class="brand">Her</a>
     <div class="menu-btn" class:active on:click={() => (active = !active)} />
@@ -74,9 +75,19 @@
             today!
           </p>
         </div>
-        <div style="position: relative; padding-bottom: 30px">
-          <a href="/" data-sveltekit-preload-data>Get started</a>
-        </div>
+        
+          <button class="relative inline-block group" on:click={() => window.location.href="/" }>
+            <span
+              class="relative z-10 px-3.5 py-2 overflow-hidden font-medium leading-tight flex items-centrer justify-center text-red-700 transition-colors duration-300 ease-out border-2 border-red-700 rounded-lg group-hover:text-white">
+              <span class="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
+              <span
+                class="absolute left-0 w-40 h-40 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-red-700 group-hover:-rotate-180 ease"></span>
+              <span class="relative text-lg font-semibold">Get Started</span>
+            </span>
+            <span
+              class="absolute bottom-0 right-0 w-full h-9 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-red-700 rounded-lg group-hover:mb-0 group-hover:mr-0 group-hover:mb-2"
+              data-rounded="rounded-lg"></span>
+          </button>
       </div>
       <div class="media-icons">
         {#each data.icons as { title, url }}

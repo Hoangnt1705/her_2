@@ -208,7 +208,6 @@ const handleNewPageClick = async () => {
                     </svg>
                 </div>
             </div>
-
             {:then data}
             {#if $historyChat}
             <ul class="conversations h-[600px] max-w-xs flex flex-col overflow-y-auto
@@ -334,7 +333,7 @@ const handleNewPageClick = async () => {
                 </button>
             </div>
             {/if}
-            <div class="wrap-open-sidebar-full-screen">
+            <div class="wrap-open-sidebar-full-screen" style="z-index: 0">
                 <div class="open-sidebar-full-screen"
                     on:click={async () => {
                     sidebar.update((s) => s = !s );
@@ -348,15 +347,13 @@ const handleNewPageClick = async () => {
                     <svg  id="arrow-svg" style="transform: rotate({rotate})" width="60px" height="60px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g id="Interface / Line_M">
                             <path id="Vector" d={pathValue} stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </g>
-                                </svg>
-                                </div>
-                                </div>
-                                </div>
-                                <Overlay
-                                    {active}
-                                    on:click={handleOverlay} />
-                                <Modal chatId={deleteId} accessToken={$accessToken}/>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <Overlay {active} on:click={handleOverlay} />
+        <Modal chatId={deleteId} accessToken={$accessToken}/>
                                     <!-- <ul class="conversations">
                             <li class="grouping">Yesterday</li>
                             <li>

@@ -42,7 +42,7 @@
       <button
         class="drop"
         style="display:flex;"
-        on:click={() => (isOpen = !isOpen)} on:blur={() => (isOpen = !isOpen)}>
+        on:click={() => (isOpen = !isOpen)}>
         <span>{#if isActivePath(parseRecruiterPath)}Condense{:else}Resume AI{/if}</span> 
         {@html svg.downDrop}
       </button>

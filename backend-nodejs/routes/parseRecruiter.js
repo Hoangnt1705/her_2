@@ -8,8 +8,27 @@ import { printIn } from '../service/consoleLog.js';
 import ParseRecruiterChat from '../model/ParseRecruiterChat.js';
 import ParseRecruiterDocument from '../model/ParseRecruiterDocument.js';
 import { getRedis } from '../db/index.js';
+import puppeteer from 'puppeteer';
 
 
+const generatePdf = async (content) => {
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      timeout: 60000 // Increase timeout to 60 seconds
+    });
+    
+    const page = await browser.newPage();
+  
+    await page.setContent(content, {
+      waitUntil: 'networkidle2' // Wait until the network is idle
+    });
+    const pdf = await page.pdf({ format: 'A4' });
+  
+    await browser.close();
+    return pdf;
+  };
+  
 
 const prRoute = express.Router()
 
@@ -96,22 +115,58 @@ prRoute.post('/', rateLimitAPI, verifyToken, async (req, res) => {
  * @access private
  */
 
-prRoute.get('/document/:cid', async (req, res) => {
+prRoute.get('/document/:cid', verifyToken, async (req, res) => {
     try {
         const { cid } = req.params;
-        const document = await ParseRecruiterDocument.find({ chat: { $ne: null, $eq: cid } }).populate({
-            path: 'chat',
-            model: ParseRecruiterChat
+        const { id } = req.user;
+        console.log('id', id);
+      
+        // Find the chat documents
+        const chat = await ParseRecruiterChat.find({ 
+          $and: [
+            { _id: { $ne: null, $eq: cid } },
+            { user: { $ne: null, $eq: id } }
+          ]
+        });
+      
+        // Check if any chat documents were found
+        if (chat.length === 0) {
+          console.log('No chat documents found');
+          return sendError(res, 'No chat documents found');
+        }
+      
+        // Log the IDs of the found chat documents
+        chat.forEach(c => console.log('chat', c._id));
+      
+        // Find the document based on the chat IDs
+        const document = await ParseRecruiterDocument.find({ 
+          chat: { $ne: null, $in: chat.map(c => c._id) } 
+        }).populate({
+          path: 'chat',
+          model: ParseRecruiterChat,
         }).sort({ updatedAt: -1 });
-
-        return sendSuccess(res, 'okee', { result: document })
-
-    } catch (error) {
+      
+        return sendSuccess(res, 'okee', { result: document });
+      
+      } catch (error) {
         console.log(error);
         sendError(res, error);
-    };
+      }
 });
 
 
+
+prRoute.post('/downloadPdfHere', async (req, res) => {
+    res.contentType('application/pdf');
+  try {
+    const { htmlContent } = req.body;
+    console.log('Received HTML content:', htmlContent);
+    const pdf = await generatePdf(htmlContent);
+    res.send(pdf); // This will generate a array buffer stream
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    res.status(500).send('Error generating PDF');
+  }
+  });
 
 export default prRoute;

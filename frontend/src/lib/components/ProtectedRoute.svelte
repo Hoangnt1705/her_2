@@ -4,8 +4,8 @@
   import { goto } from '$app/navigation'
   onMount(() => {
     const login = localStorage.getItem('login')
-    if (login) goto('/')
-    if ($user && $user?.role) goto('/')
+    if (login) window.location.href = '/';
+    if ($user && $user?.role)  window.location.href = '/';
   })
 </script>
 

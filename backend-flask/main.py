@@ -14,6 +14,7 @@ from datetime import date
 from sqlalchemy import select, insert, and_, union_all,  text, literal
 from flask_bcrypt import Bcrypt
 from flask_caching import Cache
+from resume_ai import create_ai
 import redis
 import jwt
 from client import send_error, send_success
@@ -95,7 +96,7 @@ def handle_disconnect():
 
 @app.route('/')
 def index():
-    return 'hello'
+    return create_ai();
 
 # assistant_message.content = str(assistant_message.tool_calls[0].function)
 # messages.append({"role": assistant_message.role, "content": assistant_message.content})
@@ -104,5 +105,8 @@ def index():
 # pretty_print_conversation(messages)
 
 
+
+
 if __name__ == "__main__":
     socketio.run(app)
+    app.run()

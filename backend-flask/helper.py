@@ -3,14 +3,13 @@ from openai import OpenAI
 from termcolor import colored
 
 GPT_MODEL = "gpt-3.5-turbo-0125"
-api_key = os.environ.get("OPENAI_API_KEY")
+api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key)
 
 def chat_completion_request(messages, tools=None, tool_choice=None, model=GPT_MODEL):
     try:
         response = client.chat.completions.create(
             model=model,
-            response_format={"type": "json_object"},
             messages=messages,
             tools=tools,
             tool_choice=tool_choice,
