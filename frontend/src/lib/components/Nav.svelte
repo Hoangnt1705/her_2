@@ -9,7 +9,7 @@
 
   // Regular expressions for dynamic paths
   const parseRecruiterPath = /^\/parse-recruiter(\/[^\/]+)?$/
-  const createCvPath = /^\/create-cv(\/[^\/]+)?$/
+  const createCvPath = /^\/resume-ai(\/[^\/]+)?$/
   // Function to check if a path matches a regex
   function isActivePath(regex) {
     return regex.test($page.url.pathname)
@@ -43,7 +43,9 @@
         class="drop"
         style="display:flex;"
         on:click={() => (isOpen = !isOpen)}>
-        <span>{#if isActivePath(parseRecruiterPath)}Condense{:else}Resume AI{/if}</span> 
+        <span>
+          {#if isActivePath(parseRecruiterPath)}Condense{:else}Resume AI{/if}
+        </span>
         {@html svg.downDrop}
       </button>
     </div>
@@ -77,7 +79,7 @@
         </a>
 
         <a
-          href={isActivePath(createCvPath) ? $page.url.pathname : '/create-cv'}
+          href={isActivePath(createCvPath) ? $page.url.pathname : '/resume-ai'}
           class="drhv senior-ai-drop"
           aria-current={isActivePath(createCvPath)}
           class:active={isActivePath(createCvPath)}>

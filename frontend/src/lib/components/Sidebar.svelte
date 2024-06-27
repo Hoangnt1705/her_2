@@ -292,11 +292,11 @@ const handleNewPageClick = async () => {
                 {#if $historyChat.length < $lengthChat}
                 <div class="flex w-full items-center h-14">
                     <div class="flex-1"></div>
-                    <button on:click={() => handleNewPageClick()}
+                    <button on:click={() => handleNewPageClick()} 
                      class="w-7 h-7 flex items-center justify-center bg-gray-700 rounded-xl shadow-sm border border-gray-700 cursor-pointer">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 22 22" fill="none">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 22 22" fill="none">
                         <g id="Add">
-                          <path id="icon" d="M11 5.5V16.5M16.5 11H5.5" stroke="white" stroke-width="1.6" stroke-linecap="round" />
+                          <path id="icon" d="M11 5.5V16.5M16.5 11H5.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" />
                         </g>
                       </svg>
                     </button>
