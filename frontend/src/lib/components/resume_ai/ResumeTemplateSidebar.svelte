@@ -1,47 +1,50 @@
 <script>
-  import { fade, fly } from 'svelte/transition'
-  let sidebarOpen = false
+  import { fade, fly } from "svelte/transition";
+  let sidebarOpen = false;
 
   function toggleSidebar() {
-    sidebarOpen = !sidebarOpen
+    sidebarOpen = !sidebarOpen;
+  }
+  let selectedIndex = null;
+
+  function handleClick(index) {
+    selectedIndex = selectedIndex === index ? null : index;
   }
 </script>
-
-<style>
-  .sidebar-open {
-    transform: translateX(0);
-  }
-
-  .sidebar-closed {
-    transform: translateX(100%);
-  }
-</style>
 
 {#if !sidebarOpen}
   <button
     out:fade={{ duration: 100 }}
     type="button"
-    class="absolute right-10 inline-flex items-center justify-center px-8 py-2.5
+    class="resumeTemplateSidebarBtn absolute right-10 inline-flex items-center justify-center px-8 py-2.5
     overflow-hidden tracking-tighter text-white bg-gray-800 rounded-lg group"
     on:click={toggleSidebar}
-    aria-label="Toggle navigation">
+    aria-label="Toggle navigation"
+  >
     <span class="sr-only">Toggle Navigation</span>
     <span
       class="absolute w-0 h-0 transition-all duration-500 ease-out
-      bg-emerald-600 rounded-full group-hover:w-56 group-hover:h-56" />
+      bg-emerald-600 rounded-full group-hover:w-56 group-hover:h-56"
+    />
     <span
       class="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30
-      bg-gradient-to-b from-transparent via-transparent to-gray-700" />
+      bg-gradient-to-b from-transparent via-transparent to-gray-700"
+    />
 
-    <span class="relative text-base font-semibold flex gap-2">
-      <svg
-        fill="#fff"
-        width="25px"
-        height="25px"
-        viewBox="0 0 56 56"
-        xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M 7.7148 49.5742 L 48.2852 49.5742 C 53.1836 49.5742 55.6446
+    <div
+      class=" wrap-title-resume-template-btn relative text-base font-semibold flex gap-2"
+    >
+      <div >
+        <svg
+          fill="#fff"
+          width="25px"
+          height="25px"
+          viewBox="0 0 56 56"
+          xmlns="http://www.w3.org/2000/svg"
+          class="svg-icon-sidebar-resume-template"
+        >
+          <path
+            d="M 7.7148 49.5742 L 48.2852 49.5742 C 53.1836 49.5742 55.6446
           47.1367 55.6446 42.3086 L 55.6446 13.6914 C 55.6446 8.8633 53.1836
           6.4258 48.2852 6.4258 L 7.7148 6.4258 C 2.8398 6.4258 .3554 8.8398
           .3554 13.6914 L .3554 42.3086 C .3554 47.1602 2.8398 49.5742 7.7148
@@ -61,10 +64,13 @@
           42.3319 31.0118 L 47.3478 31.0118 C 48.0740 31.0118 48.6836 30.4258
           48.6836 29.7227 C 48.6836 29.0196 48.0740 28.4102 47.3478 28.4102 L
           42.3319 28.4102 C 41.6288 28.4102 40.9960 29.0196 40.9960 29.7227 C
-          40.9960 30.4258 41.6288 31.0118 42.3319 31.0118 Z" />
-      </svg>
+          40.9960 30.4258 41.6288 31.0118 42.3319 31.0118 Z"
+          />
+        </svg>
+      </div>
+
       <span>Resume Templates</span>
-    </span>
+    </div>
   </button>
 {/if}
 <!-- End Navigation Toggle -->
@@ -75,33 +81,100 @@
   class:sidebar-open={sidebarOpen}
   class:sidebar-closed={!sidebarOpen}
   class="transition-all duration-300 fixed top-0 right-0 bottom-0 z-50 w-64
-  bg-white border-l border-gray-200 pt-10 pb-10 overflow-y-auto lg:block">
+  bg-white border-l border-gray-200 pt-10 pb-10 overflow-y-auto lg:block"
+>
   <div class="absolute top-1 left-1">
     <button
-    style="padding:5px"
-    type="button"
-    class="text-gray-500 hover:text-gray-600 text-sm font-semibold rounded-full border border-transparent text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-700 s-Ya-e_a9uP7N4"
-    on:click={toggleSidebar}
-    aria-label="Toggle navigation">
-    <span class="sr-only">Toggle Navigation</span>
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M7.75732 7.75745L16.2426 16.2427" stroke="black" stroke-width="null" stroke-linecap="round" class="my-path"></path>
-        <path d="M16.2426 7.75745L7.75732 16.2427" stroke="black" stroke-width="null" stroke-linecap="round" class="my-path"></path>
-    </svg>
-  </button>
+      style="padding:5px"
+      type="button"
+      class="text-gray-500 hover:text-gray-600 text-sm font-semibold rounded-full border border-transparent text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-700 s-Ya-e_a9uP7N4"
+      on:click={toggleSidebar}
+      aria-label="Toggle navigation"
+    >
+      <span class="sr-only">Toggle Navigation</span>
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M7.75732 7.75745L16.2426 16.2427"
+          stroke="black"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+        <path
+          d="M16.2426 7.75745L7.75732 16.2427"
+          stroke="black"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+      </svg>
+    </button>
   </div>
   <div class="px-6 pt-5">
     <span
       class="flex-none text-xl font-semibold dark:text-white"
       href="#"
-      aria-label="Brand">
-      Please select a resume template for her to create for you.
+      aria-label="Brand"
+    >
+      Please select a resume template for <span
+        class="px-2 text-white bg-red-600 rounded">Her</span
+      > to create for you.
     </span>
   </div>
   <nav
     class="hs-accordion-group p-6 w-full flex flex-col flex-wrap"
-    data-hs-accordion-always-open>
+    data-hs-accordion-always-open
+  >
     <ul class="space-y-1.5">
+      {#each [0, 1, 2] as _, index}
+        <li
+          class={selectedIndex === index ? "selected" : ""}
+          on:click={() => handleClick(index)}
+        >
+          <div
+            class="sm:self-end col-span-12 sm:col-span-5 md:col-span-4 lg:col-span-3 relative"
+          >
+            <!-- Card -->
+            <a class="group relative block rounded-xl overflow-hidden" href="#">
+              <div
+                class="aspect-w-12 aspect-h-7 sm:aspect-none rounded-xl overflow-hidden"
+              >
+                <img
+                  class="group-hover:scale-105 transition-transform duration-500 ease-in-out rounded-xl w-full object-cover"
+                  src="https://www.resumehelp.com/wp-content/uploads/2023/09/Harvard-Resume-Template-Example.svg"
+                  alt="Image Description"
+                />
+                {#if selectedIndex === index}
+                  <div class="success-icon">
+                    <svg
+                      fill="currentColor"
+                      class="text-green-500"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M9 11l3 3L22 4l-2-2L9 12 4 7 2 9l7 7z"></path>
+                    </svg>
+                  </div>
+                {/if}
+              </div>
+              <div class="absolute bottom-0 start-0 end-0 p-2">
+                <div
+                  class="font-semibold text-gray-800 rounded-lg bg-white p-3 dark:bg-neutral-800 dark:text-neutral-200"
+                >
+                  Basic
+                </div>
+              </div>
+            </a>
+            <!-- End Card -->
+          </div>
+          <!-- End Col -->
+        </li>
+      {/each}
       <!-- <li>
         <a
           class="flex items-center gap-x-3.5 py-2 px-2.5 bg-gray-100 text-sm
@@ -125,24 +198,31 @@
           Dashboard
         </a>
       </li> -->
-      <li>
-            <div class="w-full group bg-white shadow-lg shadow-gray-200 rounded-xl p-2.5 transition-all duration-500 hover:shadow-gray-300">
-            <div class="rounded-3xl ">
-            <img src="https://pagedone.io/asset/uploads/1695365240.png" alt="image" class="rounded-xl w-full h-auto relative z-10 shadow-lg shadow-stone-300">
-            </div>
-            <div class="flex flex-col items-center justify-center py-6 px-4 gap-4 text-center">
 
-            <p class="text-base font-medium text-gray-500 mb-4 text-left">Basic template</p>
-            <div class="flex items-center justify-start w-full gap-4 mb-4">
-             
-              <a href="#" class="w-10 aspect-square rounded-full bg-gray-50 border-gray-600 border flex items-center justify-center transition-all duration-500 hover:bg-gray-100 hover:border-gray-900"> +20 </a>
-            </div>
-            <button class="rounded-lg py-2.5 px-6 text-center w-full text-white bg-indigo-600 font-semibold text-lg transition-all duration-500 hover:bg-indigo-700">contact us</button>
-            </div>
-            </div>
-      </li>
       <!-- Add more items as needed -->
     </ul>
   </nav>
 </div>
+
 <!-- End Sidebar -->
+
+<style>
+  .sidebar-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-closed {
+    transform: translateX(100%);
+  }
+  .selected {
+    border: 2px solid #4caf50; /* Example border color for selected state */
+  }
+
+  .success-icon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 24px;
+    height: 24px;
+  }
+</style>

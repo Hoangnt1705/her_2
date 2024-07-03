@@ -14,6 +14,6 @@
     </div>
   <ResumeTemplateSidebar/>
 </main>
-
+ 
 
 

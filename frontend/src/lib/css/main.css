@@ -648,6 +648,23 @@ p {
 
 
 @media screen and (max-width: 768px) {
+  .svg-icon-sidebar-resume-template{
+    margin-left: 10px;
+  }
+  .resumeTemplateSidebarBtn{
+    top: 15%;
+    right: 0px;
+    width: 50px;
+    padding: 10px 10px !important;
+    border-radius: 0px;
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+  }
+  .wrap-title-resume-template-btn{
+    display: inline;
+    font-size: 11px;
+    text-align: center;
+  }
   .wrap-resume-ai {
     overflow:auto;
     padding: 10px 15px

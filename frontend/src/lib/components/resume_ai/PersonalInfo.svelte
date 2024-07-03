@@ -261,8 +261,8 @@
                       </button>
                     </div>
                     <div class="p-4 overflow-y-auto">
-                      <p class="mt-1 text-gray-800 dark:text-neutral-400">
-                        This is a wider card with supporting text below as a natural lead-in to additional content.
+                      <p class="mt-1 text-gray-800 dark:text-neutral-400 text-left">
+                        Please enter your personal profile, including education, experience, skills, leadership abilities,
                       </p>
                       <div class="max-w-full space-y-3 ">
                         <textarea style="resize:none" class="outline-none py-3 px-4 block w-full border border-solid border-red-200 rounded-lg text-sm focus:border-red-500 focus:ring-red-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 textareaScroll" rows="25" placeholder="This is a textarea placeholder"></textarea>
