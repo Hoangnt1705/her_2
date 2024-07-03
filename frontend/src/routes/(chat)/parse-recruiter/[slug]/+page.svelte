@@ -133,7 +133,6 @@
               <div class="mx-auto">
                 <textarea
                   {disabled}
-                  id="infomation-recruiment"
                   bind:value={inputParseRecruiter}
                   on:input={handleInputChange}
                   on:keydown={handleKeyDown}
@@ -144,7 +143,7 @@
                   rows="8"
                   class="block p-2.5 w-full text-base text-gray-900 bg-gray-50
                   rounded-lg border border-gray-300 focus:ring-red-300
-                  focus:border-red-200 " />
+                  focus:border-red-200 textareaScroll" />
                 <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 -->
               </div>
             </div>

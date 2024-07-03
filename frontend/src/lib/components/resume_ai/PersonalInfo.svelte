@@ -5,6 +5,7 @@
 	import { clickOutsideAction } from 'svelte-tel-input/utils';
 	import { TelInput, isSelected, normalizedCountries } from 'svelte-tel-input';
 	import 'svelte-tel-input/styles/flags.css';
+  import Boop from '$lib/components/Boop.svelte';
     import { fade } from 'svelte/transition';
     import QuestionTooltip from '$lib/components/QuestionTooltip.svelte';
 	export let clickOutside = true;
@@ -125,7 +126,7 @@
             <button
                 id="states-button"
                 data-dropdown-toggle="dropdown-states"
-                class="relative flex-shrink-0 overflow-hidden z-10 whitespace-nowrap inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white dark:border-gray-600"
+                class="relative flex-shrink-0 overflow-hidden whitespace-nowrap inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white dark:border-gray-600"
                 type="button"
                 role="combobox"
                 aria-controls="dropdown-countries"
@@ -238,7 +239,9 @@
                 <button type="button" class="py-3 px-4 gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-slate-50 hover:bg-slate-100 disabled:opacity-50 disabled:pointer-events-none" on:click={toggleModalGeneralInformation}>
                     Biography
                 </button>
-                <QuestionTooltip  information='Entering a personal biography is required to proceed to the next step of creating a resume.'/>
+                <Boop rotation={20} timing={50}>
+                  <QuestionTooltip  information='Entering a personal biography is required to proceed to the next step of creating a resume.'/>
+                </Boop>
             </div>
           
               {#if isModalOpenGeneralInformation}
@@ -262,7 +265,7 @@
                         This is a wider card with supporting text below as a natural lead-in to additional content.
                       </p>
                       <div class="max-w-full space-y-3 ">
-                        <textarea style="resize:none" class="outline-none py-3 px-4 block w-full border border-solid border-red-200 rounded-lg text-sm focus:border-red-500 focus:ring-red-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" rows="30" placeholder="This is a textarea placeholder"></textarea>
+                        <textarea style="resize:none" class="outline-none py-3 px-4 block w-full border border-solid border-red-200 rounded-lg text-sm focus:border-red-500 focus:ring-red-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 textareaScroll" rows="25" placeholder="This is a textarea placeholder"></textarea>
                       </div>
                     </div>
                     <div class="flex justify-end items-center gap-x-2 py-3 px-4 mt-auto border-t dark:border-neutral-700">

@@ -12,6 +12,13 @@
   const handleHover = () => {
     speedDial = !speedDial
   }
+  let clickResumeAI = true;
+  let clickParseRecruiter = true;
+  const selectHidden = (i) => {
+    if (i) clickResumeAI = !clickResumeAI
+    else clickParseRecruiter = !clickParseRecruiter;
+  }
+
 
    
 </script>
@@ -43,8 +50,8 @@
         <h1>Choose the appropriate AI model</h1>
       </div>
       <div class="flex parse-recruiter">
-        <a
-          href="/parse-recruiter" data-sveltekit-preload-data
+        <a on:click={() => selectHidden(false)}
+          href="/parse-recruiter" data-sveltekit-preload-code
           class="relative h-[200px] w-[350px] border border-solid
           border-gray-200 rounded-2xl bg-white p-4 transition-all duration-500
           col-span-12 xl:p-7 lg:col-span-3 md:col-span-6 shadow-none
@@ -63,12 +70,19 @@
             leading-5 ">
             Great information Analysis Functionality
           </p>
+          <div class:hidden={clickParseRecruiter} class="absolute top-0 start-0 size-full bg-white/50 rounded-lg dark:bg-neutral-800/40"></div>
+
+          <div class:hidden={clickParseRecruiter} class="absolute top-1/2 start-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-red-600 rounded-full dark:text-blue-500" role="status" aria-label="loading">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
         </a>
         <div style="margin: auto 0;">
           {@html svg.orMain}
         </div>
-        <a
-          href="/resume-ai" data-sveltekit-preload-data
+        <a on:click={() => selectHidden(true)}
+          href="/resume-ai" data-sveltekit-preload-code
           class="relative h-[200px] w-[350px] border border-solid
           border-gray-200 rounded-2xl p-4 transition-all duration-500
           col-span-12 xl:p-7 lg:col-span-3 md:col-span-6 bg-white shadow-none
@@ -87,6 +101,13 @@
             leading-5 ">
             Generate a Resume with AI Using Two-Way Data for Precision.
           </p>
+          <div class:hidden={clickResumeAI} class="absolute top-0 start-0 size-full bg-white/50 rounded-lg dark:bg-neutral-800/40"></div>
+
+          <div class:hidden={clickResumeAI} class="absolute top-1/2 start-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-red-600 rounded-full dark:text-blue-500" role="status" aria-label="loading">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
         </a>
       </div>
       <div class="relative " style="position: absolute;

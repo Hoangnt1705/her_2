@@ -4,7 +4,7 @@ from tenacity import retry, wait_random_exponential, stop_after_attempt
 from termcolor import colored
 from context.index import resume_functions
 from client import send_error, send_success
-from helper import chat_completion_request, pretty_print_conversation
+from helper import chat_completion_request_resume_ai, pretty_print_conversation
 import json
 
 
@@ -39,7 +39,7 @@ class Conversation:
 
 
 def chat_completion_with_function_execution(messages, functions=[None]):
-    response = chat_completion_request(messages, functions)
+    response = chat_completion_request_resume_ai(messages, functions)
     print('response', response)
 
     full_message = response.choices[0]

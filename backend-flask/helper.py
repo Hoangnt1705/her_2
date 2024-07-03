@@ -10,6 +10,7 @@ def chat_completion_request(messages, tools=None, tool_choice=None, model=GPT_MO
     try:
         response = client.chat.completions.create(
             model=model,
+            response_format={"type": "json_object"},
             messages=messages,
             tools=tools,
             tool_choice=tool_choice,
@@ -20,6 +21,19 @@ def chat_completion_request(messages, tools=None, tool_choice=None, model=GPT_MO
         print(f"Exception: {e}")
         return e
 
+def chat_completion_request_resume_ai(messages, tools=None, tool_choice=None, model=GPT_MODEL):
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            tools=tools,
+            tool_choice=tool_choice,
+        )
+        return response
+    except Exception as e:
+        print("Unable to generate ChatCompletion response")
+        print(f"Exception: {e}")
+        return e
 
 def pretty_print_conversation(messages):
     role_to_color = {

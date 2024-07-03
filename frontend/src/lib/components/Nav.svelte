@@ -33,7 +33,7 @@
 </style>
 
 <ul class="hide-navbar">
-  <SidebarToggle visible={$sidebar ? 'visible' : 'hidden'} />
+  <SidebarToggle visible={!$sidebar ? 'visible' : 'hidden'} />
 
   <li
     class="remove-style-li"

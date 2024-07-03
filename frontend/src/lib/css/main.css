@@ -336,28 +336,28 @@ i.user-icon {
   border-bottom-right-radius: 5px;
 }
 
-#infomation-recruiment::-webkit-scrollbar {
+.textareaScroll::-webkit-scrollbar {
   width: 9px;
 }
 
-#infomation-recruiment::-webkit-scrollbar-track {
+.textareaScroll::-webkit-scrollbar-track {
   background-color: transparent;
   border-radius: 10px;
   height: 90%;
 }
 
-#infomation-recruiment::-webkit-scrollbar-thumb {
+.textareaScroll::-webkit-scrollbar-thumb {
   background-color: var(--color-main);
   border-radius: 5px;
 
 }
 
-#infomation-recruiment:hover::-webkit-scrollbar-thumb {
+.textareaScroll:hover::-webkit-scrollbar-thumb {
   background-color: var(--color-main);
   border-radius: 5px;
 }
 
-#infomation-recruiment::-webkit-scrollbar-thumb:hover {
+.textareaScroll::-webkit-scrollbar-thumb:hover {
   background-color: #e0c3c3;
   border-radius: 5px;
   cursor: pointer;
@@ -730,14 +730,7 @@ p {
     display: none;
   }
 
-  #sidebar {
-    left: -260px;
-    margin-right: -260px;
-  }
-  #sidebar.hidden {
-    left: 0;
-    margin-right: 0;
-  }
+ 
 }
 
 

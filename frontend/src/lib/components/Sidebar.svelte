@@ -65,20 +65,41 @@ import {
 } from '$app/stores';
 
 // let disabled = true;
-let active = !$sidebar;
+let active = $sidebar;
 let pathValue = "M12 17V7";
 let rotate = '0deg';
 let content = 'Close sidebar';
-let openSidebarResponsive = $sidebar;
+let openSidebarResponsive;
 let editingId = null;
 let deleteId = null;
 let chatTitleSideBar = null;
 let specificButton;
 let focusBind;
-$: openSidebarResponsive = $sidebar;
-$: active = !$sidebar;
+$: active = $sidebar;
+$: openSidebarResponsive = !$sidebar;
 $: $sidebar ? content = 'Close sidebar' : content = 'Open sidebar';
 $: $sidebar ? rotate = '180deg' : rotate = '0deg';
+$: console.log('$sidebar', $sidebar)
+onMount(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)'); // Adjust the width as needed
+
+    function handleScreenChange(event) {
+      if (event.matches) {
+        if($sidebar) active = true;
+      } else {
+        active = false;
+      }
+    }
+
+    mediaQuery.addEventListener('change', handleScreenChange);
+
+    // Initial check
+    handleScreenChange(mediaQuery);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleScreenChange);
+    };
+  });
 
 function handleHover() {
     pathValue = "M12 17L14 12L12 7";
@@ -322,7 +343,7 @@ const handleNewPageClick = async () => {
         <div class="fade"></div>
         <div class="edit-buttons">
           <button><i class="fa fa-edit"></i></button>
-          <button><i class="fa fa-trash"></i></button>
+          <button><i class="faf fa-trash"></i></button>
         </div>
             </li> -->
             </div>
@@ -343,7 +364,7 @@ const handleNewPageClick = async () => {
                     }}
                     on:mouseover={handleHover}
                     on:mouseout={handleHoverOut}
-                    use:tooltip={{ content, delay: 300, theme: 'light', placement: 'right', offset: [0, -1]}}>
+                    use:tooltip={{ content, delay: 300, theme: 'withe', placement: 'right', offset: [0, -1]}}>
                     <svg  id="arrow-svg" style="transform: rotate({rotate})" width="60px" height="60px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g id="Interface / Line_M">
                             <path id="Vector" d={pathValue} stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
