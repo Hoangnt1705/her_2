@@ -1,5 +1,6 @@
 <script>
   import { fade, fly } from "svelte/transition";
+  import {svg} from '$lib/constants.js';
   let sidebarOpen = false;
 
   function toggleSidebar() {
@@ -123,7 +124,7 @@
       aria-label="Brand"
     >
       Please select a resume template for <span
-        class="px-2 text-white bg-red-600 rounded">Her</span
+        class="px-2 text-white bg-red-600 rounded">her</span
       > to create for you.
     </span>
   </div>

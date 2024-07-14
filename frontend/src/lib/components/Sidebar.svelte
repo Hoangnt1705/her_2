@@ -217,6 +217,7 @@ const handleNewPageClick = async () => {
                     <i class="fa fa-plus" />
                     New conversation
                 </button>
+                {@html svg.logo(30, 30)}
             </div>
             {#await promise}
             <div class="grid gap-3" style="margin-top:290px">

@@ -1,110 +1,113 @@
 <script>
-  import { browser } from '$app/environment'
-  import '$lib/css/loginpage.css'
-  import 'bootstrap/dist/css/bootstrap.min.css'
-  import { beforeUpdate, afterUpdate, onMount, tick, onDestroy } from 'svelte'
-  import { END_POINT } from '$lib/constants.js'
-  import { PUBLIC_OAUTH_GOOGLE_KEY } from '$env/static/public'
-  import { Application } from '@splinetool/runtime'
-  import axios from 'axios'
-  import { signInHandle } from '$lib/context/MainContext.js'
-  import { Skeleton } from 'svelte-loading-skeleton'
+  import { browser } from "$app/environment";
+  import "$lib/css/loginpage.css";
+  import "bootstrap/dist/css/bootstrap.min.css";
+  import { beforeUpdate, afterUpdate, onMount, tick, onDestroy } from "svelte";
+  import { END_POINT } from "$lib/constants.js";
+  import { PUBLIC_OAUTH_GOOGLE_KEY } from "$env/static/public";
+  import { Application } from "@splinetool/runtime";
+  import axios from "axios";
+  import { signInHandle } from "$lib/context/MainContext.js";
+  import { Skeleton } from "svelte-loading-skeleton";
+  import { svg } from "$lib/constants.js";
   import {
     visible,
     titleToast,
     contentToast,
     iconNotification,
-  } from '$lib/stores.js'
-  import { iconsNotification } from '$lib/constants.js'
-  import Toast from '$lib/components/Toast.svelte'
-  import { goto, invalidate } from '$app/navigation'
+  } from "$lib/stores.js";
+  import { iconsNotification } from "$lib/constants.js";
+  import ToastLogin from "$lib/components/ToastLogin.svelte";
+  import { goto, invalidate } from "$app/navigation";
 
   let canvas;
   const success = () => {
-    iconNotification.set(iconsNotification.success)
-    visible.update((v) => (v = !v))
-    titleToast.set('Sign in successfully!')
-    contentToast.set('Hope you will have a good experience using the service✨')
+    iconNotification.set(iconsNotification.success);
+    visible.update((v) => (v = !v));
+    titleToast.set("Sign in successfully!");
+    contentToast.set(
+      "Hope you will have a good experience using the service✨"
+    );
     setTimeout(() => {
-      visible.update((v) => (v = !v))
-      window.location.href = '/';
-    }, 2000)
-  }
+      visible.update((v) => (v = !v));
+      window.location.href = "/";
+    }, 2000);
+  };
   const failed403 = () => {
-    iconNotification.set(iconsNotification.error)
-    visible.update((v) => (v = !v))
-    titleToast.set('Sign in failed')
-    contentToast.set('Your role has not been confirmed, refuse to sign in!')
+    iconNotification.set(iconsNotification.error);
+    visible.update((v) => (v = !v));
+    titleToast.set("Sign in failed");
+    contentToast.set("Your role has not been confirmed, refuse to sign in!");
     setTimeout(() => {
-      visible.update((v) => (v = !v))
-    }, 2000)
-  }
+      visible.update((v) => (v = !v));
+    }, 2000);
+  };
   const failed502 = () => {
-    iconNotification.set(iconsNotification.error)
-    visible.update((v) => (v = !v))
-    titleToast.set('Sign in failed!')
-    contentToast.set('Error server, refuse to sign in!')
+    iconNotification.set(iconsNotification.error);
+    visible.update((v) => (v = !v));
+    titleToast.set("Sign in failed!");
+    contentToast.set("Error server, refuse to sign in!");
     setTimeout(() => {
-      visible.update((v) => (v = !v))
-    }, 2000)
-  }
+      visible.update((v) => (v = !v));
+    }, 2000);
+  };
 
   async function handleCredentialResponse(responseToken) {
     try {
-      console.log('Encoded JWT ID token: ' + responseToken.credential)
+      console.log("Encoded JWT ID token: " + responseToken.credential);
       const response = await axios.post(`${END_POINT}/auth/login`, {
         idToken: responseToken.credential,
-      })
-      success()
-      const { data } = response.data
-      signInHandle(data.accessToken, data.refreshToken, data.user)
-      console.log(data)
+      });
+      success();
+      const { data } = response.data;
+      signInHandle(data.accessToken, data.refreshToken, data.user);
+      console.log(data);
     } catch (error) {
-      console.log(error)
-      failed502()
+      console.log(error);
+      failed502();
     }
   }
 
   async function initializeGoogleSignIn() {
     if (
-      typeof google === 'undefined' ||
-      typeof google.accounts === 'undefined' ||
-      typeof google.accounts.id === 'undefined'
+      typeof google === "undefined" ||
+      typeof google.accounts === "undefined" ||
+      typeof google.accounts.id === "undefined"
     ) {
       // Google sign-in script hasn't loaded yet, delay initialization
-      setTimeout(initializeGoogleSignIn, 500)
-      return
+      setTimeout(initializeGoogleSignIn, 500);
+      return;
     }
 
     google.accounts.id.initialize({
       client_id: PUBLIC_OAUTH_GOOGLE_KEY,
       callback: handleCredentialResponse,
-    })
-    await tick()
+    });
+    await tick();
     google.accounts.id.renderButton(
-      document.getElementById('buttonDiv'),
-      { theme: 'outline', size: 'large', locale: 'en' }, // customization attributes
-    )
+      document.getElementById("buttonDiv"),
+      { theme: "outline", size: "large", locale: "en" } // customization attributes
+    );
     // google.accounts.id.prompt() // also display the One Tap dialog
   }
 
   const destroyCanvas = () => {
-    canvas = ''
-  }
+    canvas = "";
+  };
 
   onMount(async () => {
     try {
-      canvas = document.getElementById('canvas3d')
-      await tick()
-      const app = new Application(canvas)
+      canvas = document.getElementById("canvas3d");
+      await tick();
+      const app = new Application(canvas);
       await app.load(
-        'https://prod.spline.design/0KlpWURw0tIyxS4r/scene.splinecode',
-      )
+        "https://prod.spline.design/0KlpWURw0tIyxS4r/scene.splinecode"
+      );
 
-      initializeGoogleSignIn()
+      initializeGoogleSignIn();
     } catch (error) {
-      console.log(error)
-      failed502()
+      console.log(error);
+      failed502();
     }
   });
   onDestroy(() => {
@@ -112,14 +115,17 @@
   });
 </script>
 
-<Toast
+<ToastLogin
   visible={$visible}
   iconNotification={$iconNotification}
   title={$titleToast}
   content={$contentToast} />
 
 <section class="container-login">
-  <a href="#" class="brand ">Her</a>
+  <a href="#" class="brand ">
+    {@html svg.logo(250, 50, 'her')}
+  </a>
+
   <div class="collection-login">
     <div class="cards">
       <div class="container-water-drop">
@@ -144,6 +150,7 @@
       </div>
     </div>
   </div>
+
   <div class="copy-right-login ">
     <div>Copyright © 2024 Her</div>
   </div>

@@ -125,7 +125,7 @@ prRoute.get('/document/:cid', verifyToken, async (req, res) => {
         const chat = await ParseRecruiterChat.find({ 
           $and: [
             { _id: { $ne: null, $eq: cid } },
-            { user: { $ne: null, $eq: id } }
+            { user: { $ne: null, $eq: id } },
           ]
         });
       
@@ -134,7 +134,10 @@ prRoute.get('/document/:cid', verifyToken, async (req, res) => {
           console.log('No chat documents found');
           return sendError(res, 'No chat documents found');
         }
-      
+        if(chat[0].deleted){
+          console.log('No chat documents found');
+          return sendError(res, 'No chat documents found');
+        }
         // Log the IDs of the found chat documents
         chat.forEach(c => console.log('chat', c._id));
       

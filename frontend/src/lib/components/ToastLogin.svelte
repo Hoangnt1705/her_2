@@ -15,6 +15,7 @@
 
 <style>
   .custom {
+    z-index: 15;
     position: absolute;
     left: 9%;
     bottom: 50%;
@@ -22,7 +23,7 @@
   }
   @media screen and (max-width: 760px) {
     .custom {
-      left: 28.1%;
+      left: 20%;
       width: 280px;
       font-size: 12px;
       top: 7%;

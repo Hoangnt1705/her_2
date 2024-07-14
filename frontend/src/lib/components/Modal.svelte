@@ -1,15 +1,16 @@
 <script>
-  import { showModal } from '$lib/stores.js'
-  import axios from 'axios'
-  import { error } from '@sveltejs/kit'
-  import { svg, END_POINT } from '$lib/constants.js'
-  import { historyChat } from '$lib/stores.js'
-
-  export let accessToken
-  export let chatId
+  import { showModal } from "$lib/stores.js";
+  import axios from "axios";
+  import { error } from "@sveltejs/kit";
+  import { svg, END_POINT } from "$lib/constants.js";
+  import { historyChat } from "$lib/stores.js";
+  import { goto } from "$app/navigation";
+    import { tick } from "svelte";
+  export let accessToken;
+  export let chatId;
   const closeModal = () => {
-    showModal.update((s) => (s = !s))
-  }
+    showModal.update((s) => (s = !s));
+  };
   const deleteChat = async (chatId) => {
     try {
       const response = await axios.put(
@@ -19,22 +20,26 @@
         },
         {
           headers: { authorization: `Bearer ${accessToken}` },
-        },
-      )
-      historyChat.update((chats) => {
-        const index = chats.findIndex((chat) => chat._id == chatId)
-        if (index !== -1) {
-          chats.splice(index, 1)
         }
-        return chats
-      })
-      console.log('historyChat', response)
-      closeModal()
+      );
+      historyChat.update((chats) => {
+        const index = chats.findIndex((chat) => chat._id == chatId);
+        if (index !== -1) {
+          chats.splice(index, 1);
+        }
+        return chats;
+      });
+      console.log("historyChat", response);
+      closeModal();
+      await tick();
+      setTimeout(() => {
+        goto('/parse-recruiter');
+      }, 200);
     } catch (err) {
-      console.log(err)
-      throw error(404)
+      console.log(err);
+      throw error(404);
     }
-  }
+  };
 </script>
 
 <style>
@@ -104,7 +109,8 @@
               class="inline-flex w-full justify-center rounded-md bg-red-600
               px-3 py-2 text-sm font-semibold text-white shadow-sm
               hover:bg-red-500 sm:ml-3 sm:w-auto"
-              on:click={deleteChat(chatId)} aria-label="Remove">
+              on:click={deleteChat(chatId)}
+              aria-label="Remove">
               Delete
             </button>
             <button

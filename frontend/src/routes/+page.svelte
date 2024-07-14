@@ -1,26 +1,23 @@
 <script>
-  import { browser } from '$app/environment'
-  import '$lib/css/main.css'
-  import { getContext, onMount, setContext, tick, onDestroy } from 'svelte'
-  import SidebarToggle from '$lib/components/SidebarToggle.svelte'
-  import { svg } from '$lib/constants.js'
-  import Nav from '$lib/components/Nav.svelte';
-  import { slide, fade, fly } from 'svelte/transition';
-  import { quintOut } from 'svelte/easing'
+  import { browser } from "$app/environment";
+  import "$lib/css/main.css";
+  import { getContext, onMount, setContext, tick, onDestroy } from "svelte";
+  import SidebarToggle from "$lib/components/SidebarToggle.svelte";
+  import { svg } from "$lib/constants.js";
+  import Nav from "$lib/components/Nav.svelte";
+  import { slide, fade, fly } from "svelte/transition";
+  import { quintOut } from "svelte/easing";
 
-  let speedDial = true
+  let speedDial = true;
   const handleHover = () => {
-    speedDial = !speedDial
-  }
+    speedDial = !speedDial;
+  };
   let clickResumeAI = true;
   let clickParseRecruiter = true;
   const selectHidden = (i) => {
-    if (i) clickResumeAI = !clickResumeAI
+    if (i) clickResumeAI = !clickResumeAI;
     else clickParseRecruiter = !clickParseRecruiter;
-  }
-
-
-   
+  };
 </script>
 
 <style>
@@ -40,18 +37,19 @@
   </script>
 </svelte:head>
 {#if browser}
-  <main class="main-page overflow-auto">
+  <main class="main-page relative ">
     <!-- <Nav hiddenNavItems={true} /> -->
     <div
-      class="grid grid-cols-2 h-[95%] m-[auto] .max-h-1 gap-4 font-bold
-      leading-6 items-center view new-func-view -margin-choose-model"
-      style="overflow: auto;">
+      class="choose-wrap text-justify grid grid-cols-2 h-[95%] m-[auto] .max-h-1 gap-4 font-bold
+      leading-6 items-center view new-func-view -margin-choose-model">
       <div class="text-2xl my-10">
         <h1>Choose the appropriate AI model</h1>
       </div>
-      <div class="flex parse-recruiter">
-        <a on:click={() => selectHidden(false)}
-          href="/parse-recruiter" data-sveltekit-preload-code
+      <div class="flex parse-recruiter" >
+        <a
+          on:click={() => selectHidden(false)}
+          href="/parse-recruiter"
+          data-sveltekit-preload-code
           class="relative h-[200px] w-[350px] border border-solid
           border-gray-200 rounded-2xl bg-white p-4 transition-all duration-500
           col-span-12 xl:p-7 lg:col-span-3 md:col-span-6 shadow-none
@@ -70,10 +68,21 @@
             leading-5 ">
             Great information Analysis Functionality
           </p>
-          <div class:hidden={clickParseRecruiter} class="absolute top-0 start-0 size-full bg-white/50 rounded-lg dark:bg-neutral-800/40"></div>
+          <div
+            class:hidden={clickParseRecruiter}
+            class="absolute top-0 start-0 size-full bg-white/50 rounded-lg
+            dark:bg-neutral-800/40" />
 
-          <div class:hidden={clickParseRecruiter} class="absolute top-1/2 start-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <div class="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-red-600 rounded-full dark:text-blue-500" role="status" aria-label="loading">
+          <div
+            class:hidden={clickParseRecruiter}
+            class="absolute top-1/2 start-1/2 transform -translate-x-1/2
+            -translate-y-1/2">
+            <div
+              class="animate-spin inline-block size-6 border-[3px]
+              border-current border-t-transparent text-red-600 rounded-full
+              dark:text-blue-500"
+              role="status"
+              aria-label="loading">
               <span class="sr-only">Loading...</span>
             </div>
           </div>
@@ -81,8 +90,10 @@
         <div style="margin: auto 0;">
           {@html svg.orMain}
         </div>
-        <a on:click={() => selectHidden(true)}
-          href="/resume-ai" data-sveltekit-preload-code
+        <a
+          on:click={() => selectHidden(true)}
+          href="/resume-ai"
+          data-sveltekit-preload-code
           class="relative h-[200px] w-[350px] border border-solid
           border-gray-200 rounded-2xl p-4 transition-all duration-500
           col-span-12 xl:p-7 lg:col-span-3 md:col-span-6 bg-white shadow-none
@@ -101,29 +112,41 @@
             leading-5 ">
             Generate a Resume with AI Using Two-Way Data for Precision.
           </p>
-          <div class:hidden={clickResumeAI} class="absolute top-0 start-0 size-full bg-white/50 rounded-lg dark:bg-neutral-800/40"></div>
+          <div
+            class:hidden={clickResumeAI}
+            class="absolute top-0 start-0 size-full bg-white/50 rounded-lg
+            dark:bg-neutral-800/40" />
 
-          <div class:hidden={clickResumeAI} class="absolute top-1/2 start-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <div class="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-red-600 rounded-full dark:text-blue-500" role="status" aria-label="loading">
+          <div
+            class:hidden={clickResumeAI}
+            class="absolute top-1/2 start-1/2 transform -translate-x-1/2
+            -translate-y-1/2">
+            <div
+              class="animate-spin inline-block size-6 border-[3px]
+              border-current border-t-transparent text-red-600 rounded-full
+              dark:text-blue-500"
+              role="status"
+              aria-label="loading">
               <span class="sr-only">Loading...</span>
             </div>
           </div>
         </a>
       </div>
-      <div class="relative " style="position: absolute;
-        right: 0;
-        bottom: 10%;">
-        <div class="absolute right-6 bottom-6 group z-50 speeddial-button" aria-hidden="true"
-        on:mouseover={handleHover}
-        on:focus={handleHover}
-        on:mouseout={handleHover}
-        on:blur={handleHover}
-        on:click={handleHover}>
+      <div class="relative " style="position: absolute; right: 0; bottom: 10%;">
+        <div
+          class="absolute right-6 bottom-6 group z-50 speeddial-button"
+          aria-hidden="true"
+          on:mouseover={handleHover}
+          on:focus={handleHover}
+          on:mouseout={handleHover}
+          on:blur={handleHover}
+          on:click={handleHover}>
           <div
             id="speed-dial-menu-dropdown"
-            class="speed-dial-menu flex flex-col items-center mb-4
-            space-y-2 bg-white shadow-[0px_15px_60px_-4px_rgba(16,24,40,0.10)]
-            rounded-xl border border-gray-200" class:hidden={speedDial}>
+            class="speed-dial-menu flex flex-col items-center mb-4 space-y-2
+            bg-white shadow-[0px_15px_60px_-4px_rgba(16,24,40,0.10)] rounded-xl
+            border border-gray-200"
+            class:hidden={speedDial}>
             <ul class="text-sm text-gray-600 p-5">
               <li>
                 <a
@@ -177,15 +200,14 @@
                   <span class="text-sm font-medium">Support</span>
                 </a>
               </li>
-              
+
             </ul>
           </div>
           <button
             type="button"
             aria-expanded="false"
             class="flex items-center justify-center text-white bg-red-500
-            rounded-full w-16 h-16 hover:bg-red-600 focus:outline-none
-            ml-auto">
+            rounded-full w-16 h-16 hover:bg-red-600 focus:outline-none ml-auto">
             <svg
               class="w-5 h-5 transition-transform group-hover:rotate-45"
               aria-hidden="true"
@@ -202,15 +224,16 @@
             <span class="sr-only">Open actions menu</span>
           </button>
         </div>
-      </div>
-      <div class="recommendations" style="padding: 0 20px;">
-        <span class="font-normal text-gray-400 text-xs">
-          Her can make mistakes. Consider checking important information.
-        </span>
+        
       </div>
     </div>
-
+    <div class="recommendations fixed bottom-2 text-center">
+      <span class="font-normal text-gray-400 text-xs">
+        Her can make mistakes. Consider checking important information.
+      </span>
+    </div>
   </main>
+  
 {/if}
 <!-- <Row>
             <Col xs="3">.col-3</Col>

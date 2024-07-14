@@ -1,4 +1,30 @@
-<html>
+<script>
+    import axios from 'axios';
+    import '$lib/css/main.css';
+    import { END_POINT } from '$lib/constants.js'
+
+    const downloadFile = async (url, headers, body) => {
+      const response = await axios.request({
+        method: 'post',
+        url,
+        data: body,
+        headers,
+        responseType: 'arraybuffer'
+      });
+      const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', 'file.pdf'); // or any other extension
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+  
+    const generatePdf = () => {
+      const headers = { 'Content-Type': 'application/json' };
+      const body = {
+        htmlContent: `
+         <html>
 
 <head>
   <style>
@@ -91,14 +117,13 @@
       /* Position the bullet inside */
       padding-left: 2em;
       /* Add padding to the left of the list */
-      gap: 2px;
     }
+    
     li {
       position: relative; /* Establish positioning context for ::before */
       padding-left: 1.5em; /* Create space for the custom bullet */
       text-indent: -1.5em; /* Adjust the start of the text to align with the bullet */
     }
-
 
     .leadership-and-actives>.title {
       font-weight: bold;
@@ -228,6 +253,7 @@
               </ul>
             </div>
           </div>
+
         </div>
         <div class="leadership-and-actives">
           <div class="title">Leadership and Actives</div>
@@ -280,10 +306,18 @@
             </div>
 
           </div>
-          
         </div>
       </div>
     </div>
 </body>
-<img src="./test.png" alt="">
-</html>
+
+</html>`
+      };
+      
+      downloadFile(`${END_POINT}/v1/parse-recruiter/downloadPdfHere`, headers, body).then(() => {
+        console.log('PDF generated and downloaded');
+      }).catch((err) => {console.log(err)});
+    };
+  </script>
+  
+  <button on:click={generatePdf}>Generate PDF</button>

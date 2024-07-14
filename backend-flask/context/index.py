@@ -255,9 +255,11 @@ resume_functions = [
                             "name": {"type": "string"},
                             "email": {"type": "string"},
                             "phone": {"type": "string"},
-                            "address": {"type": "string"}
+                            "address": {"type": "string"},
+                            "zipcode": {"type": "number"},
+
                         },
-                        "required": ["name", "email", "phone"]
+                        "required": ["name", "email", "phone", "address"]
                     },
                     "education": {
                         "type": "array",
@@ -265,6 +267,10 @@ resume_functions = [
                         "items": {
                             "type": "object",
                             "properties": {
+                                "institution": {
+                                    "type": "string",
+                                    "description": "The name of the educational institution where the degree was obtained."
+                                },
                                 "degree": {
                                     "type": "string",
                                     "description": "The degree obtained by the user, including concentration if applicable."
@@ -273,9 +279,8 @@ resume_functions = [
                                     "type": "string",
                                     "description": "Include GPA, SAT/ACT scores, or other academic scores if requested by the employer or if relevant to the application."
                                 },
-                                "institution": {
+                                "thesis": {
                                     "type": "string",
-                                    "description": "The name of the educational institution where the degree was obtained."
                                 },
                                 "relevant_coursework": {
                                     "type": "string",

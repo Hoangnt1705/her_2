@@ -20,7 +20,6 @@ header .brand {
   color: #fff;
   font-size: 1.5rem;
   font-weight: 700;
-  text-transform: uppercase;
   text-decoration: none;
 }
 
@@ -96,7 +95,7 @@ header .navigation .navigation-items a:hover:before {
 }
 
 .home .content .wrap-header-content {
-  height: 260px;
+  height: 180px;
 }
 
 .home .content h1 {
@@ -218,8 +217,10 @@ header .navigation .navigation-items a:hover:before {
   transition: 2s ease;
   transition-property: clip-path;
 }
-
-@media screen and (max-width: 760px) {
+.svg-brand{
+  transform: translateX(-105px);
+}
+@media screen and (max-width: 768px) {
 
   header {
     padding: 12px 20px;
@@ -351,9 +352,6 @@ header .navigation .navigation-items a:hover:before {
   .section-h-page {
     padding: 12px 20px;
   }
-  .home .content .wrap-header-content {
-    height: 220px;
-}
 
   .home .content h1 {
     font-size: 3em;

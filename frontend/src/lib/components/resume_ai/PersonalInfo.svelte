@@ -1,26 +1,42 @@
 <script>
-    import '$lib/css/main.css'
-    import DropdownCountryStateCity from '$lib/components/DropdownCountryStateCity.svelte'
-    import { createEventDispatcher } from 'svelte';
+  import '$lib/css/main.css'
+  import DropdownCountryStateCity from '$lib/components/DropdownCountryStateCity.svelte'
+  import { createEventDispatcher } from 'svelte';
 	import { clickOutsideAction } from 'svelte-tel-input/utils';
 	import { TelInput, isSelected, normalizedCountries } from 'svelte-tel-input';
 	import 'svelte-tel-input/styles/flags.css';
   import Boop from '$lib/components/Boop.svelte';
-    import { fade } from 'svelte/transition';
-    import QuestionTooltip from '$lib/components/QuestionTooltip.svelte';
+  import { fade } from 'svelte/transition';
+  import {svg} from '$lib/constants.js';
+  import QuestionTooltip from '$lib/components/QuestionTooltip.svelte';
 	export let clickOutside = true;
 	export let closeOnClick = true;
 	export let disabled = false;
 	export let detailedValue = null;
-	export let value = null;
 	export let searchPlaceholder = 'Search';
 	export let selectedCountry = 'US';
 	export let valid = true;
 	export let options = {};
+  export let fullName;
+  export let zipCode;
+  export let homeStreetAddress;
+  export let email;
+  export let phone;
+  export let country
+  export let state;
+  export let city;
+  export let biography;
+  export let alertVisible;
+  const dispatch = createEventDispatcher();
 	let searchText = '';
 	let isOpen = false;
-    let isModalOpenGeneralInformation = false;
-
+  let isModalOpenGeneralInformation = false;
+  const showAlert = () => {
+    alertVisible = true;
+    setTimeout(() => {
+      alertVisible = false;
+    }, 1000);
+  }
 	$: selectedCountryDialCode =
 		normalizedCountries.find((el) => el.iso2 === selectedCountry)?.dialCode || null;
 
@@ -88,11 +104,17 @@
 		}
 	};
 
-	const dispatch = createEventDispatcher();
-
 	const onChange = (selectedCountry) => {
 		dispatch('change', { option: selectedCountry });
 	};
+  const saveBio = () => {
+    localStorage.setItem('bio', biography);
+    isModalOpenGeneralInformation = !isModalOpenGeneralInformation;
+    showAlert();
+  }
+
+  
+  
 </script>
 
 <style>
@@ -104,19 +126,20 @@
     }
    
 </style>
+
     <div class="max-w-md space-y-3">
         <h3 class="text-gray-900 text-4xl font-extrabold md:text-3xl lg:text-4xl">
            <span class="text-transparent bg-clip-text bg-gradient-to-r to-red-600 from-gray-400">Personal</span> Information
           </h3>        <!-- Floating Input -->
         <!-- Full Name Input -->
         <div class="relative">
-            <input type="text" id="hs-floating-input-name" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="Full Name">
+            <input bind:value={fullName} type="text" id="hs-floating-input-name" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="Full Name">
             <label for="hs-floating-input-name" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] dark:text-white peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Full Name</label>
         </div>
 
         <!-- Email Input -->
         <div class="relative">
-            <input type="email" id="hs-floating-input-email" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="you@email.com">
+            <input bind:value={email} type="email" id="hs-floating-input-email" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="you@email.com">
             <label for="hs-floating-input-email" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] dark:text-white peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Email</label>
         </div>
 
@@ -204,8 +227,8 @@
             <TelInput
             bind:country={selectedCountry}
             bind:detailedValue
-            bind:value
             bind:valid
+            bind:value={phone}
             {options}
             required
             class="text-sm rounded-r-lg block w-full p-2.5 focus:outline-none border border-gray-300 border-l-gray-100 dark:border-l-gray-700 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white text-gray-900"
@@ -213,17 +236,19 @@
         </div>
 
 
-        <DropdownCountryStateCity/>
+        <DropdownCountryStateCity bind:valueCountry={country} bind:valueState={state} bind:valueDistrict={city}/>
  
         <!-- Address Input -->
         <div class="relative">
-            <input type="text" id="hs-floating-input-address" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="Address">
+            <input bind:value={homeStreetAddress} type="text" id="hs-floating-input-address" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="Address">
             <label for="hs-floating-input-address" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] dark:text-white peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Home street address
 
             </label>
         </div>
+        <!-- zip code -->
         <div class="relative">
             <input 
+            bind:value={zipCode}
             type="text" 
             id="hs-floating-input-name" 
             class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none"
@@ -232,7 +257,7 @@
             inputmode="numeric"
             oninput="this.value = this.value.replace(/[^0-9]/g, '');"
             >
-            <label for="hs-floating-input-name" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] dark:text-white peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Zip code</label>
+            <label for="hs-floating-input-name" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] dark:text-white peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Zip code (Optional)</label>
         </div>
         <div class="relative">
             <div class="flex">
@@ -242,6 +267,19 @@
                 <Boop rotation={20} timing={50}>
                   <QuestionTooltip  information='Entering a personal biography is required to proceed to the next step of creating a resume.'/>
                 </Boop>
+                {#if biography}
+                <div class="inline-flex flex-wrap gap-2 items-center pl-2">
+                  <div>
+                    <span class="py-1 px-2 inline-flex items-center gap-x-1 text-xs font-medium bg-teal-100 text-teal-800 rounded-full dark:bg-teal-500/10 dark:text-teal-500">
+                      <svg class="flex-shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                        <path d="m9 12 2 2 4-4"></path>
+                      </svg>
+                      Saved
+                    </span>
+                  </div>
+                </div>
+                {/if}
             </div>
           
               {#if isModalOpenGeneralInformation}
@@ -260,19 +298,27 @@
                         </svg>
                       </button>
                     </div>
+                   
                     <div class="p-4 overflow-y-auto">
-                      <p class="mt-1 text-gray-800 dark:text-neutral-400 text-left">
-                        Please enter your personal profile, including education, experience, skills, leadership abilities,
+                      <p class="flex items-center mt-1 text-gray-800 dark:text-neutral-400 text-left">
+                        <svg width="7" height="7" class="mr-1" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M3.11222 6.04545L3.20668 3.94744L1.43679 5.08594L0.894886 4.14134L2.77415 3.18182L0.894886 2.2223L1.43679 1.2777L3.20668 2.41619L3.11222 0.318182H4.19105L4.09659 2.41619L5.86648 1.2777L6.40838 2.2223L4.52912 3.18182L6.40838 4.14134L5.86648 5.08594L4.09659 3.94744L4.19105 6.04545H3.11222Z" fill="#EF4444" />
+                        </svg> Please enter your personal profile, including education, experience, skills, leadership abilities, and additional Information...
+                      </p>
+                      <p class="flex items-center mt-1 text-gray-800 dark:text-neutral-400 text-left">
+                        <svg width="7" height="7" class="mr-1" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M3.11222 6.04545L3.20668 3.94744L1.43679 5.08594L0.894886 4.14134L2.77415 3.18182L0.894886 2.2223L1.43679 1.2777L3.20668 2.41619L3.11222 0.318182H4.19105L4.09659 2.41619L5.86648 1.2777L6.40838 2.2223L4.52912 3.18182L6.40838 4.14134L5.86648 5.08594L4.09659 3.94744L4.19105 6.04545H3.11222Z" fill="#EF4444" />
+                        </svg> You have the option to present it as a personal introduction paragraph, or you may choose to list the information instead.
                       </p>
                       <div class="max-w-full space-y-3 ">
-                        <textarea style="resize:none" class="outline-none py-3 px-4 block w-full border border-solid border-red-200 rounded-lg text-sm focus:border-red-500 focus:ring-red-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 textareaScroll" rows="25" placeholder="This is a textarea placeholder"></textarea>
+                        <textarea bind:value={biography} style="resize:none" class="outline-none py-3 px-4 block w-full border border-solid border-red-200 rounded-lg text-sm focus:border-red-500 focus:ring-red-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 textareaScroll" rows="25" placeholder="Text"></textarea>
                       </div>
                     </div>
                     <div class="flex justify-end items-center gap-x-2 py-3 px-4 mt-auto border-t dark:border-neutral-700">
                       <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800" on:click={toggleModalGeneralInformation}>
                         Close
                       </button>
-                      <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">
+                      <button type="button" on:click={saveBio} class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">
                         Save changes
                       </button>
                     </div>
