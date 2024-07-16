@@ -374,7 +374,7 @@ const handleNewPageClick = async () => {
                 </div>
             </div>
         </div>
-        <Overlay {active} on:click={handleOverlay} />
+        <Overlay {active} on:click={handleOverlay} style="z-index:10"/>
         <Modal chatId={deleteId} accessToken={$accessToken}/>
                                     <!-- <ul class="conversations">
                             <li class="grouping">Yesterday</li>

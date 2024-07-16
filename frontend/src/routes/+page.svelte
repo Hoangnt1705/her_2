@@ -40,12 +40,13 @@
   <main class="main-page relative ">
     <!-- <Nav hiddenNavItems={true} /> -->
     <div
-      class="choose-wrap text-justify grid grid-cols-2 h-[95%] m-[auto] .max-h-1 gap-4 font-bold
-      leading-6 items-center view new-func-view -margin-choose-model">
+      class="choose-wrap text-justify grid grid-cols-2 h-[95%] m-[auto] .max-h-1
+      gap-4 font-bold leading-6 items-center view new-func-view
+      -margin-choose-model">
       <div class="text-2xl my-10">
         <h1>Choose the appropriate AI model</h1>
       </div>
-      <div class="flex parse-recruiter" >
+      <div class="flex parse-recruiter">
         <a
           on:click={() => selectHidden(false)}
           href="/parse-recruiter"
@@ -70,19 +71,39 @@
           </p>
           <div
             class:hidden={clickParseRecruiter}
-            class="absolute top-0 start-0 size-full bg-white/50 rounded-lg
+            class="absolute top-0 start-0 size-full bg-white/50 rounded-2xl
             dark:bg-neutral-800/40" />
 
           <div
             class:hidden={clickParseRecruiter}
             class="absolute top-1/2 start-1/2 transform -translate-x-1/2
             -translate-y-1/2">
-            <div
+            <!-- <div
               class="animate-spin inline-block size-6 border-[3px]
               border-current border-t-transparent text-red-600 rounded-full
               dark:text-blue-500"
               role="status"
               aria-label="loading">
+              <span class="sr-only">Loading...</span>
+            </div> -->
+            <div class="grid gap-3">
+              <div class="flex items-center justify-center">
+                <svg
+                  class="animate-spin border-red-600"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="30"
+                  height="30"
+                  viewBox="0 0 30 30"
+                  fill="none">
+                  <circle
+                    cx="15"
+                    cy="15"
+                    r="14"
+                    stroke="#DC2626"
+                    stroke-width="2"
+                    stroke-dasharray="6 6" />
+                </svg>
+              </div>
               <span class="sr-only">Loading...</span>
             </div>
           </div>
@@ -114,19 +135,39 @@
           </p>
           <div
             class:hidden={clickResumeAI}
-            class="absolute top-0 start-0 size-full bg-white/50 rounded-lg
+            class="absolute top-0 start-0 size-full bg-white/50 rounded-2xl
             dark:bg-neutral-800/40" />
 
           <div
             class:hidden={clickResumeAI}
             class="absolute top-1/2 start-1/2 transform -translate-x-1/2
             -translate-y-1/2">
-            <div
+            <!-- <div
               class="animate-spin inline-block size-6 border-[3px]
               border-current border-t-transparent text-red-600 rounded-full
               dark:text-blue-500"
               role="status"
               aria-label="loading">
+              <span class="sr-only">Loading...</span>
+            </div> -->
+            <div class="grid gap-3">
+              <div class="flex items-center justify-center">
+                <svg
+                  class="animate-spin border-red-600"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="30"
+                  height="30"
+                  viewBox="0 0 30 30"
+                  fill="none">
+                  <circle
+                    cx="15"
+                    cy="15"
+                    r="14"
+                    stroke="#DC2626"
+                    stroke-width="2"
+                    stroke-dasharray="6 6" />
+                </svg>
+              </div>
               <span class="sr-only">Loading...</span>
             </div>
           </div>
@@ -224,7 +265,7 @@
             <span class="sr-only">Open actions menu</span>
           </button>
         </div>
-        
+
       </div>
     </div>
     <div class="recommendations fixed bottom-2 text-center">
@@ -233,7 +274,6 @@
       </span>
     </div>
   </main>
-  
 {/if}
 <!-- <Row>
             <Col xs="3">.col-3</Col>

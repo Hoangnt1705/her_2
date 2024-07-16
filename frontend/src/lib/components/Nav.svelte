@@ -1,19 +1,21 @@
 <script>
-  import { svg } from '$lib/constants.js'
-  import { sidebar } from '$lib/stores.js'
-  import SidebarToggle from '$lib/components/SidebarToggle.svelte'
-  import { page, navigating } from '$app/stores'
-  import { onMount } from 'svelte'
-  let isOpen = true
-  export let hiddenNavItems
+  import { svg } from "$lib/constants.js";
+  import { sidebar } from "$lib/stores.js";
+  import SidebarToggle from "$lib/components/SidebarToggle.svelte";
+  import { page, navigating } from "$app/stores";
+  import { onMount } from "svelte";
+  let isOpen = true;
+  let loadPage = true;
+  export let hiddenNavItems;
 
   // Regular expressions for dynamic paths
-  const parseRecruiterPath = /^\/parse-recruiter(\/[^\/]+)?$/
-  const createCvPath = /^\/resume-ai(\/[^\/]+)?$/
+  const parseRecruiterPath = /^\/parse-recruiter(\/[^\/]+)?$/;
+  const createCvPath = /^\/resume-ai(\/[^\/]+)?$/;
   // Function to check if a path matches a regex
   function isActivePath(regex) {
-    return regex.test($page.url.pathname)
+    return regex.test($page.url.pathname);
   }
+
 </script>
 
 <style>
@@ -56,10 +58,12 @@
         </div>
 
         <a
-          href={isActivePath(parseRecruiterPath) ? $page.url.pathname : '/parse-recruiter'}
+          href={isActivePath(parseRecruiterPath) ? '' : '/parse-recruiter'}
           class="drhv intern-ai-drop"
+          on:click={() => isActivePath(parseRecruiterPath) ? '' :  loadPage = !loadPage }
           aria-current={isActivePath(parseRecruiterPath)}
-          class:active={isActivePath(parseRecruiterPath)}>
+          class:active={isActivePath(parseRecruiterPath)}
+          data-sveltekit-preload-code>
           <div>
             {@html svg.internAi}
           </div>
@@ -79,10 +83,12 @@
         </a>
 
         <a
-          href={isActivePath(createCvPath) ? $page.url.pathname : '/resume-ai'}
+          href={isActivePath(createCvPath) ? '' : '/resume-ai'}
           class="drhv senior-ai-drop"
+          on:click={() => isActivePath(createCvPath) ? '' : loadPage = !loadPage}
           aria-current={isActivePath(createCvPath)}
-          class:active={isActivePath(createCvPath)}>
+          class:active={isActivePath(createCvPath)}
+          data-sveltekit-preload-code>
           <div>
             {@html svg.seniorAi}
           </div>
@@ -106,7 +112,38 @@
               {@html svg.activeModel}
             {/if}
           </div>
+
         </a>
+        <div
+          class:hidden={loadPage}
+          class="absolute top-0 start-0 size-full bg-white/50 rounded-lg
+          dark:bg-neutral-800/40" />
+
+        <div
+          class:hidden={loadPage}
+          class="absolute top-1/2 start-1/2 transform -translate-x-1/2
+          -translate-y-1/2">
+          <div class="grid gap-3">
+            <div class="flex items-center justify-center">
+              <svg
+                class="animate-spin border-red-600"
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                viewBox="0 0 30 30"
+                fill="none">
+                <circle
+                  cx="15"
+                  cy="15"
+                  r="14"
+                  stroke="#DC2626"
+                  stroke-width="2"
+                  stroke-dasharray="6 6" />
+              </svg>
+            </div>
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
       </ul>
     </div>
   </li>

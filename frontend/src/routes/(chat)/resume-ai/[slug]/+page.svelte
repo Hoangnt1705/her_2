@@ -1,136 +1,33 @@
 <script>
-    import axios from 'axios';
-    import '$lib/css/main.css';
-    import { END_POINT } from '$lib/constants.js'
+  import axios from "axios";
+  import "$lib/css/main.css";
+  import { END_POINT } from "$lib/constants.js";
 
-    const downloadFile = async (url, headers, body) => {
-      const response = await axios.request({
-        method: 'post',
-        url,
-        data: body,
-        headers,
-        responseType: 'arraybuffer'
-      });
-      const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.setAttribute('download', 'file.pdf'); // or any other extension
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    };
-  
-    const generatePdf = () => {
-      const headers = { 'Content-Type': 'application/json' };
-      const body = {
-        htmlContent: `
+  const downloadFile = async (url, headers, body) => {
+    const response = await axios.request({
+      method: "post",
+      url,
+      data: body,
+      headers,
+      responseType: "arraybuffer",
+    });
+    const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.setAttribute("download", "file.pdf"); // or any other extension
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const generatePdf = () => {
+    const headers = { "Content-Type": "application/json" };
+    const body = {
+      htmlContent: `
          <html>
 
 <head>
-  <style>
-    body {
-      font-family: 'Times New Roman', Times, serif;
-      box-sizing: border-box;
-      padding: 0;
-      margin: 0;
-      width: 100%;
-      font-size: 15px
-    }
-
-    .container {
-      padding: 70px 60px;
-    }
-
-    .fullName {
-      text-align: center;
-      padding: 0;
-      font-weight: bold;
-    }
-
-    .contact-info {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-
-    }
-
-    .contact-info span {
-      position: relative;
-      padding-right: 15px;
-      white-space: nowrap;
-    }
-
-    .contact-info span:not(:last-child)::after {
-      content: "•";
-      position: absolute;
-      right: 5px;
-    }
-
-    .education>.title {
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .experience>.title {
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .skill-interest>.title {
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .margin-main-role {
-      margin-top: 32px;
-    }
-
-    .role {
-      padding: 0px 5px;
-    }
-
-    .education>.line1 {}
-
-    .organization-bold {
-      font-size: 17;
-      font-weight: bold;
-    }
-
-    .flex-between {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .marginTop {
-      margin-top: 15px;
-    }
-
-    .position,
-    .role-in-laa {
-      font-weight: bold;
-
-    }
-
-    ul {
-      list-style-position: inside;
-      /* Position the bullet inside */
-      padding-left: 2em;
-      /* Add padding to the left of the list */
-    }
-    
-    li {
-      position: relative; /* Establish positioning context for ::before */
-      padding-left: 1.5em; /* Create space for the custom bullet */
-      text-indent: -1.5em; /* Adjust the start of the text to align with the bullet */
-    }
-
-    .leadership-and-actives>.title {
-      font-weight: bold;
-      text-align: center;
-    }
-  </style>
-</head>
+  <style ✂prettier:content✂="CiAgICBib2R5IHsKICAgICAgZm9udC1mYW1pbHk6ICdUaW1lcyBOZXcgUm9tYW4nLCBUaW1lcywgc2VyaWY7CiAgICAgIGJveC1zaXppbmc6IGJvcmRlci1ib3g7CiAgICAgIHBhZGRpbmc6IDA7CiAgICAgIG1hcmdpbjogMDsKICAgICAgd2lkdGg6IDEwMCU7CiAgICAgIGZvbnQtc2l6ZTogMTVweAogICAgfQoKICAgIC5jb250YWluZXIgewogICAgICBwYWRkaW5nOiA3MHB4IDYwcHg7CiAgICB9CgogICAgLmZ1bGxOYW1lIHsKICAgICAgdGV4dC1hbGlnbjogY2VudGVyOwogICAgICBwYWRkaW5nOiAwOwogICAgICBmb250LXdlaWdodDogYm9sZDsKICAgIH0KCiAgICAuY29udGFjdC1pbmZvIHsKICAgICAgZGlzcGxheTogZmxleDsKICAgICAgZmxleC13cmFwOiB3cmFwOwogICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjsKICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjsKCiAgICB9CgogICAgLmNvbnRhY3QtaW5mbyBzcGFuIHsKICAgICAgcG9zaXRpb246IHJlbGF0aXZlOwogICAgICBwYWRkaW5nLXJpZ2h0OiAxNXB4OwogICAgICB3aGl0ZS1zcGFjZTogbm93cmFwOwogICAgfQoKICAgIC5jb250YWN0LWluZm8gc3Bhbjpub3QoOmxhc3QtY2hpbGQpOjphZnRlciB7CiAgICAgIGNvbnRlbnQ6ICLigKIiOwogICAgICBwb3NpdGlvbjogYWJzb2x1dGU7CiAgICAgIHJpZ2h0OiA1cHg7CiAgICB9CgogICAgLmVkdWNhdGlvbj4udGl0bGUgewogICAgICBmb250LXdlaWdodDogYm9sZDsKICAgICAgdGV4dC1hbGlnbjogY2VudGVyOwogICAgfQoKICAgIC5leHBlcmllbmNlPi50aXRsZSB7CiAgICAgIGZvbnQtd2VpZ2h0OiBib2xkOwogICAgICB0ZXh0LWFsaWduOiBjZW50ZXI7CiAgICB9CgogICAgLnNraWxsLWludGVyZXN0Pi50aXRsZSB7CiAgICAgIGZvbnQtd2VpZ2h0OiBib2xkOwogICAgICB0ZXh0LWFsaWduOiBjZW50ZXI7CiAgICB9CgogICAgLm1hcmdpbi1tYWluLXJvbGUgewogICAgICBtYXJnaW4tdG9wOiAzMnB4OwogICAgfQoKICAgIC5yb2xlIHsKICAgICAgcGFkZGluZzogMHB4IDVweDsKICAgIH0KCiAgICAuZWR1Y2F0aW9uPi5saW5lMSB7fQoKICAgIC5vcmdhbml6YXRpb24tYm9sZCB7CiAgICAgIGZvbnQtc2l6ZTogMTc7CiAgICAgIGZvbnQtd2VpZ2h0OiBib2xkOwogICAgfQoKICAgIC5mbGV4LWJldHdlZW4gewogICAgICBkaXNwbGF5OiBmbGV4OwogICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47CiAgICB9CgogICAgLm1hcmdpblRvcCB7CiAgICAgIG1hcmdpbi10b3A6IDE1cHg7CiAgICB9CgogICAgLnBvc2l0aW9uLAogICAgLnJvbGUtaW4tbGFhIHsKICAgICAgZm9udC13ZWlnaHQ6IGJvbGQ7CgogICAgfQoKICAgIHVsIHsKICAgICAgbGlzdC1zdHlsZS1wb3NpdGlvbjogaW5zaWRlOwogICAgICAvKiBQb3NpdGlvbiB0aGUgYnVsbGV0IGluc2lkZSAqLwogICAgICBwYWRkaW5nLWxlZnQ6IDJlbTsKICAgICAgLyogQWRkIHBhZGRpbmcgdG8gdGhlIGxlZnQgb2YgdGhlIGxpc3QgKi8KICAgIH0KICAgIAogICAgbGkgewogICAgICBwb3NpdGlvbjogcmVsYXRpdmU7IC8qIEVzdGFibGlzaCBwb3NpdGlvbmluZyBjb250ZXh0IGZvciA6OmJlZm9yZSAqLwogICAgICBwYWRkaW5nLWxlZnQ6IDEuNWVtOyAvKiBDcmVhdGUgc3BhY2UgZm9yIHRoZSBjdXN0b20gYnVsbGV0ICovCiAgICAgIHRleHQtaW5kZW50OiAtMS41ZW07IC8qIEFkanVzdCB0aGUgc3RhcnQgb2YgdGhlIHRleHQgdG8gYWxpZ24gd2l0aCB0aGUgYnVsbGV0ICovCiAgICB9CgogICAgLmxlYWRlcnNoaXAtYW5kLWFjdGl2ZXM+LnRpdGxlIHsKICAgICAgZm9udC13ZWlnaHQ6IGJvbGQ7CiAgICAgIHRleHQtYWxpZ246IGNlbnRlcjsKICAgIH0KICA="></style></head>
 
 <body>
   <div class="container">
@@ -311,13 +208,26 @@
     </div>
 </body>
 
-</html>`
-      };
-      
-      downloadFile(`${END_POINT}/v1/parse-recruiter/downloadPdfHere`, headers, body).then(() => {
-        console.log('PDF generated and downloaded');
-      }).catch((err) => {console.log(err)});
+</html>`,
     };
-  </script>
-  
-  <button on:click={generatePdf}>Generate PDF</button>
+
+    downloadFile(
+      `${END_POINT}/v1/parse-recruiter/downloadPdfHere`,
+      headers,
+      body
+    )
+      .then(() => {
+        console.log("PDF generated and downloaded");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+</script>
+
+<button on:click={generatePdf}>Generate PDF</button>
+<div class="relative">
+
+
+ 
+</div>
