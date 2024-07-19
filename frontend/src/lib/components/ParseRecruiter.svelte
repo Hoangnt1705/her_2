@@ -94,6 +94,12 @@ const scrollTo = async () => {
 
 </script>
 
+<style>
+    .ok1{
+        line-break: auto;
+    }
+
+</style>
 <!-- Chat Bubble -->
 <ul class="space-y-5" style="scroll-behavior: smooth;">
     {#each data as doc (doc._id)}
@@ -149,7 +155,7 @@ const scrollTo = async () => {
                         {doc.receiver.data.recruiter}
                     </h4>
                 </div>
-                <div class="w-full columns-2 md:columns-3 xl:columns-4 gap-3 ">
+                <div class="w-full columns-3 md:columns-3 xl:columns-4 gap-3 ">
                     {#each Object.entries(doc.receiver.data) as [key, value]}
                     {#if key !== 'recruiter' && key !== "unit_of_time_for_position_experience"
                     && key !=="title" && key !== "unit_of_time_for_holidays" && key !== "currency_format"}
@@ -157,10 +163,10 @@ const scrollTo = async () => {
                         <div
                             transition:fade
                             class="flex flex-col items-start justify-center rounded-2xl
-                            bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500
-                            dark:shadow-none text-left">
-                            <p class="text-sm text-gray-600" style="color: #a3aed0 !important">{key}</p>
-                            <p class="text-base font-medium text-navy-700 ">
+                            bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500
+                            dark:shadow-none text-left bg-gray-50">
+                            <p class="text-sm text-gray-600 relative ok1 max-w-[200px]" style="color: #a3aed0 !important">{key}</p>
+                            <p class="text-base font-medium text-navy-700 relative  max-w-[200px]">
                                 {#if value === null}
                                 No
                                 {:else if value === false}

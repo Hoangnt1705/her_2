@@ -8,7 +8,7 @@
   import { browser } from '$app/environment'
   import { fade } from 'svelte/transition'
   import { END_POINT } from '$lib/constants.js'
-  import { accessToken, historyChat, statusSend } from '$lib/stores.js'
+  import { accessToken, historyChat, statusSend, activeChatId, lengthChat } from '$lib/stores.js'
   import { goto } from '$app/navigation'
   import axios from 'axios'
 
@@ -101,9 +101,16 @@
                 currentHistory.unshift(response.data.data.result);
                 return currentHistory;
             });
-
+            lengthChat.update(c => c = c + 1);
+            if($historyChat && $historyChat.length > 15){
+              historyChat.update(arr => {
+                  arr.pop();
+                return arr = arr;
+              })
+            };
             // Navigate to the new page
-            await  goto(`/parse-recruiter/${response.data.data.result._id}`);
+            goto(`/parse-recruiter/${response.data.data.result._id}`);
+            activeChatId.set(response.data.data.result._id);
         } else {
             // Handle unsuccessful response status
             console.error('Error:', response.statusText);
@@ -123,7 +130,8 @@
   })
 
   onMount(() => {
-    typeWriter()
+    typeWriter();
+    activeChatId.set(null);
   });
 
   // function handleUpdate(event) {

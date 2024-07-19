@@ -21,12 +21,13 @@ const chatRoute = express.Router()
 chatRoute.get('/', async (req, res) => {
     const { uid } = req.query;
     try {
-        const pageSize = 15
+        const pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 15;
         const page = req.query.page ? parseInt(req.query.page) : 0
+        console.log(pageSize, page);
         const length = await ParseRecruiterChat.countDocuments
-            ({ $and: [{ user: { $ne: null, $eq: uid } }, { title: { $ne: 'error' }}, {deleted: {$ne: true}} ]});
+            ({ $and: [{ user: { $ne: null, $eq: uid } }, { deleted: { $ne: true } }] });
         const listChat = await ParseRecruiterChat.find
-            ({ $and: [{ user: { $ne: null, $eq: uid } }, { title: { $ne: 'error' }}, {deleted: {$ne: true}} ]})
+            ({ $and: [{ user: { $ne: null, $eq: uid } }, { deleted: { $ne: true } }] })
             .limit(pageSize)
             .skip(page)
             .sort({ updatedAt: -1 });
@@ -47,7 +48,7 @@ chatRoute.put('/description-chat-sidebar', verifyToken, async (req, res) => {
     const { cid, title } = req.body;
     try {
         const chat = await ParseRecruiterChat.findByIdAndUpdate(cid, { title });
-        return sendSuccess(res, "update chat successfully.", {chat})
+        return sendSuccess(res, "update chat successfully.", { chat })
     } catch (error) {
         return sendError(res, error);
     }
@@ -60,7 +61,7 @@ chatRoute.put('/description-chat-sidebar', verifyToken, async (req, res) => {
  */
 
 chatRoute.put('/description-chat-sidebar/delete', verifyToken, async (req, res) => {
-    const {cid}  = req.body;
+    const { cid } = req.body;
     try {
         await ParseRecruiterChat.findByIdAndUpdate(cid, { deleted: true });
         return sendSuccess(res, "delete chat successfully.")

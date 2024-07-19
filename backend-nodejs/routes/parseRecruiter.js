@@ -8,26 +8,9 @@ import { printIn } from '../service/consoleLog.js';
 import ParseRecruiterChat from '../model/ParseRecruiterChat.js';
 import ParseRecruiterDocument from '../model/ParseRecruiterDocument.js';
 import { getRedis } from '../db/index.js';
-import puppeteer from 'puppeteer';
 
 
-const generatePdf = async (content) => {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      timeout: 60000 // Increase timeout to 60 seconds
-    });
-    
-    const page = await browser.newPage();
-  
-    await page.setContent(content, {
-      waitUntil: 'networkidle2' // Wait until the network is idle
-    });
-    const pdf = await page.pdf({ format: 'A4' });
-  
-    await browser.close();
-    return pdf;
-  };
+
   
 
 const prRoute = express.Router()
@@ -159,17 +142,5 @@ prRoute.get('/document/:cid', verifyToken, async (req, res) => {
 
 
 
-prRoute.post('/downloadPdfHere', async (req, res) => {
-    res.contentType('application/pdf');
-  try {
-    const { htmlContent } = req.body;
-    console.log('Received HTML content:', htmlContent);
-    const pdf = await generatePdf(htmlContent);
-    res.send(pdf); // This will generate a array buffer stream
-  } catch (error) {
-    console.error('Error generating PDF:', error);
-    res.status(500).send('Error generating PDF');
-  }
-  });
 
 export default prRoute;

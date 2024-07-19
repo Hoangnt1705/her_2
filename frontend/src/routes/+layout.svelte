@@ -12,6 +12,7 @@
   // setContext('myContext', writableStore)
   export let data;
   const path = ['/']
+  $: console.log($page.url.pathname);
 </script>
 
 <DefaultLayOut>

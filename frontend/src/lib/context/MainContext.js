@@ -79,9 +79,9 @@ export const logOutHandle = async (_accessToken, _path) => {
   }
 }
 
-export const getDataChat = async (uid, _page) => {
+export const getDataChat = async (uid, _page, _pageSize) => {
   try {
-    const response = await axios.get(`${END_POINT}/v1/chat?uid=${uid}&page=${_page}`);
+    const response = await axios.get(`${END_POINT}/v1/chat?uid=${uid}${_page ? `&page=${_page}`: ''}${_pageSize ? `&pageSize=${_pageSize}`: ''}`);
     const { data } = response.data;
     if (_page) {
       historyChat.update(c => {

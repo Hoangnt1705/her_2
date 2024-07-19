@@ -3,8 +3,9 @@
   import axios from "axios";
   import { error } from "@sveltejs/kit";
   import { svg, END_POINT } from "$lib/constants.js";
-  import { historyChat } from "$lib/stores.js";
+  import { user, historyChat, lengthChat } from "$lib/stores.js";
   import { goto } from "$app/navigation";
+  import {getDataChat} from '$lib/context/MainContext.js';
     import { tick } from "svelte";
   export let accessToken;
   export let chatId;
@@ -29,6 +30,9 @@
         }
         return chats;
       });
+      lengthChat.update(c => c = c - 1);
+      getDataChat($user.id, $historyChat.length, 1)
+
       console.log("historyChat", response);
       closeModal();
       await tick();

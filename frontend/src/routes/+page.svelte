@@ -7,6 +7,7 @@
   import Nav from "$lib/components/Nav.svelte";
   import { slide, fade, fly } from "svelte/transition";
   import { quintOut } from "svelte/easing";
+  import {activeChatId} from '$lib/stores.js';
 
   let speedDial = true;
   const handleHover = () => {
@@ -18,7 +19,9 @@
     if (i) clickResumeAI = !clickResumeAI;
     else clickParseRecruiter = !clickParseRecruiter;
   };
+  $: console.log($activeChatId);
 </script>
+
 
 <style>
 

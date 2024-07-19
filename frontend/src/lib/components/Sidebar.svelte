@@ -27,7 +27,8 @@ import {
     sidebar,
     historyChat,
     showModal,
-    lengthChat
+    lengthChat,
+    activeChatId
 } from '$lib/stores.js'
 import {
     spring
@@ -128,16 +129,16 @@ function tooltip(node, options) {
 };
 let promise;
 $: if ($user) promise = getDataChat($user.id);
-$: console.log($historyChat)
-let activeChatId = null;
+$: if($lengthChat) console.log($historyChat.length, $lengthChat)
 
 // Function to set the active chat ID based on the current URL
 
 let currentPath = $page.url.pathname;
 let hasUpdated = false;
 
-function handleClick(chatId, url) {
-    activeChatId = chatId;
+async function handleClick(chatId, url) {
+    activeChatId.set(chatId);
+    await tick();
     goto(url)
 }
 
@@ -185,11 +186,12 @@ const updateActiveChat = () => {
     console.log('match', match); // This should now log only once per update cycle
 
     if (match) {
-        activeChatId = match[1];
+        activeChatId.set(match[1]);
     }
 
     hasUpdated = true; // Set the flag to prevent redundant updates
 }
+
 
 beforeUpdate(() => {
     if ($page.url.pathname) {
@@ -202,10 +204,9 @@ afterUpdate(async () => {
     updateActiveChat();
 });
 
-const handleNewPageClick = async () => {
-    await tick();
+const handleMoreChat = async () => {
     getDataChat($user.id, $historyChat.length);
-    updateActiveChat();
+
   }
 </script>
 
@@ -242,7 +243,7 @@ const handleNewPageClick = async () => {
                 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
                 <!-- animate:flip -->
                 {#each $historyChat.filter(chat => chat.deleted === false).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)) as chat (chat._id)}
-                <li class="inline-flex items-center text-sm font-medium text-gray-800 my-1" out:send={{ key: chat._id }} id="chat-{chat._id}">
+                <li class="inline-flex items-center text-sm font-medium text-gray-800 my-1" in:receive={{ key: chat._id }} out:send={{ key: chat._id }} id="chat-{chat._id}">
                     {#if editingId === chat._id}
                     <input
                         on:blur={ async (event) => {
@@ -254,7 +255,7 @@ const handleNewPageClick = async () => {
                         }}
                         type="text"
                         aria-current={$page.url.pathname === `/parse-recruiter/${chat._id}`}
-                        class:active="{activeChatId === chat._id}"
+                        class:active="{$activeChatId === chat._id}"
 
                         class="conversation-button text-left gap-x-2 py-3 px-4 overflow-hidden focus-border-black"
                         data-sveltekit-preload-code
@@ -270,7 +271,7 @@ const handleNewPageClick = async () => {
                         style="overflow: hidden"
                         type="button"
                         aria-current={$page.url.pathname === `/parse-recruiter/${chat._id}`}
-                        class:active="{activeChatId === chat._id}"
+                        class:active="{$activeChatId === chat._id}"
                         data-sveltekit-reload
                         class="conversation-button w-full text-left cursor-pointer gap-x-2 py-3 px-4"
                         on:click={() => handleClick(chat._id, `/parse-recruiter/${chat._id}`)}
@@ -278,8 +279,8 @@ const handleNewPageClick = async () => {
                     bind:value={chat.title}
                     >
                     {/if}
-                    <div class:fade={activeChatId === chat._id} class="fade-all"></div>
-                    <div class:edit-buttons={activeChatId === chat._id} class:ac={activeChatId !== chat._id} class="gap-1">
+                    <div class:fade={$activeChatId === chat._id} class="fade-all"></div>
+                    <div class:edit-buttons={$activeChatId === chat._id} class:ac={$activeChatId !== chat._id} class="gap-1">
                         {#if editingId !== chat._id}
                         <button on:click={() => handleEditClick(chat._id, chat.title)}>
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -311,10 +312,10 @@ const handleNewPageClick = async () => {
                     </div>
                 </li>
                 {/each}
-                {#if $historyChat.length < $lengthChat}
+                {#if $historyChat.length < $lengthChat }
                 <div class="flex w-full items-center h-14">
                     <div class="flex-1"></div>
-                    <button on:click={() => handleNewPageClick()} 
+                    <button on:click={() => handleMoreChat()} 
                      class="w-7 h-7 flex items-center justify-center bg-gray-700 rounded-xl shadow-sm border border-gray-700 cursor-pointer">
                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 22 22" fill="none">
                         <g id="Add">

@@ -22,3 +22,4 @@ export const showModal = writable(false);
 export const statusSend = writable(null);
 export const recruiterData = writable(null);
 export const isLoadGenerateResume = writable(false);
+export const activeChatId = writable(null);

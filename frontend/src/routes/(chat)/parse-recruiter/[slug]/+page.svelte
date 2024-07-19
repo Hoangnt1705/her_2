@@ -22,6 +22,7 @@
     let inputParseRecruiter
     let disabled = false
     let btnFocus = ''
+    let div;
     const focus = (node) => node.focus();
     
   
@@ -100,7 +101,6 @@
     // function handleUpdate(event) {
     //   isOpen = event.detail.isOpen
     // }
-    let div;
     afterUpdate(() => {
       div.scrollTo(0, 0);
     });

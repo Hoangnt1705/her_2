@@ -1,6 +1,6 @@
 import dotenv from "dotenv"
 dotenv.config();
-import createError from 'http-errors';
+import fs from 'fs';import createError from 'http-errors';
 import express from 'express';
 import path from 'path';
 import cors from 'cors';
@@ -18,6 +18,7 @@ import authRoute from './routes/auth.js'; // Assuming this is the correct route 
 import adminRoute from "./routes/admin/index.js";
 import userRoute from "./routes/user.js";
 import parseRecruiter from './routes/parseRecruiter.js';
+import resumeAIRoute from './routes/resumeAI.js';
 import chat from './routes/chat.js';
 import { verifyToken } from './middleware/index.js';
 import { initRedis, getRedis } from "./db/index.js";
@@ -47,6 +48,7 @@ const app = express()
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
 
 //redis
 initRedis();
@@ -106,7 +108,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
   .use('/api/auth', authRoute)
   .use('/api/user', userRoute)
   .use('/api/v1/parse-recruiter', parseRecruiter)
-  .use('/api/v1/chat',chat);
+  .use('/api/v1/chat', chat)
+  .use('/api/v1/resume-ai', resumeAIRoute)
 app.use('/*', async (req, res) => {
   res.status(501).send("Don't implement.")
 })
