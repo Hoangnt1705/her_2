@@ -9,6 +9,7 @@
   import { fade } from 'svelte/transition';
   import {svg} from '$lib/constants.js';
   import QuestionTooltip from '$lib/components/QuestionTooltip.svelte';
+  import DatePicker from '$lib/components/resume_ai/DatePicker.svelte';
 	export let clickOutside = true;
 	export let closeOnClick = true;
 	export let disabled = false;
@@ -19,12 +20,10 @@
 	export let options = {};
   export let fullName;
   export let zipCode;
-  export let homeStreetAddress;
+  export let birthday;
+  export let address;
   export let email;
   export let phone;
-  export let country
-  export let state;
-  export let city;
   export let biography;
   export let alertVisible;
   const dispatch = createEventDispatcher();
@@ -133,7 +132,7 @@
           </h3>        <!-- Floating Input -->
         <!-- Full Name Input -->
         <div class="relative">
-            <input bind:value={fullName} type="text" id="hs-floating-input-name" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="Full Name">
+            <input bind:value={fullName} type="text" id="hs-floating-input-name" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="Full name">
             <label for="hs-floating-input-name" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] dark:text-white peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Full Name</label>
         </div>
 
@@ -231,17 +230,17 @@
             bind:value={phone}
             {options}
             required
-            class="text-sm rounded-r-lg block w-full p-2.5 focus:outline-none border border-gray-300 border-l-gray-100 dark:border-l-gray-700 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white text-gray-900"
+            class="text-sm rounded-r-lg block w-full p-2.5 py-4 focus:outline-none border border-gray-300 border-l-gray-100 dark:border-l-gray-700 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white text-gray-900"
             />
         </div>
 
-
-        <DropdownCountryStateCity bind:valueCountry={country} bind:valueState={state} bind:valueDistrict={city}/>
+        <DatePicker bind:birthday/>
+        <!-- <DropdownCountryStateCity bind:valueCountry={country} bind:valueState={state} bind:valueDistrict={city}/> -->
  
         <!-- Address Input -->
         <div class="relative">
-            <input bind:value={homeStreetAddress} type="text" id="hs-floating-input-address" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="Address">
-            <label for="hs-floating-input-address" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] dark:text-white peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Home street address
+            <input bind:value={address} type="text" id="hs-floating-input-address" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="Address">
+            <label for="hs-floating-input-address" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] dark:text-white peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Address
 
             </label>
         </div>
@@ -261,7 +260,7 @@
         </div>
         <div class="relative">
             <div class="flex">
-                <button type="button" class="py-3 px-4 gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-slate-50 hover:bg-slate-100 disabled:opacity-50 disabled:pointer-events-none" on:click={toggleModalGeneralInformation}>
+                <button type="button" class="py-3 px-4 gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-50 hover:bg-slate-100 disabled:opacity-50 disabled:pointer-events-none" on:click={toggleModalGeneralInformation}>
                     Biography
                 </button>
                 <Boop rotation={20} timing={50}>
@@ -326,7 +325,6 @@
                 </div>
               </div>
               {/if}
-             
         </div>
     </div>
 

@@ -181,7 +181,7 @@
 }
 
 .copy-right-login {
-    z-index: 888;
+    z-index: 11;
     display: flex;
     left: 50%;
     bottom: 0;
@@ -241,7 +241,7 @@
 
 @media (max-width: 560px) {
     #canvas3d {
-        z-index: 500;
+        z-index: 10;
 
         width: 100vh;
     }

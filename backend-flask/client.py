@@ -17,3 +17,4 @@ def send_success(emit, name_gate, message, data):
     if data:
         response_json["data"] = data
     emit(name_gate, response_json)
+    

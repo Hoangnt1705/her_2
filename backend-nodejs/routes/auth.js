@@ -221,7 +221,7 @@ authRoute.post('/logout', verifyToken, async (req, res) => {
         console.log(error);
     }
     return sendSuccess(res, 'log out successfully. see you soon.')
-})
+});
 
 export default authRoute;
 

@@ -57,7 +57,7 @@
     }
 
     .margin-main-role {
-      margin-top: 32px;
+      margin-top: 28px;
     }
 
     .role {
@@ -67,7 +67,7 @@
     .education>.line1 {}
 
     .organization-bold {
-      font-size: 17;
+      font-size: 16.5;
       font-weight: bold;
     }
 
@@ -77,7 +77,7 @@
     }
 
     .marginTop {
-      margin-top: 15px;
+      margin-top: 16px;
     }
 
     .position,
@@ -85,24 +85,39 @@
       font-weight: bold;
 
     }
+    .module-skill-interests{
+      margin-top: 5px;
+    }
 
     ul {
+      margin: 1px 0px;
       list-style-position: inside;
       /* Position the bullet inside */
       padding-left: 2em;
       /* Add padding to the left of the list */
       gap: 2px;
     }
+
     li {
-      position: relative; /* Establish positioning context for ::before */
-      padding-left: 1.5em; /* Create space for the custom bullet */
-      text-indent: -1.5em; /* Adjust the start of the text to align with the bullet */
+      position: relative;
+      /* Establish positioning context for ::before */
+      padding-left: 1.5em;
+      /* Create space for the custom bullet */
+      text-indent: -1.5em;
+      /* Adjust the start of the text to align with the bullet */
     }
 
 
     .leadership-and-actives>.title {
       font-weight: bold;
       text-align: center;
+    }
+
+    .dividersName {
+      height: 3px;
+      background-color: black;
+      border: none;
+      width: 100%;
     }
   </style>
 </head>
@@ -112,7 +127,7 @@
     <div>
       <div class="fullName">Your name</div>
     </div>
-    <hr class="dividersName">
+    <div class="dividersName">.</div>
     <div>
       <div class="contact-info">
         <span>Home Street Address</span>
@@ -226,10 +241,26 @@
                   Do not use personal pronouns; each line should be a phrase rather than full sentence.
                 </li>
               </ul>
+              <ul>
+                <li>
+                  With your next-most recent position, describe your experience, skills, and resulting outcomes in bullet
+                  or paragraph form
+                </li>
+                <li>
+                  Begin each line with an action verb and include details that will help the reader understand your
+                  accomplishments, skills, knowledge, abilities, or achievements.
+                </li>
+                <li>
+                  Quantify where possible.
+                </li>
+                <li>
+                  Do not use personal pronouns; each line should be a phrase rather than full sentence.
+                </li>
+              </ul>
             </div>
           </div>
         </div>
-        <div class="leadership-and-actives">
+        <div class="margin-main-role leadership-and-actives">
           <div class="title">Leadership and Actives</div>
           <div class="module-laa">
             <div class="flex-between">
@@ -264,26 +295,26 @@
 
           <div class="margin-main-role skill-interest">
             <div class="title">Skills & Interests</div>
-            <div>
-             <div>
-              <span style="font-weight:bold">Technical: </span><span>List computer software and programming languages</span>
-             </div>
-             <div>
-              <span style="font-weight:bold">Language: </span><span>List foreign languages and your level of fluency</span>
-             </div>
-             <div>
-              <span style="font-weight:bold">Laboratory: </span><span> List scientific / research lab techniques or tools [If Applicable]</span>
-             </div>
-             <div>
-              <span style="font-weight:bold">Interests: </span><span>List activities you enjoy that may spark interview conversation</span>
-             </div>
+            <div class="module-skill-interests">
+              <div>
+                <span style="font-weight:bold">Technical: </span><span>List computer software and programming languages</span>
+              </div>
+              <div>
+                <span style="font-weight:bold">Language: </span><span>List foreign languages and your level of fluency</span>
+              </div>
+              <div>
+                <span style="font-weight:bold">Laboratory: </span><span> List scientific / research lab techniques or tools [If Applicable]</span>
+              </div>
+              <div>
+                <span style="font-weight:bold">Interests: </span><span>List activities you enjoy that may spark interview conversation</span>
+              </div>
             </div>
 
           </div>
-          
+
         </div>
       </div>
     </div>
 </body>
-<img src="./test.png" alt="">
+
 </html>

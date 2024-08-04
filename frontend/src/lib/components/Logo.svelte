@@ -46,3 +46,4 @@
   <path transform="translate(446,474)" d="m0 0h8l8 3 7 7 2 6v11l-5 8-6 5-7 2h-8l-8-4-6-7-2-6v-7l3-9 5-5 5-3z"/>
   <text x="120%" y="70%" text-anchor="middle" font-family="Playwrite CU" font-size="350">{content}</text>
 </svg>
+

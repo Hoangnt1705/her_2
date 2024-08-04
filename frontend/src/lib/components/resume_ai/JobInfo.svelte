@@ -1,8 +1,10 @@
 <script>
-  import '$lib/css/main.css'
-  import GenerateResumeBtn from '$lib/components/resume_ai/generateResumeBtn.svelte'
-  export let generateResume
-  export let jobValue
+  import "$lib/css/main.css";
+  import GenerateResumeBtn from "$lib/components/resume_ai/generateResumeBtn.svelte";
+  import SelectLanguage from '$lib/components/resume_ai/SelectLanguage.svelte';
+  export let generateResume;
+  export let jobValue;
+  export let languageResume;
 </script>
 
 <div class="max-w-md space-y-3">
@@ -28,5 +30,6 @@
         placeholder="Please enter the recruitment information." />
     </div>
   </div>
-  <GenerateResumeBtn generateResume={generateResume}/>
+  <SelectLanguage bind:languageResume />
+  <GenerateResumeBtn {generateResume} />
 </div>

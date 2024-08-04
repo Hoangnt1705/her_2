@@ -6,6 +6,7 @@ GPT_MODEL = "gpt-3.5-turbo-0125"
 api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key)
 
+
 def chat_completion_request(messages, tools=None, tool_choice=None, model=GPT_MODEL):
     try:
         response = client.chat.completions.create(
@@ -21,10 +22,27 @@ def chat_completion_request(messages, tools=None, tool_choice=None, model=GPT_MO
         print(f"Exception: {e}")
         return e
 
+
+def parse_language_resume_data(messages, model=GPT_MODEL):
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages,
+        )
+        return response
+    except Exception as e:
+        print("Unable to generate ChatCompletion response")
+        print(f"Exception: {e}")
+        return e
+
+
 def chat_completion_request_resume_ai(messages, tools=None, tool_choice=None, model=GPT_MODEL):
     try:
         response = client.chat.completions.create(
             model=model,
+            temperature=0.7,
+            top_p=0.8,
+            max_tokens=4096,
             messages=messages,
             tools=tools,
             tool_choice=tool_choice,
@@ -34,6 +52,7 @@ def chat_completion_request_resume_ai(messages, tools=None, tool_choice=None, mo
         print("Unable to generate ChatCompletion response")
         print(f"Exception: {e}")
         return e
+
 
 def pretty_print_conversation(messages):
     role_to_color = {
@@ -58,4 +77,3 @@ def pretty_print_conversation(messages):
         elif message["role"] == "function":
             print(colored(
                 f"function ({message['name']}): {message['content']}\n", role_to_color[message["role"]]))
-

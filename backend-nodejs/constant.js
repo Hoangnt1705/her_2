@@ -64,7 +64,6 @@ export const STAFF = {
 export const SOCKET_URL = process.env.NODE_SOCKET_URL;
 
 export const EVENT = {
-    parseRecruiter: '/parse-recruiter',
-    
+    connect: '/her-ai',
     disconnect: 'disconnect'
 }

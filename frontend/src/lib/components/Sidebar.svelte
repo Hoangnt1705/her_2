@@ -243,7 +243,7 @@ const handleMoreChat = async () => {
                 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
                 <!-- animate:flip -->
                 {#each $historyChat.filter(chat => chat.deleted === false).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)) as chat (chat._id)}
-                <li class="inline-flex items-center text-sm font-medium text-gray-800 my-1" in:receive={{ key: chat._id }} out:send={{ key: chat._id }} id="chat-{chat._id}">
+                <li class="inline-flex items-center text-sm font-medium text-gray-800 my-1 hover:bg-red-50" in:receive={{ key: chat._id }} out:send={{ key: chat._id }} id="chat-{chat._id}">
                     {#if editingId === chat._id}
                     <input
                         on:blur={ async (event) => {
@@ -315,7 +315,7 @@ const handleMoreChat = async () => {
                 {#if $historyChat.length < $lengthChat }
                 <div class="flex w-full items-center h-14">
                     <div class="flex-1"></div>
-                    <button on:click={() => handleMoreChat()} 
+                    <button on:click={() => handleMoreChat()} data-ripple-light="true"
                      class="w-7 h-7 flex items-center justify-center bg-gray-700 rounded-xl shadow-sm border border-gray-700 cursor-pointer">
                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 22 22" fill="none">
                         <g id="Add">
@@ -375,7 +375,7 @@ const handleMoreChat = async () => {
                 </div>
             </div>
         </div>
-        <Overlay {active} on:click={handleOverlay} style="z-index:10"/>
+        <Overlay {active} on:click={handleOverlay} style="z-index:14"/>
         <Modal chatId={deleteId} accessToken={$accessToken}/>
                                     <!-- <ul class="conversations">
                             <li class="grouping">Yesterday</li>

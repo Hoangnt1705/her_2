@@ -3,17 +3,23 @@
   import { svg } from "$lib/constants.js";
   import "$lib/css/main.css";
   import { onMount } from "svelte";
-  import { Button, Overlay, MaterialApp } from "svelte-materialify";
-  let sidebarOpen = false;
+  import { activeRTSidebar } from "$lib/stores.js";
+  import { Dialog, Overlay } from "svelte-materialify";
+  import FullScreenResumeTemplate from "$lib/components/resume_ai/FullScreenResumeTemplate.svelte";
+
+  export let resumeTemplateValue;
   let active = false;
   let responsive = false;
+  let selectedIndex = null;
+  let isOpenFullScreenRT = false;
+  $: if (responsive) active = $activeRTSidebar;
   onMount(() => {
     const mediaQuery = window.matchMedia("(max-width: 768px)"); // Adjust the width as needed
 
     function handleScreenChange(event) {
       if (event.matches) {
         responsive = true;
-        if (sidebarOpen) active = true;
+        if ($activeRTSidebar) active = true;
       } else {
         responsive = false;
         active = false;
@@ -29,22 +35,37 @@
       mediaQuery.removeEventListener("change", handleScreenChange);
     };
   });
+
+  const selectResume = (index) => {
+    if (index == localStorage.getItem("resumeId")) {
+      localStorage.removeItem("resumeId");
+      return (resumeTemplateValue = null);
+    }
+    localStorage.setItem("resumeId", index);
+    return (resumeTemplateValue = parseInt(localStorage.getItem("resumeId")));
+  };
   function handleOverlay() {
     active = !active;
-    return (sidebarOpen = !sidebarOpen);
+    return activeRTSidebar.update((s) => (s = !s));
   }
 
   function toggleSidebar() {
-    if(responsive)
-    {
+    if (responsive) {
       active = !active;
     }
-    return sidebarOpen = !sidebarOpen;
+    return activeRTSidebar.update((s) => (s = !s));
   }
-  let selectedIndex = null;
 
   function handleClick(index) {
     selectedIndex = selectedIndex === index ? null : index;
+  }
+
+  function openModalFullScreenRT() {
+    isOpenFullScreenRT = true;
+  }
+
+  function closeModalFullScreenRT() {
+    isOpenFullScreenRT = false;
   }
 </script>
 
@@ -57,7 +78,7 @@
     transform: translateX(100%);
   }
   .selected {
-    border: 2px solid #4caf50; /* Example border color for selected state */
+    border: 2px solid #dc2626; /* Example border color for selected state */
   }
 
   .success-icon {
@@ -69,13 +90,26 @@
   }
 </style>
 
-{#if !sidebarOpen}
+<svelte:head>
+  <!-- from node_modules -->
+  <script async src="node_modules/@material-tailwind/html/scripts/ripple.js">
+
+  </script>
+  <!-- from cdn -->
+  <script
+    async
+    src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js">
+
+  </script>
+</svelte:head>
+
+{#if !$activeRTSidebar}
   <button
     out:fade={{ duration: 100 }}
     type="button"
     class="resumeTemplateSidebarBtn flex absolute right-10 inline-flex
     items-center justify-center px-8 py-2.5 overflow-hidden tracking-tighter
-    text-white bg-gray-800 rounded-lg group"
+    text-white bg-gray-900 rounded-lg group"
     on:click={toggleSidebar}
     aria-label="Toggle navigation">
     <span class="sr-only">Toggle Navigation</span>
@@ -129,18 +163,18 @@
 <!-- Sidebar -->
 <div
   id="docs-sidebar"
-  class:sidebar-open={sidebarOpen}
-  class:sidebar-closed={!sidebarOpen}
+  class:sidebar-open={$activeRTSidebar}
+  class:sidebar-closed={!$activeRTSidebar}
   class="transition-all duration-300 fixed top-0 right-0 bottom-0 z-10 w-64
   bg-white border-l border-gray-200 pt-10 pb-10 overflow-y-auto lg:block">
   <div class="absolute top-1 left-1">
     <button
       style="padding:5px"
       type="button"
-      class="text-gray-500 hover:text-gray-600 text-sm
-      font-semibold rounded-full border border-transparent text-gray-800
-      hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none
-      dark:text-white dark:hover:bg-neutral-700 s-Ya-e_a9uP7N4"
+      class="text-gray-500 hover:text-gray-600 text-sm font-semibold
+      rounded-full border border-transparent text-gray-800 hover:bg-gray-100
+      disabled:opacity-50 disabled:pointer-events-none dark:text-white
+      dark:hover:bg-neutral-700 s-Ya-e_a9uP7N4"
       on:click={toggleSidebar}
       aria-label="Toggle navigation">
       <span class="sr-only">Toggle Navigation</span>
@@ -164,7 +198,7 @@
           class="my-path" />
       </svg>
     </button>
-    
+
   </div>
   <div class="px-6 pt-5">
     <span
@@ -182,29 +216,51 @@
 
     <ul class="space-y-1.5">
       {#each [0, 1, 2] as _, index}
-        <li
-          class={selectedIndex === index ? 'selected' : ''}
-          on:click={() => handleClick(index)}>
+        <!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
+        <li class={selectedIndex === index ? 'selected' : ''}>
           <div
             class="sm:self-end col-span-12 sm:col-span-5 md:col-span-4
             lg:col-span-3 relative">
             <!-- Card -->
-            <a class="group relative block rounded-xl overflow-hidden" href="#">
+            <div class="group relative block rounded-xl overflow-hidden">
               <div
+                data-ripple-light="true"
+                role="button"
+                on:click={() => handleClick(index)}
+                on:keydown={() => handleClick(index)}
+                tabindex="0"
                 class="aspect-w-12 aspect-h-7 sm:aspect-none rounded-xl
                 overflow-hidden">
                 <img
-                  class="group-hover:scale-105 transition-transform duration-500
-                  ease-in-out rounded-xl w-full object-cover"
+                  class="h-full group-hover:scale-105 transition-transform
+                  duration-500 ease-in-out rounded-xl w-full object-cover"
                   src="https://www.resumehelp.com/wp-content/uploads/2023/09/Harvard-Resume-Template-Example.svg"
-                  alt="Image Description" />
-                {#if selectedIndex === index}
-                  <div class="success-icon">
+                  alt="" />
+                {#if resumeTemplateValue == index}
+                  <div class="success-icon animate-ping transition-all">
                     <svg
-                      fill="currentColor"
-                      class="text-green-500"
-                      viewBox="0 0 24 24">
-                      <path d="M9 11l3 3L22 4l-2-2L9 12 4 7 2 9l7 7z" />
+                      version="1.1"
+                      id="Uploaded to svgrepo.com"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      width="24px"
+                      height="24px"
+                      viewBox="0 0 32 32"
+                      xml:space="preserve">
+                      <style type="text/css">
+                        .puchipuchi_een {
+                          fill: #dc2626;
+                        }
+                      </style>
+                      <path
+                        class="puchipuchi_een"
+                        d="M7,6c0-2.757,2.243-5,5-5s5,2.243,5,5c0,1.627-0.793,3.061-2,3.974V6c0-1.654-1.346-3-3-3
+                        S9,4.346,9,6v3.974C7.793,9.061,7,7.627,7,6z
+                        M24,13c-1.104,0-2,0.896-2,2v-1c0-1.104-0.896-2-2-2s-2,0.896-2,2v-1
+                        c0-1.104-0.896-2-2-2s-2,0.896-2,2V6c0-1.104-0.896-2-2-2s-2,0.896-2,2v10.277C9.705,16.106,9.366,16,9,16c-1.104,0-2,0.896-2,2v3
+                        c0,0.454,0.155,0.895,0.438,1.249L11,28h12l2.293-3.293C25.682,24.318,26,23.55,26,23v-8C26,13.896,25.104,13,24,13z
+                        M11,29v1
+                        c0,0.552,0.447,1,1,1h10c0.553,0,1-0.448,1-1v-1H11z" />
                     </svg>
                   </div>
                 {/if}
@@ -213,10 +269,101 @@
                 <div
                   class="font-semibold text-gray-800 rounded-lg bg-white p-3
                   dark:bg-neutral-800 dark:text-neutral-200">
-                  Basic
+                  <div>
+                    <span>Basic</span>
+                  </div>
+                  {#if selectedIndex === index}
+                    <div class="flex flex-col space-y-2">
+                      <button
+                        type="button"
+                        on:click={() => selectResume(index)}
+                        class="w-full gap-2 flex content-center items-center
+                        delay-50 select-none rounded-lg {resumeTemplateValue == index ? 'bg-rose-500' : 'bg-emerald-300'}
+                        py-2 px-4 text-center align-middle font-sans text-xs
+                        font-bold uppercase text-white shadow-md
+                        shadow-gray-900/10 transition-all hover:shadow-lg
+                        hover:shadow-gray-900/20 focus:opacity-[0.85]
+                        focus:shadow-none active:opacity-[0.85]
+                        active:shadow-none disabled:pointer-events-none
+                        disabled:opacity-50 disabled:shadow-none">
+                        {#if resumeTemplateValue == index}
+                          <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M18.9985 12H5.00146"
+                              stroke="#fff"
+                              stroke-width="null"
+                              stroke-linecap="round"
+                              class="my-path" />
+                          </svg>
+                        {:else}
+                          <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3
+                              16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21
+                              7.02944 21 12Z"
+                              stroke="#ffffff"
+                              stroke-width="null"
+                              class="my-path" />
+                            <path
+                              d="M8 11.7236L9.53269 13.2563C10.1994 13.923
+                              10.5327 14.2563 10.9469 14.2563C11.3611 14.2563
+                              11.6945 13.923 12.3611 13.2563L16.6704 8.94702"
+                              stroke="#ffffff"
+                              stroke-width="null"
+                              stroke-linecap="round"
+                              class="my-path" />
+                          </svg>
+                        {/if}
+                        {resumeTemplateValue == index ? 'Unselect' : 'Select'}
+                      </button>
+                      <button
+                        on:click={openModalFullScreenRT}
+                        class="w-full gap-2 flex content-center items-center
+                        select-none rounded-lg bg-gray-900 py-2 px-4 text-center
+                        align-middle font-sans text-xs font-bold uppercase
+                        text-white shadow-md shadow-gray-900/10 transition-all
+                        hover:shadow-lg hover:shadow-gray-900/20
+                        focus:opacity-[0.85] focus:shadow-none
+                        active:opacity-[0.85] active:shadow-none
+                        disabled:pointer-events-none disabled:opacity-50
+                        disabled:shadow-none"
+                        type="button">
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M12 6V18M12 6L10 8M12 6L14 8M12 18L14 16M12 18L10
+                            16M18 12L6 12M18 12L16 10M18 12L16 14M6 12L8 14M6
+                            12L8 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21
+                            3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21
+                            7.02944 21 12Z"
+                            stroke="#ffffff"
+                            stroke-width="null"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="my-path" />
+                        </svg>
+                        Full screen
+                      </button>
+                    </div>
+                  {/if}
                 </div>
+
               </div>
-            </a>
+            </div>
             <!-- End Card -->
           </div>
           <!-- End Col -->
@@ -250,6 +397,10 @@
     </ul>
   </nav>
 </div>
+
+<FullScreenResumeTemplate
+  bind:open={isOpenFullScreenRT}
+  on:close={closeModalFullScreenRT} />
 <!-- Overlay model -->
 <Overlay {active} on:click={handleOverlay} />
 <!-- End Sidebar -->

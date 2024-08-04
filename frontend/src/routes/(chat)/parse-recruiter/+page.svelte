@@ -141,7 +141,6 @@
 </script>
 
 <svelte:head>
-  
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
@@ -185,6 +184,7 @@
         </div>
         <div class="p-4 rounded-lg col-span-2 text-center">
           <div class="inline-flex gap-2">
+
             <button 
               type="button"
               on:click={handleParseRecruiter}

@@ -1,5 +1,9 @@
 <script>
-  import { isLoadGenerateResume, activeChatId } from "$lib/stores.js";
+  import {
+    isLoadGenerateResume,
+    activeChatId,
+    activeRTSidebar,
+  } from "$lib/stores.js";
   import PersonalInfo from "$lib/components/resume_ai/PersonalInfo.svelte";
   import JobInfo from "$lib/components/resume_ai/JobInfo.svelte";
   import Nav from "$lib/components/Nav.svelte";
@@ -12,17 +16,17 @@
   let jobValue;
   let fullName;
   let zipCode;
-  let homeStreetAddress;
+  let address;
   let email;
   let phone = null;
-  let country;
-  let state;
-  let city;
+  let birthday = null;
   let biography = localStorage.getItem("bio") || null;
   let updateBioAlertVisible = false;
   let warningFieldAlertVisible = false;
   let titleWarning = "Warning!";
+  let languageResume = "english";
   let contentWarning;
+  let resumeTemplateValue = localStorage.getItem("resumeId") || null;
   const showAlert = () => {
     warningFieldAlertVisible = true;
     isLoadGenerateResume.update((c) => (c = true));
@@ -31,7 +35,7 @@
       isLoadGenerateResume.update((c) => (c = false));
     }, 1000);
   };
-  const generateResume = () => {
+  const generateResume = async () => {
     if (!$isLoadGenerateResume) {
       if (!fullName) {
         contentWarning = "Please fill your name";
@@ -45,20 +49,12 @@
         contentWarning = "Please fill your phone number";
         return showAlert();
       }
-      if (!country) {
-        contentWarning = "Please select country";
+      if (!birthday) {
+        contentWarning = "Please fill your birthday";
         return showAlert();
       }
-      if (!state) {
-        contentWarning = "Please select state";
-        return showAlert();
-      }
-      if (!city) {
-        contentWarning = "Please select district/city";
-        return showAlert();
-      }
-      if (!homeStreetAddress) {
-        contentWarning = "Please fill your home street address";
+      if (!address) {
+        contentWarning = "Please fill your address";
         return showAlert();
       }
       if (!biography) {
@@ -69,7 +65,32 @@
         contentWarning = "Please fill your job information";
         return showAlert();
       }
-      const response = axios.get(`${END_POINT}/`);
+      if (resumeTemplateValue === null) {
+        if (!$activeRTSidebar) activeRTSidebar.set(true);
+        contentWarning = "Please select resume template";
+        return showAlert();
+      }
+      isLoadGenerateResume.update((c) => (c = true));
+      try {
+        const response = await axios.post(`${END_POINT}/v1/resume-ai/upload`, {
+          fullName,
+          email,
+          phoneNumber: phone,
+          birthday: birthday,
+          address,
+          biography,
+          jobInformation: jobValue,
+          zipCode,
+          languageResume
+        });
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+        contentWarning = error;
+        return showAlert();
+      } finally {
+        isLoadGenerateResume.update((c) => (c = false));
+      }
     }
   };
   onMount(() => activeChatId.set(null));
@@ -93,13 +114,12 @@
       bind:fullName
       bind:phone
       bind:zipCode
-      bind:homeStreetAddress
-      bind:country
-      bind:state
-      bind:city
+      bind:address
+      bind:birthday
       bind:email
       bind:biography />
-    <JobInfo bind:jobValue {generateResume} />
+    <JobInfo bind:jobValue {generateResume} bind:languageResume />
+
   </div>
-  <ResumeTemplateSidebar />
+  <ResumeTemplateSidebar bind:resumeTemplateValue />
 </main>

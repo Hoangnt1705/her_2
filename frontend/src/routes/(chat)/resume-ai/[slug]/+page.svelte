@@ -1,4 +1,35 @@
 <script>
+  import { END_POINT } from "$lib/constants.js";
+  import axios from "axios";
+  import '$lib/css/main.css';
+
+  let pdfName = "c4d7d4ab-3648-46f9-a764-a38f6e4be58d--cv.pdf"; // Replace with the actual PDF name
+  let token = "c95efd48-9aa4-4e5f-8cf9-1387740a9624"; // Replace with the actual token
+
+  async function downloadPDF(pdfName, token) {
+    try {
+      const response = await axios.get(`${END_POINT}/v1/resume-ai/download/${pdfName}/${token}`, {
+        responseType: 'blob' // Important to receive the response as a Blob
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', pdfName); // Set the download attribute with the PDF name
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link); // Clean up the link element
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      alert('Failed to download PDF');
+    }
+  }
+</script>
+
+<button on:click={() => downloadPDF(pdfName, token)}>Download PDF</button>
+
+
+<!-- <script>
   import axios from "axios";
   import { END_POINT } from "$lib/constants.js";
   import { accessToken } from "$lib/stores.js";
@@ -33,7 +64,7 @@
       );
 
       if (response.status === 200) {
-        console.log("PDF uploaded successfully!");
+        console.log(response);
         // Optionally, you can display a success message or update the UI
       } else {
         console.error("Error uploading PDF:", response.status);
@@ -42,7 +73,7 @@
       console.error("Error uploading PDF:", error);
     }
   }
-</script>
+</script> -->
 
 <!-- <script>
   import axios from "axios";
@@ -275,5 +306,5 @@
 
  
 </div> -->
-<input type="file" accept="application/pdf" on:change={handleFileChange} />
-<button on:click={uploadPDF}>Upload PDF</button>
+<!-- <input type="file" accept="application/pdf" on:change={handleFileChange} />
+<button on:click={uploadPDF}>Upload PDF</button> -->
