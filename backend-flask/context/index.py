@@ -239,7 +239,7 @@ tools = [
     }
 ]
 
-resume_english_functions = [
+resume_english_functions =[
     {
         "type": "function",
         "function": {

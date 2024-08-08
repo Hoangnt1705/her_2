@@ -1,6 +1,6 @@
 <script>
   import "$lib/css/main.css";
-  import GenerateResumeBtn from "$lib/components/resume_ai/generateResumeBtn.svelte";
+  import GenerateResumeBtn from "$lib/components/resume_ai/GenerateResumeBtn.svelte";
   import SelectLanguage from '$lib/components/resume_ai/SelectLanguage.svelte';
   export let generateResume;
   export let jobValue;

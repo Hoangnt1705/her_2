@@ -69,13 +69,7 @@ resumeAIRoute.post('/upload', rateLimitAPI, async (req, res) => {
 
   try {
     const { fullName, email, phoneNumber, birthday, address, zipCode, biography, jobInformation, languageResume } = req.body;
-    const personal = `
-    -FullName: ${fullName}
-    -Email: ${email}
-    -Phone: ${phoneNumber}
-    -Address: ${address}
-    -Zip Code: ${zipCode}
-
+    const personal = `FullName: ${fullName}, Email: ${email}, Phone: ${phoneNumber}, Address: ${address}, and Zip Code: ${zipCode}
     Sumary:
     ${biography}
     `;
@@ -97,10 +91,10 @@ resumeAIRoute.post('/upload', rateLimitAPI, async (req, res) => {
     // Cache the result for future requests
     // redisClient.set(data, JSON.stringify(resFlask), { EX: 3600 });
     // console.log(resFlask.data.content);
-    // const uploadResult = await generateResume(templateResume.basic001(resFlask.data.content));
+    const uploadResult = await generateResume(templateResume.basic001(resFlask.data.content));
     console.log(resFlask.data.content)
 
-    sendSuccess(res, 'successfully', resFlask.data.content);
+    sendSuccess(res, 'successfully', uploadResult);
   } catch (error) {
     console.error('Error handling upload:', error);
     res.status(500).json({ error: 'Failed to upload PDF' });

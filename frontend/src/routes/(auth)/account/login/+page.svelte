@@ -104,7 +104,7 @@
         "https://prod.spline.design/0KlpWURw0tIyxS4r/scene.splinecode"
       );
 
-      initializeGoogleSignIn();
+      // initializeGoogleSignIn();
     } catch (error) {
       console.log(error);
       failed502();

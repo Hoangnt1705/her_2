@@ -2,7 +2,7 @@ import os
 from openai import OpenAI
 from termcolor import colored
 
-GPT_MODEL = "gpt-3.5-turbo-0125"
+GPT_MODEL = "gpt-4o"
 api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key)
 
@@ -28,6 +28,8 @@ def parse_language_resume_data(messages, model=GPT_MODEL):
         response = client.chat.completions.create(
             model=model,
             messages=messages,
+            temperature=0.7,
+            top_p=0.8,
         )
         return response
     except Exception as e:
