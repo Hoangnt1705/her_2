@@ -27,6 +27,7 @@
 		"@sveltestrap/sveltestrap": "^6.2.7",
 		"axios": "^1.6.8",
 		"bootstrap": "^5.3.3",
+		"clsx": "^2.1.1",
 		"flatpickr": "^4.6.13",
 		"jspdf-html2canvas": "^1.5.2",
 		"pdfjs-dist": "^4.5.136",
@@ -34,8 +35,10 @@
 		"puppeteer-html-pdf": "^4.0.8",
 		"svelte-loading-skeleton": "^1.0.1",
 		"svelte-materialify": "^0.3.11",
+		"svelte-motion": "^0.12.2",
 		"svelte-routing": "^2.12.0",
 		"svelte-tel-input": "^3.3.9",
+		"tailwind-merge": "^2.4.0",
 		"tippy.js": "^6.3.7",
 		"typed.js": "^2.1.0"
 	}

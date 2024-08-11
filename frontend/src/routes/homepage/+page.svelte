@@ -409,7 +409,7 @@
       </div>
       <div class="model" />
       <div class="copy-right w-full text-xs bottom-0 text-gray-800">
-        Copyright © 2024 Her
+        © 2024 Her. All rights reserved.
       </div>
     </div>
   </div>
