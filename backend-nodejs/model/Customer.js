@@ -18,15 +18,15 @@ const CustomerSchema = new Schema(
         },
 
 
-        
+
         description: {
             type: String,
             default: null
         },
-        google: {
-            locale: {type: String, default: null}, 
-            birthday: {type: String, default: null},
-            gender: {type: String, default: null}
+        detail_info: {
+            language: { type: String, default: null },
+            birthday: { type: String, default: null },
+            gender: { type: String, default: null },
         },
         rank_passers: {
             type: String,

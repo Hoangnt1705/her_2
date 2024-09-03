@@ -3,6 +3,8 @@ import puppeteer from 'puppeteer';
 import { verifyStaff, verifyToken, rateLimitAPI } from '../middleware/index.js'
 import { sendError, sendServerError, sendSuccess, sendAutoMail, sendAutoSMS } from '../helper/client.js';
 import ResumeTemplateSchema from '../model/ResumeTemplate.js';
+import ResumeAiDocument from '../model/ResumeAiDocument.js';
+import ResumeAiConversation from '../model/ResumeAiConversation.js';
 import bucket from '../firebase/firebase-config.js'; // Import your Firebase Storage bucket
 import multer from 'multer';
 import fs from 'fs';
@@ -18,7 +20,7 @@ const resumeAIRoute = express.Router();
 
 const upload = multer({ dest: 'uploads/' }); // Temporary storage
 
-const generateResume = async (content) => {
+const generateResume = async (content, title) => {
   try {
     const browser = await puppeteer.launch({
       headless: true,
@@ -33,7 +35,7 @@ const generateResume = async (content) => {
     await browser.close();
 
     // Upload the PDF buffer to Firebase Storage
-    const fileName = sanitize(`resumes-ai-pdf/${uuid() + '--' + Date.now()}.pdf`); // Generate a unique filename
+    const fileName = `resume-ai-pdfs/${uuid() + '--' + Date.now()}.pdf`;
     const token = uuid();
 
     const file = bucket.file(fileName);
@@ -48,9 +50,9 @@ const generateResume = async (content) => {
     });
 
     const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(fileName)}?alt=media&token=${token}`;
-
+    const titleConversationResume = title;
     return {
-      message: 'PDF uploaded successfully',
+      titleConversationResume,
       pdfUrl: publicUrl
     };
   } catch (error) {
@@ -60,23 +62,28 @@ const generateResume = async (content) => {
 };
 
 /**
- * @route POST /api/v1/resume-ai/
+ * @route POST /api/v1/resume-ai/upload
  * @description post personal and work information data and then transfer it to python's socket io for ai to handle, create cv and then respond to the client
  * @access private
  */
 
-resumeAIRoute.post('/upload', rateLimitAPI, async (req, res) => {
-
+resumeAIRoute.post('/upload', rateLimitAPI, verifyToken, async (req, res) => {
+  const { fullName, email, phoneNumber, birthday, address, zipCode, biography, jobInformation, languageResume, cid } = req.body;
+  let cidAuthenticated;
+  let resFlask;
+  let conversation;
+  if (!fullName && !email && !phoneNumber && !birthday && !address && !biography && !jobInformation && !languageResume) {
+    return sendError(res, 'Data in missing');
+  }
+  const personal = `FullName: ${fullName}, Email: ${email}, Phone: ${phoneNumber}, Address: ${address}, and Zip Code: ${zipCode}
+  Sumary:
+  ${biography}
+  `;
+  const myselfInformation = `Here is my information: ${personal} \n Here is recruitment information: ${jobInformation}`;
   try {
-    const { fullName, email, phoneNumber, birthday, address, zipCode, biography, jobInformation, languageResume } = req.body;
-    const personal = `FullName: ${fullName}, Email: ${email}, Phone: ${phoneNumber}, Address: ${address}, and Zip Code: ${zipCode}
-    Sumary:
-    ${biography}
-    `;
-
-
+    if (cid) return cidAuthenticated = await ResumeAiConversation.exists({ _id: cid });
+    if (cid && !cidAuthenticated) return sendError(res, "Forbidden!", 403);
     // const { instanceConnect: redisClient } = await getRedis();
-    let resFlask;
     pySocket.emit('resume-ai', {
       'personal': personal,
       'job': jobInformation,
@@ -91,10 +98,26 @@ resumeAIRoute.post('/upload', rateLimitAPI, async (req, res) => {
     // Cache the result for future requests
     // redisClient.set(data, JSON.stringify(resFlask), { EX: 3600 });
     // console.log(resFlask.data.content);
-    const uploadResult = await generateResume(templateResume.basic001(resFlask.data.content));
-    console.log(resFlask.data.content)
 
-    sendSuccess(res, 'successfully', uploadResult);
+    const uploadResult = await generateResume(templateResume.basic001(resFlask.data.content), resFlask.data.content.title);
+    if (!uploadResult.titleConversationResume && !uploadResult.pdfUrl) return sendError(res, 'Error handling upload', 403);
+    if (!cidAuthenticated) {
+      conversation = await ResumeAiConversation.create({
+        title: uploadResult.titleConversationResume ? uploadResult.titleConversationResume : 'error',
+        user: req.user.id,
+      });
+      conversation = conversation.toObject();  // Convert the Mongoose document to a plain JavaScript object
+      conversation.source = "ResumeAiConversation";
+      console.log(conversation, 'conversation');
+    };
+
+    const document = await ResumeAiDocument.create({
+      myself_information: myselfInformation,
+      resume_pdf_url: uploadResult.pdfUrl,
+      language: languageResume,
+      conversation: cidAuthenticated || conversation._id,
+    });
+    sendSuccess(res, 'PDF uploaded successfully', { result: cidAuthenticated ? document : conversation });
   } catch (error) {
     console.error('Error handling upload:', error);
     res.status(500).json({ error: 'Failed to upload PDF' });
@@ -125,24 +148,37 @@ resumeAIRoute.get('/download/:pdfName/:token', async (req, res) => {
     const pdfName = req.params.pdfName;
     const token = req.params.token;
 
-    const file = bucket.file(`resume-ai/${pdfName}`);
+    // Validate the pdfName
+    const isValidPdfName = /^[a-zA-Z0-9-_.]+$/.test(pdfName);
+    if (!isValidPdfName) {
+      return res.status(400).json({ error: 'Invalid file name' });
+    }
+
+    const file = bucket.file(`resume-ai-pdfs/${pdfName}`);
 
     // Check if the token matches the metadata
-    const [metadata] = await file.getMetadata();
+    const [metadata] = await file.getMetadata().catch((err) => {
+      console.error('Error fetching file metadata:', err);
+      return res.status(404).json({ error: 'File not found' });
+    });
+    if (!metadata) return;
+
     if (metadata.metadata.firebaseStorageDownloadTokens !== token) {
       return res.status(401).json({ error: 'Invalid token' });
     }
 
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${pdfName}"`);
+    res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(pdfName)}"`);
 
     file.createReadStream()
       .on('error', (err) => {
         console.error('Error downloading file:', err);
+        res.status(500).end('Failed to download file');
       })
-      .on('end', () => {
+      .pipe(res)
+      .on('finish', () => {
         console.log('File downloaded successfully!');
-      }).pipe(res);
+      });
   } catch (error) {
     console.error('Error downloading PDF:', error);
     res.status(500).json({ error: 'Failed to download PDF' });

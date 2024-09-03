@@ -20,4 +20,4 @@ const ResumeTemplateSchema = new Schema(
     }
 );
 
-export default mongoose.model('resumes_ai', ResumeTemplateSchema);
+export default mongoose.model('resume_templates', ResumeTemplateSchema);

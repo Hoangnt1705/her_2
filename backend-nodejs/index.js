@@ -1,6 +1,6 @@
 import dotenv from "dotenv"
 dotenv.config();
-import fs from 'fs';import createError from 'http-errors';
+import fs from 'fs'; import createError from 'http-errors';
 import express from 'express';
 import path from 'path';
 import cors from 'cors';
@@ -19,7 +19,7 @@ import adminRoute from "./routes/admin/index.js";
 import userRoute from "./routes/user.js";
 import parseRecruiter from './routes/parseRecruiter.js';
 import resumeAIRoute from './routes/resumeAI.js';
-import chat from './routes/chat.js';
+import chatAndConversation from './routes/chatAndConversation.js';
 import { verifyToken } from './middleware/index.js';
 import { initRedis, getRedis } from "./db/index.js";
 
@@ -54,18 +54,6 @@ app.set('view engine', 'ejs');
 initRedis();
 const { instanceConnect: redisClient } = await getRedis();
 
-// const store = new session.MemoryStore()
-app.use(session({
-  secret: process.env.SESSION_NAME,
-  cookie: {
-    httpOnly: true,
-    // secure: isProduction,
-    signed: true,
-  },
-  saveUninitialized: false,
-  store: new RedisStore({ client: redisClient }),
-  resave: false
-}))
 
 const whitelist = ['http://localhost:5173', 'http://localhost:5000']; // Whitelist your allowed origins
 
@@ -94,9 +82,24 @@ app.use(bodyParser.json())
 //   }
 //   next();
 // });
+// const store = new session.MemoryStore()
+app.use(
+  session({
+    store: new RedisStore({ client: redisClient }),
+    secret: process.env.SESSION_SECRET || 'your-secret', // Replace with an environment variable
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production', // Ensure cookies are sent over HTTPS in production
+      httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
+      maxAge: 1000 * 60 * 60 * 24, // Cookie expiration (e.g., 1 day)
+      // sameSite: "none", //Enable when deployment OR when not using localhost, We're not on the same site, we're using different site so the cookie need to effectively transfer from Backend to Frontend
 
-// app.use(passport.initialize());
-// app.use(passport.session());
+    }
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -108,7 +111,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
   .use('/api/auth', authRoute)
   .use('/api/user', userRoute)
   .use('/api/v1/parse-recruiter', parseRecruiter)
-  .use('/api/v1/chat', chat)
+  .use('/api/v1/chat-and-conversation', chatAndConversation)
   .use('/api/v1/resume-ai', resumeAIRoute)
 app.use('/*', async (req, res) => {
   res.status(501).send("Don't implement.")

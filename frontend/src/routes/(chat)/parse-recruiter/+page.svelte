@@ -101,10 +101,12 @@
                 currentHistory.unshift(response.data.data.result);
                 return currentHistory;
             });
+            //update the length of total history
             lengthChat.update(c => c = c + 1);
+            // if history length is greater than 15, the last element of the history will be removed
             if($historyChat && $historyChat.length > 15){
               historyChat.update(arr => {
-                  arr.pop();
+                arr.pop();
                 return arr = arr;
               })
             };
@@ -140,21 +142,6 @@
   $: console.log('>>>', $historyChat )
 </script>
 
-<svelte:head>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer" />
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/flowbite@1.4.4/dist/flowbite.min.css" />
-  <script src="https://unpkg.com/flowbite@1.4.0/dist/flowbite.js">
-
-  </script>
-</svelte:head>
-
 {#if browser}
   <main class="main-page content-center">
     <Nav />
@@ -188,10 +175,11 @@
             <button 
               type="button"
               on:click={handleParseRecruiter}
-              class="flex items-center gap-2 py-2.5 px-5 text-sm duration-500
-              text-white rounded-lg cursor-pointer font-semibold text-center
-              shadow-xs transition-all {!inputParseRecruiter?.trim() ? '' : 'bg-red-500 hover:bg-red-700'}"
-              style="{disabled ? 'cursor: not-allowed; background: #B91C1C' : ''}; {!inputParseRecruiter?.trim() ? 'cursor: auto; background-color: #B91C1C' : ''}">
+              class="flex items-center gap-2 py-2.5 px-5 text-sm gap-1 select-none rounded-lg bg-red-600 py-2 px-4 text-center align-middle
+              font-sans text-xs font-bold uppercase text-white shadow-md
+              shadow-gray-900/10 transition-all {!inputParseRecruiter?.trim() ? '' : 'hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none'}
+              disabled:cursor-not-allowed disabled:opacity-50
+              disabled:shadow-none " disabled={disabled || !inputParseRecruiter?.trim()}>
               {@html disabled ? svg.spinnerLoading : svg.btnParseRecruiter}
               Condense
             </button>

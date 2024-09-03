@@ -26,6 +26,7 @@ import {
 } from '$lib/utils/transition.js';
 import { currencyFormat } from '$lib/constants.js';
 export let data;
+console.log('data>>>>>', data);
 
 let countStaticPR = 0
 // const handleStaticPR = () => {
@@ -152,10 +153,12 @@ const scrollTo = async () => {
                 dark:text-white dark:!shadow-none p-3">
                 <div class="mt-2 mb-8 w-full text-center">
                     <h4 class="px-2 text-xl font-bold text-navy-700 dark:text-navy-700">
-                        {doc.receiver.data.recruiter}
+                        {!doc.receiver.data.recruiter || doc.receiver.data.recruiter === "NULL" 
+                        || doc.receiver.data.recruiter === null || doc.receiver.data.recruiter === undefined 
+                        || doc.receiver.data.recruiter === "undefined" ? "Company" : doc.receiver.data.recruiter}
                     </h4>
                 </div>
-                <div class="w-full columns-3 md:columns-3 xl:columns-4 gap-3 ">
+                <div class="w-full columns-2 md:columns-3 xl:columns-4 gap-3 ">
                     {#each Object.entries(doc.receiver.data) as [key, value]}
                     {#if key !== 'recruiter' && key !== "unit_of_time_for_position_experience"
                     && key !=="title" && key !== "unit_of_time_for_holidays" && key !== "currency_format"}
@@ -167,7 +170,7 @@ const scrollTo = async () => {
                             dark:shadow-none text-left bg-gray-50">
                             <p class="text-sm text-gray-600 relative ok1 max-w-[200px]" style="color: #a3aed0 !important">{key}</p>
                             <p class="text-base font-medium text-navy-700 relative  max-w-[200px]">
-                                {#if value === null}
+                                {#if value === null || value === "NULL" || value === "Null" || value === undefined || value === "undefined"}
                                 No
                                 {:else if value === false}
                                 No

@@ -107,7 +107,7 @@ def resume_ai(data_resume):
     if not data_resume['job']:
         emit('resume-ai', "Invalid request")
     try:
-        content_language = "You will be provided with statements, and your task is to convert them to standard "
+        content_language = "You will be given commands and your task is to turn them into a story about yourself in standard "
         if data_resume['language'] == "english":
             content_language += "English."
         elif data_resume['language'] == "vietnam":

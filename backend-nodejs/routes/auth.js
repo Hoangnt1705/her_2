@@ -21,7 +21,7 @@ import {
     customerRegisterValidate, userVerifyOTP, userLoginValidate,
     userForgotPw, userChangePw
 } from '../validation/auth.js'
-
+import '../service/passport.js';
 const jobBoardAPIKey = process.env.JOB_BOARD_API_KEY;
 const openAIAPIKey = process.env.OPENAI_API_KEY;
 
@@ -33,104 +33,73 @@ var authRoute = express.Router();
  * @description login user
  * @access public
  */
-authRoute.post('/login', async (req, res) => {
-    const token = req.body.idToken;
-    if (!token) return sendError(res, 'Required valid token');
 
-    const client = new OAuth2Client();
+// Google
+authRoute.get('/google/login',
+    passport.authenticate('google', {
+        scope: ['email', 'profile'
+            // 'https://www.googleapis.com/auth/user.birthday.read', 'https://www.googleapis.com/auth/user.gender.read'
+        ]
+    }));
+
+authRoute.get('/google/callback',
+    passport.authenticate('google', { failureRedirect: '/api/auth/google/login' }),
+    (req, res) => {
+        // if (req.user && req.isAuthenticated()) {
+        //     res.redirect('http://localhost:5173/account/login');
+        // } else {
+        //     res.redirect('/api/auth/google/login');
+        // }
+        res.redirect('http://localhost:5173/account/login');
+    });
+authRoute.get('/login/success', (req, res) => {
+    console.log(req.isAuthenticated(), req.user)
     try {
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: process.env.OAUTH_GOOGLE_KEY,  // Specify the CLIENT_ID of the app that accesses the backend
-            // Or, if multiple clients access the backend:
-            //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
-        });
-
-        const payload = ticket.getPayload();
-        // const userId = payload.sub;
-        const email = payload.email;
-        // If request specified a G Suite domain:
-        // const domain = payload['hd'];
-
-        if (!email) throw new Error('You must provide a email')
-        if (!payload.email_verified) throw new Error('You must verify email address')
-        let user = await User.findOne({
-            email: { $ne: null, $eq: email },
-            isActive: true
-        }).populate({ path: 'role', model: Customer })
-        //if existed on db
-        if (!user) {
-            // if not existing will create customer 
-            const customer = await Customer.create({
-                name: payload.name,
-                avatarUrl: payload.picture,
-                google: { locale: 'en' }
+        if (req.isAuthenticated() && req.user) {
+            return sendSuccess(res, req.user.message, {
+                accessToken: req.user.accessToken,
+                refreshToken: req.user.refreshToken,
+                user: req.user.user
             });
-
-            user = await User.create({
-                email: email,
-                role: customer._id,
-                isActive: true
-            })
+        } else {
+            return sendError(res, req.user?.message || 'Access denied', req.user?.code || 403);
         }
-        else if (!user.role) return sendError(res, 'your role is not valid. access denied.', 403)
-        else {
-            // update the user with latest google profile info
-            await User.findByIdAndUpdate(user._id, {
-                email: email
-            })
-            await Customer.findByIdAndUpdate(user.role, {
-                name: payload.name,
-                avatarUrl: payload.picture,
-                google: { locale: 'en' }
-            });
-            // save the info and resolve the user doc
-        };
-        const userData = {
-            id: user._id,
-            email: user.email,
-            phone: user.phone,
-            address: user.role.address,
-            role: user.role
-        }
-        const accessToken = jwt.sign(
-            {
-                user: userData
-            },
-            process.env.JWT_SECRET_KEY,
-            {
-                expiresIn: JWT_EXPIRED
-            }
-        )
-
-        const refreshToken = jwt.sign(
-            {
-                user: userData
-            },
-            process.env.JWT_REFRESH_SECRET_KEY,
-            {
-                expiresIn: JWT_REFRESH_EXPIRED
-            }
-        )
-
-        const response = {
-            accessToken,
-            refreshToken
-        }
-
-        TOKEN_LIST[refreshToken] = response
-
-        return sendSuccess(res, 'Login successfully.', {
-            accessToken,
-            refreshToken,
-            user: userData
-        });
-
     } catch (error) {
-        console.log(error)
-        return sendServerError(res)
+        console.log(error);
     }
+
 });
+
+// LinkedIn
+authRoute.get('/linkedin/login',
+    passport.authenticate('linkedin', { state: 'SOME STATE' }),
+    function (req, res) {
+        // The request will be redirected to LinkedIn for authentication, so this
+        // function will not be called.
+    });
+
+authRoute.get('/linkedin/callback', passport.authenticate('linkedin', {
+    failureRedirect: '/api/auth/linkedin/login'
+}),
+    (req, res) => {
+        // if (req.user && req.isAuthenticated()) {
+        //     res.redirect('http://localhost:5173/account/login');
+        // } else {
+        //     res.redirect('/api/auth/google/login');
+        // }
+        res.redirect('http://localhost:5173/account/login');
+    });
+
+//Facebook
+authRoute.get('/facebook/login',
+    passport.authenticate('facebook', { scope: ['email'] }));
+
+authRoute.get('/facebook/callback',
+    passport.authenticate('facebook', { failureRedirect: '/api/auth/facebook/login' }),
+    function (req, res) {
+        // Successful authentication, redirect home.
+        res.redirect('http://localhost:5173/account/login');
+    });
 
 /**
  * @route POST /api/auth/verify-token
@@ -206,56 +175,84 @@ authRoute.post('/verify-token', (req, res) => {
  * @description user log out
  * @access private
  */
+
 authRoute.post('/logout', verifyToken, async (req, res) => {
-    const { refreshToken } = req.body
+    const { refreshToken } = req.body;
     if (refreshToken in TOKEN_LIST)
         delete TOKEN_LIST[refreshToken]
-    else return sendError(res, 'refresh token is invalid.', 401)
+    else return oAuthLogout(req, res);
     try {
         jwt.verify(req.verifyToken, process.env.JWT_SECRET_KEY, {
             complete: true
-        })
-        TOKEN_BLACKLIST[req.verifyToken] = req.verifyToken
-        clearTokenList(TOKEN_BLACKLIST)
+        });
+        TOKEN_BLACKLIST[req.verifyToken] = req.verifyToken;
+        clearTokenList(TOKEN_BLACKLIST);
     } catch (error) {
         console.log(error);
+        return sendError(res, "Unauthorzied.", 401);
     }
-    return sendSuccess(res, 'log out successfully. see you soon.')
+    return oAuthLogout(req, res);
 });
+
+/**
+ * @route POST /api/auth/o-auth/logout
+ * @description user log out oauth data
+ * @access public
+ */
+authRoute.post('/o-auth/logout', (req, res) => {
+    return oAuthLogout(req, res);
+})
+
+const oAuthLogout = (req, res) => {
+    return req.logout((err) => {
+        if (err) {
+            console.log("error: " + err);
+            return sendError(res, "Error logging out", 500);
+        }
+        console.log("destroying session in logout");
+        req.session.destroy((err) => {
+            if (err) {
+                console.log("error: " + err);
+                return sendError(res, "Error destroying session", 500);
+            }
+            // Clear the cookie
+            res.clearCookie('connect.sid', { path: '/' }); // Ensure the path matches the cookie's path
+            return sendSuccess(res, "Logged out successfully.")
+
+        });
+    });
+}
+
+//remove
+// authRoute.get('/oauth/logout', (req, res) => {
+//     console.log("logging out, user:" + req.user);
+//     req.logout((err) => {
+//         if (err) {
+//             console.log("error: " + err);
+//             return sendError(res, "Error logging out", 500);
+//         }
+//         console.log("destroying session in logout");
+//         req.session.destroy((err) => {
+//             if (err) {
+//                 console.log("error: " + err);
+//                 return sendError(res, "Error destroying session", 500);
+//             }
+//             // Clear the cookie
+//             res.clearCookie('connect.sid', { path: '/' }); // Ensure the path matches the cookie's path
+//             return sendSuccess(res, "Logged out successfully.")
+
+//         });
+//     });
+// });
+
 
 export default authRoute;
 
-// Google
-// authRoute.get('/google',
-//     passport.authenticate('google', {
-//         scope: ['email', 'profile'
-//             // 'https://www.googleapis.com/auth/user.birthday.read', 'https://www.googleapis.com/auth/user.gender.read'
-//         ]
-//     }));
 
 // authRoute.get('/profile', ensureAuthenticated, (req, res) => {
 
 //     res.send('profile');
 // });
-
-// authRoute.get('/google/callback',
-//     passport.authenticate('google', { failureRedirect: '/api/auth/google' }),
-//     function (req, res) {
-//         // Successful authentication, redirect home.
-//         res.redirect('/api/auth/login/success');
-//     });
-
-// authRoute.use('/login/success', (req, res) => {
-//     if (req.user) {
-//         console.log(req.isAuthenticated())
-//         return res.json(req.user)
-//     }
-//     else return res.send('error')
-// });
-
-
-
-
 
 // authRoute.get('/logout', (req, res) => {
 //     req.logout(error => {
@@ -267,28 +264,101 @@ export default authRoute;
 
 
 
-// LinkedIn
-// authRoute.get('/linkedin', passport.authenticate('linkedin', { state: 'LSFKDF' }));
+// authRoute.post('/login', async (req, res) => {
+//     const token = req.body.idToken;
+//     if (!token) return sendError(res, 'Required valid token');
 
-// authRoute.get('/linkedin/callback', passport.authenticate('linkedin', {
-//     successRedirect: '/api/auth/login/success',
-//     failureRedirect: '/api/auth/linkedin'
-// }));
+//     const client = new OAuth2Client();
+//     try {
+//         const ticket = await client.verifyIdToken({
+//             idToken: token,
+//             audience: process.env.OAUTH_GOOGLE_KEY,  // Specify the CLIENT_ID of the app that accesses the backend
+//             // Or, if multiple clients access the backend:
+//             //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+//         });
 
+//         const payload = ticket.getPayload();
+//         // const userId = payload.sub;
+//         const email = payload.email;
+//         // If request specified a G Suite domain:
+//         // const domain = payload['hd'];
 
+//         if (!email) throw new Error('You must provide a email')
+//         if (!payload.email_verified) throw new Error('You must verify email address')
+//         let user = await User.findOne({
+//             email: { $ne: null, $eq: email },
+//             isActive: true
+//         }).populate({ path: 'role', model: Customer })
+//         //if existed on db
+//         if (!user) {
+//             // if not existing will create customer 
+//             const customer = await Customer.create({
+//                 name: payload.name,
+//                 avatarUrl: payload.picture,
+//                 google: { locale: 'en' }
+//             });
 
+//             user = await User.create({
+//                 email: email,
+//                 role: customer._id,
+//                 isActive: true
+//             })
+//         }
+//         else if (!user.role) return sendError(res, 'your role is not valid. access denied.', 403)
+//         else {
+//             // update the user with latest google profile info
+//             await User.findByIdAndUpdate(user._id, {
+//                 email: email
+//             })
+//             await Customer.findByIdAndUpdate(user.role, {
+//                 name: payload.name,
+//                 avatarUrl: payload.picture,
+//                 google: { locale: 'en' }
+//             });
+//             // save the info and resolve the user doc
+//         };
+//         const userData = {
+//             id: user._id,
+//             email: user.email,
+//             phone: user.phone,
+//             address: user.role.address,
+//             role: user.role
+//         }
+//         const accessToken = jwt.sign(
+//             {
+//                 user: userData
+//             },
+//             process.env.JWT_SECRET_KEY,
+//             {
+//                 expiresIn: JWT_EXPIRED
+//             }
+//         )
 
-//Facebook
-// authRoute.get('/facebook',
-//     passport.authenticate('facebook'));
+//         const refreshToken = jwt.sign(
+//             {
+//                 user: userData
+//             },
+//             process.env.JWT_REFRESH_SECRET_KEY,
+//             {
+//                 expiresIn: JWT_REFRESH_EXPIRED
+//             }
+//         )
 
-// authRoute.get('/facebook/callback',
-//     passport.authenticate('facebook', { failureRedirect: '/api/auth/facebook' }),
-//     function (req, res) {
-//         // Successful authentication, redirect home.
-//         res.redirect('/api/auth/login/success');
-//     });
+//         const response = {
+//             accessToken,
+//             refreshToken
+//         }
 
+//         TOKEN_LIST[refreshToken] = response
 
+//         return sendSuccess(res, 'Login successfully.', {
+//             accessToken,
+//             refreshToken,
+//             user: userData
+//         });
 
-
+//     } catch (error) {
+//         console.log(error)
+//         return sendServerError(res)
+//     }
+// });

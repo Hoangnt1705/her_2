@@ -17,13 +17,21 @@ const prRoute = express.Router()
 prRoute.post('/', rateLimitAPI, verifyToken, async (req, res) => {
   try {
     let { data, cid } = req.body;
-    console.log('cid', cid)
-    // get redis client
+    printIn('cid', cid);
+
+    // Get Redis client
     const { instanceConnect: redisClient } = await getRedis();
+    let cidAuthenticated;
 
+    // Trim and validate input data
     data = data.trim();
+    if (!data) return sendError(res, 'Data is missing');
 
-    if (!data) return sendError(res, 'Data in missing');
+    // Check if the chat ID (cid) exists if provided
+    if (cid) {
+      cidAuthenticated = await ParseRecruiterChat.exists({ _id: cid });
+      if (!cidAuthenticated) return sendError(res, "Forbidden!", 403);
+    }
 
     let resFlask;
 
@@ -31,42 +39,57 @@ prRoute.post('/', rateLimitAPI, verifyToken, async (req, res) => {
     const cachedResult = await redisClient.get(data);
     if (cachedResult) {
       resFlask = JSON.parse(cachedResult);
-    }
-    else {
-      pySocket.emit('parse-recruiter', {
-        'msg': data.trim()
-      });
-      // Wait for the 'parse-recruiter' event response from the server
+    } else {
+      // Emit event to Python socket server
+      pySocket.emit('parse-recruiter', { msg: data.trim() });
 
+      // Wait for the response or an error
       resFlask = await new Promise((resolve, reject) => {
         pySocket.once('parse-recruiter', data => resolve(data));
-        pySocket.once('error', error => reject(error))
+        pySocket.once('error', error => reject(error));
       });
+
       // Cache the result for future requests
-      redisClient.set(data, JSON.stringify(resFlask), { EX: 3600 });
-    };
+      await redisClient.set(data, JSON.stringify(resFlask), { EX: 3600 });
+    }
+
     let chat;
-    if (!cid) {
+
+    // Handle chat creation if not authenticated
+    if (!cidAuthenticated) {
       chat = await ParseRecruiterChat.create({
-        title: resFlask.data?.title ? resFlask.data.title : 'error',
+        title: resFlask.data?.title || 'error',  // Simplified ternary expression
         user: req.user.id,
       });
-    };
 
+      chat = chat.toObject();  // Convert the Mongoose document to a plain JavaScript object
+      chat.source = "ParseRecruiterChat";
+    }
+
+    // Ensure chat is defined properly before creating the document
+    const chatId = cidAuthenticated ? cid : chat._id;
+    if (!chatId) return sendError(res, "Chat ID could not be determined.", 500);
+
+    // Create the document with the correct chat ID
     const document = await ParseRecruiterDocument.create({
       sender: data,
       receiver: resFlask,
-      chat: cid ? cid : chat._id,
-
+      chat: chatId,
     });
 
+    // Log the chat object for debugging purposes
+    printIn(chat);
+
+    // Send success response
     return sendSuccess(res, cachedResult ? 'Data retrieved from cache.' : 'Data processed successfully',
-      { result: cid ? document : chat });
+      { result: cidAuthenticated ? document : chat });
+
   } catch (error) {
-    console.log(error);
-    sendError(res, error);
+    console.error(error);
+    sendError(res, 'An unexpected error occurred.', 500);
   }
 });
+
 
 /**
  * @route GET /api/v1/parse-recruiter/document
@@ -111,8 +134,8 @@ prRoute.get('/document/:cid', verifyToken, async (req, res) => {
     return sendSuccess(res, 'okee', { result: document });
 
   } catch (error) {
-    console.log(error);
-    sendError(res, error);
+    console.error(error);
+    sendError(res, 'An unexpected error occurred.', 500);
   }
 });
 

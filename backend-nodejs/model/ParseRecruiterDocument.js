@@ -20,5 +20,4 @@ const parseRecruiterDocumentSchema = new Schema(
     },
     { timestamps: true } // This option should be passed as the second argument
 );
-
 export default mongoose.model('parse_recruiter_documents', parseRecruiterDocumentSchema);

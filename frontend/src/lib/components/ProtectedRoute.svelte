@@ -6,7 +6,8 @@
     const login = localStorage.getItem('login')
     if (login) window.location.href = '/';
     if ($user && $user?.role)  window.location.href = '/';
-  })
+  });
+  
 </script>
 
 <slot />

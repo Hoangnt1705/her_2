@@ -2,8 +2,8 @@ import {
   PUBLIC_APP_LOCALSTORAGE_REFRESH_NAME,
   PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME,
 } from '$env/static/public'
-
-import { user, refreshToken, accessToken, historyChat, statusSend, lengthChat } from '$lib/stores.js'
+import {goto} from "$app/navigation";
+import { user, refreshToken, accessToken, historyChat, statusSend, lengthChat, statusLogout, messageLogout, offBtnMoreChat, sessionExpired } from '$lib/stores.js'
 import { END_POINT } from '$lib/constants.js'
 import { browser } from '$app/environment';
 import { error } from '@sveltejs/kit';
@@ -34,18 +34,31 @@ export const checkAuthenticated = async (token, refresh) => {
       accessToken.set(data.accessToken)
     } else {
       accessToken.set(token)
-      refreshToken.set(refresh)
+      refreshToken.set(refresh);
     }
+
     console.log('data', data);
   } catch (error) {
     if (error.response.data.message === 'Unauthorzied.' && error.response.status === 401) {
-      console.log('error');
-      localStorage.removeItem(PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME);
-      localStorage.removeItem(PUBLIC_APP_LOCALSTORAGE_REFRESH_NAME);
-      localStorage.removeItem('login');
-      refreshToken.set(null);
-      accessToken.set(null);
-      user.set(null);
+      try {
+        const res = await axios.post(`${END_POINT}/auth/o-auth/logout`,
+          {
+          },
+          {
+            withCredentials: true // Ensure cookies are sent with the request
+          })
+        const data = res.data;
+        localStorage.removeItem(PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME);
+        localStorage.removeItem(PUBLIC_APP_LOCALSTORAGE_REFRESH_NAME);
+        localStorage.removeItem('login');
+        refreshToken.set(null);
+        accessToken.set(null);
+        user.set(null);
+        sessionExpired.set(true);
+      } catch (error) {
+        console.log(error);
+      }
+      console.log('error', error);
     }
     return false
   }
@@ -53,17 +66,20 @@ export const checkAuthenticated = async (token, refresh) => {
 }
 
 export const logOutHandle = async (_accessToken, _path) => {
+  offBtnMoreChat.update(o => (o = !o));
   const refreshTokenLocal = localStorage.getItem(PUBLIC_APP_LOCALSTORAGE_REFRESH_NAME);
   try {
-    await axios.post(`${END_POINT}/auth/logout`,
+    const res = await axios.post(`${END_POINT}/auth/logout`,
       {
-        refreshTokenLocal
+        refreshToken: refreshTokenLocal
       },
       {
-        headers: { authorization: `Bearer ${_accessToken}` }
+        headers: { Authorization: `Bearer ${_accessToken}` },
+        withCredentials: true // Ensure cookies are sent with the request
       })
-    console.log('Log out successfully.');
-
+    const data = res.data;
+    statusLogout.set(data.success);
+    messageLogout.set(data.message);
   } catch (error) {
     console.log(error);
   }
@@ -75,31 +91,38 @@ export const logOutHandle = async (_accessToken, _path) => {
     accessToken.set(null);
     historyChat.set([]);
     user.set(null);
-    window.location.href = '/';
   }
 }
 
 export const getDataChat = async (uid, _page, _pageSize) => {
   try {
-    const response = await axios.get(`${END_POINT}/v1/chat?uid=${uid}${_page ? `&page=${_page}`: ''}${_pageSize ? `&pageSize=${_pageSize}`: ''}`);
+    const response = await axios.get(
+      `${END_POINT}/v1/chat-and-conversation?uid=${uid}${_page ? `&page=${_page}` : ''}${_pageSize ? `&pageSize=${_pageSize}` : ''}`
+    );
     const { data } = response.data;
+    console.log('data', data);
+
     if (_page) {
       historyChat.update(c => {
-        data.listChat.forEach(obj => {
+        // Merge the paginated results with the existing history, preserving order
+        data.results.forEach(obj => {
           c = [...c, obj];
-        })
+        });
         return c;
-      })
+      });
+    } else {
+      // Set the initial list of chats and conversations
+      historyChat.set(data.results);
     }
-    else {
-      historyChat.set(data.listChat);
-    }
-    lengthChat.set(data.length);
+
+    // Update the total length of the chats and conversations
+    lengthChat.set(data.totalLength);
     return data;
   } catch (error) {
-    return { error }
+    console.error('Error fetching chat data:', error);
+    return { error };
   }
-}
+};
 
 export const parseRecruiterDocument = async (params) => {
   try {

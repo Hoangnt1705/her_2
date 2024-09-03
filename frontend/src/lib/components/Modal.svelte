@@ -9,13 +9,14 @@
     import { tick } from "svelte";
   export let accessToken;
   export let chatId;
+  export let deleteChatTitle;
   const closeModal = () => {
     showModal.update((s) => (s = !s));
   };
   const deleteChat = async (chatId) => {
     try {
       const response = await axios.put(
-        `${END_POINT}/v1/chat/description-chat-sidebar/delete`,
+        `${END_POINT}/v1/chat-and-conversation/description-chat-conversation-sidebar/delete`,
         {
           cid: chatId,
         },
@@ -58,7 +59,7 @@
 <!-- src/lib/Modal.svelte -->
 {#if $showModal}
   <div
-    class="relative modal-css"
+    class="relative modal-css z-50"
     aria-labelledby="modal-title"
     role="dialog"
     aria-modal="true">
@@ -95,13 +96,11 @@
                 <h3
                   class="text-base font-semibold leading-6 text-gray-900"
                   id="modal-title">
-                  Delete account
+                  Delete conversation 
                 </h3>
                 <div class="mt-2">
                   <p class="text-sm text-gray-500">
-                    Are you sure you want to deactivate your account? All of
-                    your data will be permanently removed. This action cannot be
-                    undone.
+                    Are you sure you want to delete "{deleteChatTitle?.length < 50 ? deleteChatTitle : deleteChatTitle?.slice(0, 50) + '...'}"? All data in this conversation will be permanently deleted. This action cannot be undone.
                   </p>
                 </div>
               </div>

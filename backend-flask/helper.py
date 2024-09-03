@@ -2,7 +2,7 @@ import os
 from openai import OpenAI
 from termcolor import colored
 
-GPT_MODEL = "gpt-4o"
+GPT_MODEL = "gpt-4o-mini"
 api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key)
 
@@ -42,8 +42,8 @@ def chat_completion_request_resume_ai(messages, tools=None, tool_choice=None, mo
     try:
         response = client.chat.completions.create(
             model=model,
-            temperature=0.7,
-            top_p=0.8,
+            temperature=0.2,
+            top_p=0.1,
             max_tokens=4096,
             messages=messages,
             tools=tools,

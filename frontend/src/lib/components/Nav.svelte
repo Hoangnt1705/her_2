@@ -4,6 +4,8 @@
   import SidebarToggle from "$lib/components/SidebarToggle.svelte";
   import { page, navigating } from "$app/stores";
   import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
+
   let isOpen = true;
   let loadPage = true;
   export let hiddenNavItems;
@@ -149,6 +151,8 @@
   </li>
 
   <li
+    on:click={() => goto('/')}
+    data-ripple-light="true"
     class="new-write remove-style-li"
     style="padding:12px; {hiddenNavItems ? 'visibility: hidden' : ''}">
     {@html svg.newWrite}

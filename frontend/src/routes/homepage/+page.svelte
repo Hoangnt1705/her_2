@@ -1,5 +1,7 @@
 <script>
   import { goto } from "$app/navigation";
+  import {onMount} from 'svelte';
+
 </script>
 
 <style>
@@ -116,7 +118,6 @@
   }
 
   .banner .content .model {
-    background-image: url(images/model.png);
     width: 100%;
     height: 75vh;
     position: absolute;
@@ -407,7 +408,7 @@
           </button>
         </div>
       </div>
-      <div class="model" />
+      <div class="model" style="background-image: url(images/model.png)"/>
       <div class="copy-right w-full text-xs bottom-0 text-gray-800">
         © 2024 Her. All rights reserved.
       </div>

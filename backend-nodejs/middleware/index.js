@@ -43,29 +43,47 @@ export const rateLimitAPI = async (req, res, next) => {
  * header contain
  * Authorised : Bearer token
  */
+
 export const verifyToken = async (req, res, next) => {
     try {
-        const data = req.headers['authorization']
+        const data = req.headers['authorization'];
         const token = data?.split(" ")[1];
-        if (!token) return sendError(res, 'jwt must be provided.', 401)
 
-        if (token in TOKEN_LIST || token in TOKEN_BLACKLIST)
-            return sendError(res, "Unauthorized.", 401)
+        // Check if token is present
+        if (!token) return sendError(res, 'JWT must be provided.', 401);
 
+        // Check if token is in the blacklist or not in the valid list
+        if (token in TOKEN_LIST || token in TOKEN_BLACKLIST) {
+            return sendError(res, "Unauthorized.", 401);
+        }
+
+        // Verify the token
         const { payload } = jwt.verify(token, process.env.JWT_SECRET_KEY, {
-            complete: true
+            complete: true,
         });
-        if (!payload.user) return sendError(res, "Unauthorized.", 401)
 
-        req.verifyToken = token
-        req.user = payload.user
+        // Check if user exists in payload
+        if (!payload.user) return sendError(res, "Unauthorized.", 401);
+
+        req.verifyToken = token;
+        req.user = payload.user;
         next();
 
     } catch (error) {
-        console.log(error)
-        return sendError(res, 'jwt expired.', 401)
+        // Check for specific error types
+        if (error.name === 'TokenExpiredError') {
+            console.log('Token expired at:', error.name, '....', error.expiredAt);
+            return sendError(res, 'JWT expired.', 401);
+        } else if (error.name === 'JsonWebTokenError') {
+            return sendError(res, 'Invalid JWT.', 401);
+        } else if (error.name === 'NotBeforeError') {
+            return sendError(res, 'JWT not active.', 401);
+        }
+        // Log and handle other errors
+        console.log('Token verification error:', error);
+        return sendError(res, 'Authorization failed.', 401);
     }
-}
+};
 
 
 export const verifyAdmin = async (req, res, next) => {

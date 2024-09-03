@@ -31,5 +31,5 @@
     </div>
   </div>
   <SelectLanguage bind:languageResume />
-  <GenerateResumeBtn {generateResume} />
+  <GenerateResumeBtn bind:generateResume />
 </div>

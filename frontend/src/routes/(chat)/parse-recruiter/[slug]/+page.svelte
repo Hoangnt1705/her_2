@@ -10,7 +10,6 @@
     import ParseRecruiter from '$lib/components/ParseRecruiter.svelte'
     import { END_POINT } from '$lib/constants.js'
     import { accessToken, dataParseRecruiter, statusSend } from '$lib/stores.js'
-    import {getDataChat, parseRecruiterDocument} from '$lib/context/MainContext.js';
 
     import axios from 'axios'
   
@@ -153,10 +152,11 @@
               <button 
                 type="button"
                 on:click={handleParseRecruiter}
-                class="flex items-center gap-2 py-2.5 px-5 text-sm duration-500
-                text-white rounded-lg cursor-pointer font-semibold text-center
-                shadow-xs transition-all {!inputParseRecruiter?.trim() ? '' : 'bg-red-500 hover:bg-red-700'}"
-                style="{disabled ? 'cursor: not-allowed; background: #B91C1C' : ''}; {!inputParseRecruiter?.trim() ? 'cursor: auto; background-color: #B91C1C' : ''}">
+                class="flex items-center gap-2 py-2.5 px-5 text-sm gap-1 select-none rounded-lg bg-red-600 py-2 px-4 text-center align-middle
+                font-sans text-xs font-bold uppercase text-white shadow-md
+                shadow-gray-900/10 transition-all {!inputParseRecruiter?.trim() ? '' : 'hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none'}
+                disabled:cursor-not-allowed disabled:opacity-50
+                disabled:shadow-none " disabled={disabled || !inputParseRecruiter?.trim()}>
                 {@html disabled ? svg.spinnerLoading : svg.btnParseRecruiter}
                 Condense
               </button>

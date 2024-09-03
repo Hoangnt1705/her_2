@@ -10,6 +10,14 @@ const UserSchema = new Schema(
                 return this.role && this.role.ref === 'staffs';
             },
         },
+        sub: {
+            type: String, 
+            trim: true,
+            index: {
+                unique: true,
+                partialFilterExpression: { sub: { $type: "String" } }
+            }
+        },
         email: {
             type: String,
             trim: true,

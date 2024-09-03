@@ -1,6 +1,6 @@
 <script>
-  import { isLoadGenerateResume } from '$lib/stores.js'
-  export let generateResume
+  import { isLoadGenerateResume } from "$lib/stores.js";
+  export let generateResume;
 </script>
 
 <div class="relative">
@@ -109,10 +109,13 @@
   <button
     on:click={generateResume}
     type="button"
-    style="cursor:{$isLoadGenerateResume ? 'not-allowed' : 'pointer'}"
     class="relative group inline-flex items-center px-8 py-2.5 px-6 text-sm
-    rounded-lg bg-red-500 text-white cursor-pointer font-semibold text-center
-    shadow-xs transition-all duration-500 {$isLoadGenerateResume ? 'opacity-30' : 'hover:bg-red-700'}">
+    gap-1 select-none rounded-lg bg-red-600 py-2 px-4 text-center align-middle
+    font-sans text-xs font-bold uppercase text-white shadow-md
+    shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20
+    focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85]
+    active:shadow-none disabled:cursor-not-allowed disabled:opacity-50
+    disabled:shadow-none" disabled={$isLoadGenerateResume}>
     <svg
       class="mt-[-5px]"
       width="25"

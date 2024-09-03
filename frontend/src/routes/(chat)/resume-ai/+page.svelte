@@ -3,7 +3,12 @@
     isLoadGenerateResume,
     activeChatId,
     activeRTSidebar,
+    dataResume,
+    alertTryAgainGenerateResume,
+    historyChat,
+    lengthChat,
   } from "$lib/stores.js";
+  import { PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME } from "$env/static/public";
   import PersonalInfo from "$lib/components/resume_ai/PersonalInfo.svelte";
   import JobInfo from "$lib/components/resume_ai/JobInfo.svelte";
   import Nav from "$lib/components/Nav.svelte";
@@ -13,6 +18,8 @@
   import { tick, onMount } from "svelte";
   import axios from "axios";
   import { END_POINT } from "$lib/constants.js";
+  import DialogGenerateResumePdf from "$lib/components/resume_ai/DialogGenerateResumePdf.svelte";
+  import HistoryConversationBottomSidebar from "$lib/components/resume_ai/HistoryConversationBottomSidebar.svelte";
   let jobValue;
   let fullName;
   let zipCode;
@@ -72,18 +79,44 @@
       }
       isLoadGenerateResume.update((c) => (c = true));
       try {
-        const response = await axios.post(`${END_POINT}/v1/resume-ai/upload`, {
-          fullName,
-          email,
-          phoneNumber: phone,
-          birthday: birthday,
-          address,
-          biography,
-          jobInformation: jobValue,
-          zipCode,
-          languageResume
+        const response = await axios.post(
+          `${END_POINT}/v1/resume-ai/upload`,
+          {
+            fullName,
+            email,
+            phoneNumber: phone,
+            birthday: birthday,
+            address,
+            biography,
+            jobInformation: jobValue,
+            zipCode,
+            languageResume,
+          },
+          {
+            headers: {
+              authorization: `Bearer ${localStorage.getItem(
+                PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME
+              )}`,
+            },
+          }
+        );
+        const data = response.data;
+        dataResume.set(data);
+        historyChat.update((currentHistory) => {
+          currentHistory.unshift(data.data.result);
+          return currentHistory;
         });
-        console.log(response.data);
+        //update the length of total history
+        lengthChat.update((c) => (c = c + 1));
+        // if history length is greater than 15, the last element of the history will be removed
+        if ($historyChat && $historyChat.length > 15) {
+          historyChat.update((arr) => {
+            arr.pop();
+            return (arr = arr);
+          });
+        }
+        console.log($dataResume, "dataResume>>>><");
+        alertTryAgainGenerateResume.update((a) => (a = true));
       } catch (error) {
         console.log(error);
         contentWarning = error;
@@ -120,6 +153,8 @@
       bind:biography />
     <JobInfo bind:jobValue {generateResume} bind:languageResume />
 
+    <HistoryConversationBottomSidebar />
   </div>
+  <DialogGenerateResumePdf />
   <ResumeTemplateSidebar bind:resumeTemplateValue />
 </main>

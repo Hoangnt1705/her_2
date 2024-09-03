@@ -1,7 +1,7 @@
-import mongoose from "mongoose"
-const { Schema } = mongoose
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
 
-const parseRecruiterChatSchema = new Schema(
+const ResumeAiConversation = new Schema(
     {
         title: {
             type: String,
@@ -19,8 +19,6 @@ const parseRecruiterChatSchema = new Schema(
         },
     },
     { timestamps: true }
-
 );
-
-parseRecruiterChatSchema.index({updatedAt: -1})
-export default mongoose.model('parse_recruiter_chats', parseRecruiterChatSchema);
+ResumeAiConversation.index({ updatedAt: -1 });
+export default mongoose.model('resume_ai_conversations', ResumeAiConversation);

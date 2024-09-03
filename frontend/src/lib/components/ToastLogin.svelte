@@ -1,33 +1,23 @@
 <script>
-  import { fade, fly } from 'svelte/transition'
-  import { screenSize } from '$lib/stores.js'
-  export let visible
-  export let title
-  export let content
-  export let iconNotification
-  let size = 0
-  if ($screenSize.width < 760) {
-    size = -200
-  } else {
-    size = 200
-  }
+  import { fade, fly } from "svelte/transition";
+  import { screenSize } from "$lib/stores.js";
+  export let visible;
+  export let title;
+  export let content;
+  export let iconNotification;
+  let size = -200;
+
 </script>
 
 <style>
   .custom {
     z-index: 15;
     position: absolute;
-    left: 9%;
-    bottom: 50%;
-    width: 340px;
-  }
-  @media screen and (max-width: 760px) {
-    .custom {
-      left: 20%;
-      width: 280px;
-      font-size: 12px;
-      top: 7%;
-    }
+    width: 280px; /* Ensure there's only one width defined */
+    font-size: 12px;
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, -5%);
   }
 </style>
 

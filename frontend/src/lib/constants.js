@@ -73,6 +73,33 @@ export const iconsNotification =
 }
 
 export const svg = {
+    happyIcon: `<svg style="display:inline; position:relative; margin-left: 5px" height="24px" width="24px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 viewBox="0 0 295.996 295.996" xml:space="preserve">
+        <g>
+            <path style="fill:#FFCE00;" d="M270.996,123.998c0-11.334-1.363-22.348-3.907-32.9c-7.269-15.152-17.35-28.708-29.558-39.996
+                c-22.391-13.376-48.766-20.666-76.771-19.645C83.492,34.273,23.139,99.196,25.955,176.463c0.413,11.304,2.17,22.239,5.087,32.673
+                c6.303,12.01,14.397,22.938,23.934,32.42c21.892,14.189,47.99,22.44,76.022,22.44C208.316,263.996,270.996,201.316,270.996,123.998
+                z M197.666,98.998c8.836,0,16,7.164,16,16s-7.164,16-16,16s-16-7.164-16-16S188.83,98.998,197.666,98.998z M98.666,98.998
+                c8.836,0,16,7.164,16,16s-7.164,16-16,16s-16-7.164-16-16S89.83,98.998,98.666,98.998z M56,147.997h16
+                c0,42,34.093,75.998,75.998,75.998s75.998-33.998,75.998-75.998h16c0,51-41.27,91.998-91.998,91.998
+                C97.271,239.995,56,198.997,56,147.997z"/>
+            <path style="fill:#FFB100;" d="M267.089,91.098c2.544,10.553,3.907,21.566,3.907,32.9c0,77.318-62.68,139.998-139.998,139.998
+                c-28.032,0-54.131-8.251-76.022-22.44c23.88,23.744,56.766,38.44,93.022,38.44c72.784,0,131.998-59.214,131.998-131.998
+                C279.996,127.636,275.358,108.337,267.089,91.098z"/>
+            <path style="fill:#FFE454;" d="M160.76,31.457c28.006-1.021,54.381,6.269,76.771,19.645C213.985,29.328,182.521,16,147.998,16
+                C75.214,16,16,75.214,16,147.998c0,22.049,5.442,42.849,15.042,61.138c-2.917-10.434-4.674-21.369-5.087-32.673
+                C23.139,99.196,83.492,34.273,160.76,31.457z"/>
+            <path d="M147.998,0C66.392,0,0,66.392,0,147.998s66.392,147.998,147.998,147.998s147.998-66.392,147.998-147.998
+                S229.604,0,147.998,0z M147.998,279.996c-36.257,0-69.143-14.696-93.022-38.44c-9.536-9.482-17.631-20.41-23.934-32.42
+                C21.442,190.847,16,170.047,16,147.998C16,75.214,75.214,16,147.998,16c34.523,0,65.987,13.328,89.533,35.102
+                c12.208,11.288,22.289,24.844,29.558,39.996c8.27,17.239,12.907,36.538,12.907,56.9
+                C279.996,220.782,220.782,279.996,147.998,279.996z"/>
+            <path d="M239.996,147.997h-16c0,42-34.093,75.998-75.998,75.998S72,189.997,72,147.997H56c0,51,41.271,91.998,91.998,91.998
+                C198.726,239.995,239.996,198.997,239.996,147.997z"/>
+            <circle cx="98.666" cy="114.998" r="16"/>
+            <circle cx="197.666" cy="114.998" r="16"/>
+        </g>
+        </svg>`,
     openSidebarResponsive: `<svg fill="#444444" width="30px" height="30px" viewBox="0 0 64 64" data-name="Layer 1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"><title/><path d="M21.86,18.73H9.18a2,2,0,0,1,0-4H21.86a2,2,0,0,1,0,4Z"/><path d="M54.82,18.73H34.88a2,2,0,0,1,0-4H54.82a2,2,0,0,1,0,4Z"/><path d="M54.82,34H9.18a2,2,0,0,1,0-4H54.82a2,2,0,0,1,0,4Z"/><path d="M54.82,49.27H30.07a2,2,0,0,1,0-4H54.82a2,2,0,0,1,0,4Z"/></svg>`
     , newWrite: `<svg fill="#444444" height="22px" width="22px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
     viewBox="0 0 511.999 511.999" xml:space="preserve">
@@ -87,8 +114,8 @@ export const svg = {
     </g>
     </g>
     </svg>`
-    ,internAi: `<svg width="30px" height="30px" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" fill="#444444"><path d="M108.92 70.323a35.784 36.301 0 1 1 25.311 61.978c-19.77 0-28.157-19.055-38.213-36.301C85.28 77.6 77.576 59.699 57.805 59.699a35.784 36.301 0 1 0 25.045 62.209" class="a" style="fill:none;stroke:#000000;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"/></svg>`
-    ,seniorAi: `<svg width="30px" height="30px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    , internAi: `<svg width="30px" height="30px" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" fill="#444444"><path d="M108.92 70.323a35.784 36.301 0 1 1 25.311 61.978c-19.77 0-28.157-19.055-38.213-36.301C85.28 77.6 77.576 59.699 57.805 59.699a35.784 36.301 0 1 0 25.045 62.209" class="a" style="fill:none;stroke:#000000;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"/></svg>`
+    , seniorAi: `<svg width="30px" height="30px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <g fill="none">
     <circle cx="16" cy="16" r="16" fill="#00FFBA"/>
     <g fill="#FFF">
@@ -121,11 +148,11 @@ export const svg = {
 		C29.258,36.86,30.656,35.5,31.782,35.5z"/>
     </g>
     </svg>`
-    ,btnParseRecruiter: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    , btnParseRecruiter: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M3 14C3 11.1911 3 9.78661 3.67412 8.77772C3.96596 8.34096 4.34096 7.96596 4.77772 7.67412C5.78661 7 7.19108 7 10 7C12.8089 7 14.2134 7 15.2223 7.67412C15.659 7.96596 16.034 8.34096 16.3259 8.77772C17 9.78661 17 11.1911 17 14C17 16.8089 17 18.2134 16.3259 19.2223C16.034 19.659 15.659 20.034 15.2223 20.3259C14.2134 21 12.8089 21 10 21C7.19108 21 5.78661 21 4.77772 20.3259C4.34096 20.034 3.96596 19.659 3.67412 19.2223C3 18.2134 3 16.8089 3 14Z" stroke="#F8FAFC" stroke-width="1.6" class="my-path"></path>
     <path d="M11 3H13C16.7712 3 18.6569 3 19.8284 4.17157C21 5.34315 21 7.22876 21 11V13" stroke="#F8FAFC" stroke-width="1.6" stroke-linecap="round" class="my-path"></path>
     </svg>`
-    ,orMain: `<svg width="80px" height="80px" class="or-main" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    , orMain: `<svg width="80px" height="80px" class="or-main" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M9 8L5 11.6923L9 16M15 8L19 11.6923L15 16" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`,
     spinnerLoading: ` <svg
@@ -155,8 +182,8 @@ export const svg = {
           <line x1="12" x2="12" y1="8" y2="12"></line>
           <line x1="12" x2="12.01" y1="16" y2="16"></line>
         </svg>`,
-    logo: (width, height, content, color, hoverColor ) => {
-        return `<svg version="1.1" style="${content ? 'transform: translateX(-30px)': ''}; ${hoverColor ? `--fill-color: ${color}; --hover-color: ${hoverColor};`: ''}" viewBox="0 0 1024 1024" width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+    logo: (width, height, content, color, hoverColor) => {
+        return `<svg version="1.1" style="${content ? 'transform: translateX(-30px)' : ''}; ${hoverColor ? `--fill-color: ${color}; --hover-color: ${hoverColor};` : ''}" viewBox="0 0 1024 1024" width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
 <path transform="translate(202,225)" d="m0 0h18l23 2 25 5 20 6 25 10 23 11 16 10 20 14 16 13 20 18 12 12 9 11 10 13 9 14 7 14 3 14 8 16 5 7 1 4v34l-5-1-12-3h-13l-9 2-11 6-3 3-4-1-24-24-7-8-25-25-1-4 7-14 2-7 1-16-2-12-5-12-7-10-8-8-14-8-11-3h-22l-13 4-10 5-8 7-9 13-5 12-1 5v21l3 12 7 12 8 9 10 7 8 4 13 3h18l15-4 4 1 62 62 3 4v19l4 11 6 9 5 5 8 6 11 4 16 2-6 7-35 35-6 7-3 2-7-1-8-2-17-1-13 2-12 5-11 8-8 10-8 16-2 5-4 3h-56l-1-5 5-20 7-16 8-14 8-10 9-10 11-10 15-10 15-8 23-8-13-3-19-4-21-7-13-6-15-8-14-10-15-13-12-13-11-15-12-21-10-25-5-17-4-21-2-21v-109l2-5 2-2z" fill="${color ? color : '#081C1D'}"/>
 <path transform="translate(802,225)" d="m0 0h19l6 2 3 4v113l-2 21-5 24-8 24-10 21-10 16-10 13-12 13-11 10-11 8-13 8-16 8-16 6-18 5-24 5 25 9 17 9 12 9 10 9 9 9 10 14 8 14 7 19 3 12v7h-58l-3-2-7-17-8-11-7-7-14-8-10-3-8-1h-10l-15 3-7 1-42-42-7-8v-1l19-3 12-6 9-8 7-12 2-8 1-19 11-12 43-43 1-2h2l2-4 7-6 18 4h17l16-4 10-6 10-9 8-11 5-14 1-7v-14l-3-13-8-14-9-10-13-8-9-3-5-1h-24l-14 5-12 8-8 9-8 16-3 16 1 13 4 13 5 10-1 4-19 19-7 8-31 31-5-2-9-6-11-3h-14l-12 3-5 1v-37l9-13 4-8 4-15 3-9 9-15 8-11 9-11 9-10 7-8 9-9 8-7 14-12 11-8 24-16 18-10 23-10 22-8 23-6 23-4z" fill="${color ? color : '#081C1D'}"/>
 <path transform="translate(551,652)" d="m0 0h34l2 2 4 15 5 10 9 10 8 7 14 7 11 2h15l14-3 11-6 7-6h2l2-4 7-9 6-11 3-2h60l1 3-2 17-5 18-6 14-8 13-8 10-10 10-14 10-16 7-13 4-13 2h-23l-20-4-16-6-16-9-11-9-13-13-9-13-8-15-4-14-1-7v-29z" fill="${color ? color : '#081C1D'}"/>
@@ -179,7 +206,7 @@ export const svg = {
 ${content ? `<text x="120%" y="70%" text-anchor="middle" font-family="Playwrite CU " font-size="350" fill="${color ? color : '#081C1D'}">${content}</text>` : ''}
 </svg>
 `
-    } 
+    }
 };
 
 

@@ -2,7 +2,7 @@
   import { END_POINT } from "$lib/constants.js";
   import axios from "axios";
   import '$lib/css/main.css';
-
+            
   let pdfName = "c4d7d4ab-3648-46f9-a764-a38f6e4be58d--cv.pdf"; // Replace with the actual PDF name
   let token = "c95efd48-9aa4-4e5f-8cf9-1387740a9624"; // Replace with the actual token
 
@@ -25,6 +25,8 @@
     }
   }
 </script>
+
+
 
 <button on:click={() => downloadPDF(pdfName, token)}>Download PDF</button>
 

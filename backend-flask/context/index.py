@@ -239,7 +239,7 @@ tools = [
     }
 ]
 
-resume_english_functions =[
+resume_english_functions = [
     {
         "type": "function",
         "function": {
@@ -410,8 +410,12 @@ resume_english_functions =[
                             "required": ["technical", "language", "laboratory", "interests"]
                         }
                     },
+                    "title": {
+                        "type": "string",
+                        "description": "Create a title for the prompt that includes both personal and job information."
+                    }
                 },
-                "required": ["personal_info", "education", "experience", "leadership_and_actives", "skills"]
+                "required": ["personal_info", "education", "experience", "leadership_and_actives", "skills", "title"]
             }
         }
     }
@@ -587,9 +591,13 @@ resume_vietnamese_language_functions = [
                             "required": ["technical", "language", "laboratory", "interests"]
                         }
                     },
+                    "title": {
+                        "type": "string",
+                        "description": "Create a title for the prompt."
+                    }
                 },
-                "required": ["personal_info", "education", "experience", "leadership_and_actives", "skills"]
+                "required": ["personal_info", "education", "experience", "leadership_and_actives", "skills", "title"]
             }
-        }
+        },
     }
 ]

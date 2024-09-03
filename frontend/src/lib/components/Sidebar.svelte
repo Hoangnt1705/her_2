@@ -28,7 +28,8 @@ import {
     historyChat,
     showModal,
     lengthChat,
-    activeChatId
+    activeChatId,
+    offBtnMoreChat
 } from '$lib/stores.js'
 import {
     spring
@@ -73,6 +74,7 @@ let content = 'Close sidebar';
 let openSidebarResponsive;
 let editingId = null;
 let deleteId = null;
+let deleteChatTitle = null;
 let chatTitleSideBar = null;
 let specificButton;
 let focusBind;
@@ -129,7 +131,7 @@ function tooltip(node, options) {
 };
 let promise;
 $: if ($user) promise = getDataChat($user.id);
-$: if($lengthChat) console.log($historyChat.length, $lengthChat)
+$: if($lengthChat) console.log($historyChat.length, $lengthChat);
 
 // Function to set the active chat ID based on the current URL
 
@@ -137,6 +139,7 @@ let currentPath = $page.url.pathname;
 let hasUpdated = false;
 
 async function handleClick(chatId, url) {
+    console.log(activeChatId);
     activeChatId.set(chatId);
     await tick();
     goto(url)
@@ -151,7 +154,7 @@ async function handleEditClick(chatId, title) {
 
 const updateTitleChat = async () => {
     try {
-        const response = await axios.put(`${END_POINT}/v1/chat/description-chat-sidebar`, {
+        const response = await axios.put(`${END_POINT}/v1/chat-and-conversation/description-chat-conversation-sidebar/update`, {
             cid: editingId,
             title: chatTitleSideBar
         }, {
@@ -182,11 +185,12 @@ const updateActiveChat = () => {
         return;
     }
 
-    const match = currentPath.match(/\/parse-recruiter\/(\w+)/);
+    const match = currentPath.match(/\/(parse-recruiter|resume-ai)\/(\w+)/);
+
     console.log('match', match); // This should now log only once per update cycle
 
     if (match) {
-        activeChatId.set(match[1]);
+        activeChatId.set(match[2]);
     }
 
     hasUpdated = true; // Set the flag to prevent redundant updates
@@ -198,16 +202,22 @@ beforeUpdate(() => {
         currentPath = $page.url.pathname;
     }
 });
+$: updateActiveChat();
+// afterUpdate(async () => {
+//     await tick();
+//     updateActiveChat();
+// });
 
-afterUpdate(async () => {
-    await tick();
-    updateActiveChat();
-});
 
+
+let currentPage;
+$: currentPage = $historyChat ? $historyChat.length : 0;  // Initialize the current page
+const pageSize = 10;  // Define the page size
+  
 const handleMoreChat = async () => {
-    getDataChat($user.id, $historyChat.length);
-
-  }
+await getDataChat($user.id, currentPage, pageSize);
+}
+$: console.log('$historyChat', currentPage); // Check for duplicate IDs
 </script>
 
 <div class="wrap-sidebar">
@@ -232,8 +242,8 @@ const handleMoreChat = async () => {
                 </div>
             </div>
             {:then data}
-            {#if $historyChat}
-            <ul class="conversations h-[600px] max-w-xs flex flex-col overflow-y-auto
+            {#if $historyChat.length > 0 && $user && $user?.role}
+            <ul class="conversations h-[600px] max-w-xs flex flex-col mb-5 overflow-y-auto
                 [&::-webkit-scrollbar]:w-2
                 [&::-webkit-scrollbar-track]:rounded-full
                 [&::-webkit-scrollbar-track]:bg-gray-100
@@ -243,7 +253,13 @@ const handleMoreChat = async () => {
                 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
                 <!-- animate:flip -->
                 {#each $historyChat.filter(chat => chat.deleted === false).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)) as chat (chat._id)}
-                <li class="inline-flex items-center text-sm font-medium text-gray-800 my-1 hover:bg-red-50" in:receive={{ key: chat._id }} out:send={{ key: chat._id }} id="chat-{chat._id}">
+             
+                <li class="inline-flex items-center text-sm font-medium text-gray-800 my-1" in:receive={{ key: chat._id }} out:send={{ key: chat._id }} id="chat-{chat._id}">
+                    {#if chat.source === "ParseRecruiterChat"}
+                    <span class="w-1 h-1 inline-block bg-gray-900 rounded-full mr-1"></span>
+                    {:else}
+                    <span class="w-1 h-1 inline-block bg-green-400 rounded-full mr-1"></span>
+                    {/if}
                     {#if editingId === chat._id}
                     <input
                         on:blur={ async (event) => {
@@ -254,10 +270,10 @@ const handleMoreChat = async () => {
                             }
                         }}
                         type="text"
-                        aria-current={$page.url.pathname === `/parse-recruiter/${chat._id}`}
+                        aria-current={$page.url.pathname === `/${chat.source === "ParseRecruiterChat" ? 'parse-recruiter' : chat.source === "ResumeAiConversation" ? 'resume-ai' : ''}/${chat._id}`}
                         class:active="{$activeChatId === chat._id}"
-
-                        class="conversation-button text-left gap-x-2 py-3 px-4 overflow-hidden focus-border-black"
+                        
+                        class="conversation-button text-left gap-x-2 py-3 px-4 overflow-hidden focus-border-black w-[95%] hover:bg-red-50"
                         data-sveltekit-preload-code
                         bind:value={chatTitleSideBar}
                         on:keydown={async (e) => {
@@ -270,11 +286,11 @@ const handleMoreChat = async () => {
                     <input
                         style="overflow: hidden"
                         type="button"
-                        aria-current={$page.url.pathname === `/parse-recruiter/${chat._id}`}
+                        aria-current={$page.url.pathname === `/${chat.source === "ParseRecruiterChat" ? 'parse-recruiter' : chat.source === "ResumeAiConversation" ? 'resume-ai' : ''}/${chat._id}`}
                         class:active="{$activeChatId === chat._id}"
                         data-sveltekit-reload
-                        class="conversation-button w-full text-left cursor-pointer gap-x-2 py-3 px-4"
-                        on:click={() => handleClick(chat._id, `/parse-recruiter/${chat._id}`)}
+                        class="conversation-button text-left cursor-pointer gap-x-2 py-3 px-4 w-[95%] hover:bg-red-50"
+                        on:click={() => handleClick(chat._id, `/${chat.source === "ParseRecruiterChat" ? 'parse-recruiter' : chat.source === "ResumeAiConversation" ? 'resume-ai' : ''}/${chat._id}`)}
                     data-sveltekit-preload-code
                     bind:value={chat.title}
                     >
@@ -292,6 +308,7 @@ const handleMoreChat = async () => {
                         <button on:click={() => {
                             showModal.update(s => s = !s);
                             deleteId = chat._id;
+                            deleteChatTitle = chat.title;
                             }}>
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M5 7L5.29949 14.7868C5.41251 17.7252 5.46902 19.1944 6.40719 20.0972C7.34537 21 8.81543 21 11.7555 21H12.2433C15.1842 21 16.6547 21 17.5928 20.0972C18.531 19.1944 18.5875 17.7252 18.7006 14.7868L19 7" stroke="black" stroke-width="1.6" stroke-linecap="round" class="my-path"></path>
@@ -312,20 +329,22 @@ const handleMoreChat = async () => {
                     </div>
                 </li>
                 {/each}
-                {#if $historyChat.length < $lengthChat }
+                {#if $historyChat.length < $lengthChat}
                 <div class="flex w-full items-center h-14">
-                    <div class="flex-1"></div>
-                    <button on:click={() => handleMoreChat()} data-ripple-light="true"
-                     class="w-7 h-7 flex items-center justify-center bg-gray-700 rounded-xl shadow-sm border border-gray-700 cursor-pointer">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 22 22" fill="none">
+                  <div class="flex-1"></div>
+                  {#if !$offBtnMoreChat}
+                    <button on:click={handleMoreChat} data-ripple-light="true"
+                      class="w-7 h-7 flex items-center justify-center bg-gray-700 rounded-xl shadow-sm border border-gray-700 cursor-pointer">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 22 22" fill="none">
                         <g id="Add">
                           <path id="icon" d="M11 5.5V16.5M16.5 11H5.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" />
                         </g>
                       </svg>
                     </button>
-                    <div class="flex-1"></div>
+                  {/if}
+                  <div class="flex-1"></div>
                 </div>
-                {/if}
+              {/if}
             </ul>
             {/if}
             {:catch error}
@@ -337,7 +356,9 @@ const handleMoreChat = async () => {
             <UserMenu user={$user} accessToken={$accessToken}/>
         </div>
             {:else}
-            <ButtonLogin />
+            <div in:fade>
+                <ButtonLogin />
+            </div>
             {/if}
 
             <!-- <li class="inline-flex items-center gap-x-2 py-3 px-4 text-base font-medium text-gray-800 ">
@@ -376,7 +397,7 @@ const handleMoreChat = async () => {
             </div>
         </div>
         <Overlay {active} on:click={handleOverlay} style="z-index:14"/>
-        <Modal chatId={deleteId} accessToken={$accessToken}/>
+        <Modal deleteChatTitle={deleteChatTitle} chatId={deleteId} accessToken={$accessToken}/>
                                     <!-- <ul class="conversations">
                             <li class="grouping">Yesterday</li>
                             <li>

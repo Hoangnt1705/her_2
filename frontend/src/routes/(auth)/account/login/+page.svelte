@@ -1,5 +1,4 @@
 <script>
-  import { browser } from "$app/environment";
   import "$lib/css/loginpage.css"; // Assuming this contains any additional custom styles
   import "bootstrap/dist/css/bootstrap.min.css"; // You can remove this if fully switching to Tailwind
   import { beforeUpdate, afterUpdate, onMount, tick, onDestroy } from "svelte";
@@ -7,7 +6,6 @@
   import { PUBLIC_OAUTH_GOOGLE_KEY } from "$env/static/public";
   import axios from "axios";
   import { signInHandle } from "$lib/context/MainContext.js";
-  import { Skeleton } from "svelte-loading-skeleton";
   import { svg } from "$lib/constants.js";
   import {
     visible,
@@ -19,6 +17,7 @@
   import ToastLogin from "$lib/components/ToastLogin.svelte";
   import { goto, invalidate } from "$app/navigation";
   import Index from "$lib/components/ui/ThreeDCardEffect/Index.svelte";
+  import SelectLoginAuthorization from "$lib/components/login/SelectLoginAuthorization.svelte";
 
   const success = () => {
     iconNotification.set(iconsNotification.success);
@@ -51,52 +50,78 @@
     }, 2000);
   };
 
-  async function handleCredentialResponse(responseToken) {
-    try {
-      console.log("Encoded JWT ID token: " + responseToken.credential);
-      const response = await axios.post(`${END_POINT}/auth/login`, {
-        idToken: responseToken.credential,
-      });
-      success();
-      const { data } = response.data;
-      signInHandle(data.accessToken, data.refreshToken, data.user);
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-      failed502();
-    }
-  }
+  // async function handleCredentialResponse(responseToken) {
+  //   try {
+  //     console.log("Encoded JWT ID token: " + responseToken.credential);
+  //     const response = await axios.post(`${END_POINT}/auth/login`, {
+  //       idToken: responseToken.credential,
+  //     });
+  //     const { data } = response.data;
+  //     success();
+  //     signInHandle(data.accessToken, data.refreshToken, data.user);
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //     failed502();
+  //   }
+  // }
 
-  async function initializeGoogleSignIn() {
-    if (
-      typeof google === "undefined" ||
-      typeof google.accounts === "undefined" ||
-      typeof google.accounts.id === "undefined"
-    ) {
-      // Google sign-in script hasn't loaded yet, delay initialization
-      setTimeout(initializeGoogleSignIn, 500);
-      return;
-    }
+  // async function initializeGoogleSignIn() {
+  //   if (
+  //     typeof google === "undefined" ||
+  //     typeof google.accounts === "undefined" ||
+  //     typeof google.accounts.id === "undefined"
+  //   ) {
+  //     // Google sign-in script hasn't loaded yet, delay initialization
+  //     setTimeout(initializeGoogleSignIn, 500);
+  //     return;
+  //   }
 
-    google.accounts.id.initialize({
-      client_id: PUBLIC_OAUTH_GOOGLE_KEY,
-      callback: handleCredentialResponse,
-    });
-    await tick();
-    google.accounts.id.renderButton(
-      document.getElementById("buttonDiv"),
-      {
-        type: "standard",
-        size: "large",
-        theme: "outline",
-        text: "sign_in_with",
-        shape: "rectangular",
-        logo_alignment: "left",
-      } // customization attributes
-    );
-  }
-  onMount(() => {
-    initializeGoogleSignIn();
+  //   google.accounts.id.initialize({
+  //     client_id: PUBLIC_OAUTH_GOOGLE_KEY,
+  //     callback: handleCredentialResponse,
+  //   });
+  //   await tick();
+  //   google.accounts.id.renderButton(
+  //     document.getElementById("buttonDiv"),
+  //     {
+  //       type: "standard",
+  //       size: "large",
+  //       theme: "outline",
+  //       text: "sign_in_with",
+  //       shape: "rectangular",
+  //       logo_alignment: "left",
+  //     } // customization attributes
+  //   );
+  // }
+  onMount(async () => {
+    const login = localStorage.getItem("login");
+    if (!login) {
+      try {
+        const response = await axios.get(
+          `${END_POINT}/auth/login/success`,
+          {
+            withCredentials: true,
+          }
+        );
+        if (response.status === 200 && response.data.success) {
+          const { user, accessToken, refreshToken } = response.data.data;
+          signInHandle(accessToken, refreshToken, user);
+          success();
+          console.log("User logged in:", user);
+        } else {
+          console.error("Failed to retrieve user data");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        if (error.response) {
+          console.error(`Response error: ${error.response.data}`);
+        } else {
+          console.error(`Network error: ${error.message}`);
+        }
+      }
+    }
+    else return;
   });
 </script>
 
@@ -105,13 +130,13 @@
   iconNotification={$iconNotification}
   title={$titleToast}
   content={$contentToast} />
+<SelectLoginAuthorization />
 
-<div
-  class="grid grid-cols-3 gap-4 min-h-screen leading-6 bg-gray-100">
+<div class="grid grid-cols-3 gap-4 min-h-screen leading-6 bg-gray-100">
   <!-- <div id="buttonDiv" class="mb-6"></div> -->
 
   <div class="logo col-span-3 pl-11 pt-3">
-    <h1 class="mb-1 flex font-bold items-center text-3xl">
+    <h1 class="mb-1 flex font-bold items-center text-3xl" style="color: #000">
       <svg
         style="margin-bottom: -6px; margin-right: -5px"
         class="logo-brand"
@@ -216,7 +241,9 @@
     <Index className=" w-full max-w-xs " />
   </div>
 
-  <div class="p-4 rounded-lg col-span-3 text-xs text-gray-500 content-end items-center text-center">
+  <div
+    class="p-4 rounded-lg col-span-3 text-xs text-gray-500 content-end
+    items-center text-center">
     © 2024 Her. All rights reserved.
   </div>
   <!-- Skeleton or loader (you can style this as needed) -->

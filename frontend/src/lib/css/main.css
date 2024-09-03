@@ -369,11 +369,10 @@ i.user-icon {
   box-sizing: border-box;
   overflow-y: auto;
 }
-.choose-wrap{
+.choose-wrap {
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-
 }
 
 .main-page .view {
@@ -636,12 +635,13 @@ p {
   background: var(--color-main);
   width: 100%;
 }
-.title-content-dialog-full-screen-resume-template, .exit-full-screen-resume-template{
+.title-content-dialog-full-screen-resume-template,
+.exit-full-screen-resume-template {
   display: none !important;
 }
-.wrap-title-resume-template-btn{
+.wrap-title-resume-template-btn {
   display: flex !important;
- }
+}
 
 @keyframes animations {
   0% {
@@ -653,19 +653,41 @@ p {
 }
 
 @media screen and (max-width: 1080px) {
-  .full-screen-template-resume-max-width-screen-exit-btn{
-    display:none;
+  .full-screen-template-resume-max-width-screen-exit-btn {
+    display: none;
   }
-  .wrap-resume-ai{
-    display: block !important
+  .wrap-resume-ai {
+    display: block !important;
   }
 }
 @media screen and (max-width: 768px) {
-  .title-content-dialog-full-screen-resume-template, .exit-full-screen-resume-template{
+
+  .titlePdfViewer {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%; /* Adjust this to control how much text is visible before the fade */
+    position: relative;
+    color: #333;
+    width: 130px;
+  }
+
+  .titlePdfViewer::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 30%; /* Adjust this to control the length of the fade effect */
+    background: linear-gradient(to right, transparent, white);
+  }
+  .title-content-dialog-full-screen-resume-template,
+  .exit-full-screen-resume-template {
     display: flex !important;
   }
-  
-  .wrap-full-screen-resume-template{
+
+  .wrap-full-screen-resume-template {
     min-width: 100% !important;
     max-width: 100% !important;
     width: 100% !important;
@@ -682,9 +704,9 @@ p {
     border-top-left-radius: 7px !important;
     border-bottom-left-radius: 7px !important;
   }
-   .wrap-title-resume-template-btn{
+  .wrap-title-resume-template-btn {
     display: block !important;
-   }
+  }
   .wrap-title-resume-template-btn {
     display: inline;
     font-size: 11px;

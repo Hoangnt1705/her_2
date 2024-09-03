@@ -32,8 +32,8 @@ const storageResources = multer.diskStorage({
 export const uploadResources = multer({ storage: storageResources })
 
 export const SESSION_AGE = 600000 // unit: milisecond
-export const JWT_EXPIRED = '5d'
-export const JWT_REFRESH_EXPIRED = '30d'
+export const JWT_EXPIRED = '6d'
+export const JWT_REFRESH_EXPIRED = '6d'
 export const OTP_EXPIRED = 60000 // unit: milisecond
 
 export const VERIFY_OP = {
