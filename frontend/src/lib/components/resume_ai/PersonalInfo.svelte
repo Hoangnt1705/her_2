@@ -126,9 +126,14 @@
    
 </style>
 
-    <div class="max-w-md space-y-3">
+    <div class="max-w-md space-y-3 wrap-title-personal">
         <h3 class="text-gray-900 text-4xl font-extrabold md:text-3xl lg:text-4xl">
-           <span class="text-transparent bg-clip-text bg-gradient-to-r to-red-600 from-gray-400">Personal</span> Information
+          <span
+          class="text-black
+          from-[#EECC8C]">
+          Personal Information
+          
+        </span>
           </h3>        <!-- Floating Input -->
         <!-- Full Name Input -->
         <div class="relative">
@@ -269,7 +274,7 @@
                 {#if biography}
                 <div class="inline-flex flex-wrap gap-2 items-center pl-2">
                   <div>
-                    <span class="py-1 px-2 inline-flex items-center gap-x-1 text-xs font-medium bg-teal-100 text-teal-800 rounded-full dark:bg-teal-500/10 dark:text-teal-500">
+                    <span class="py-1 px-2 inline-flex items-center gap-x-1 text-xs font-medium bg-teal-100 text-teal-800 rounded-full">
                       <svg class="flex-shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
                         <path d="m9 12 2 2 4-4"></path>

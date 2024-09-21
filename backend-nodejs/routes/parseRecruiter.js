@@ -58,7 +58,7 @@ prRoute.post('/', rateLimitAPI, verifyToken, async (req, res) => {
     // Handle chat creation if not authenticated
     if (!cidAuthenticated) {
       chat = await ParseRecruiterChat.create({
-        title: resFlask.data?.title || 'error',  // Simplified ternary expression
+        title: resFlask.data?.title || 'Please try again',  // Simplified ternary expression
         user: req.user.id,
       });
 
@@ -92,7 +92,7 @@ prRoute.post('/', rateLimitAPI, verifyToken, async (req, res) => {
 
 
 /**
- * @route GET /api/v1/parse-recruiter/document
+ * @route GET /api/v1/parse-recruiter/document/:cid
  * @description get data parse recruiter by id
  * @access private
  */
@@ -131,7 +131,7 @@ prRoute.get('/document/:cid', verifyToken, async (req, res) => {
       model: ParseRecruiterChat,
     }).sort({ updatedAt: -1 });
 
-    return sendSuccess(res, 'okee', { result: document });
+    return sendSuccess(res, 'Get data Successfully.', { result: document });
 
   } catch (error) {
     console.error(error);

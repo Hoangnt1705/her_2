@@ -30,6 +30,7 @@
 		"clsx": "^2.1.1",
 		"flatpickr": "^4.6.13",
 		"http-proxy-middleware": "^3.0.0",
+		"interactjs": "^1.10.27",
 		"jspdf-html2canvas": "^1.5.2",
 		"pdfjs-dist": "^4.5.136",
 		"preline": "^2.3.0",
@@ -39,7 +40,7 @@
 		"svelte-motion": "^0.12.2",
 		"svelte-routing": "^2.12.0",
 		"svelte-tel-input": "^3.3.9",
-		"tailwind-merge": "^2.4.0",
+		"tailwind-merge": "^2.5.2",
 		"tippy.js": "^6.3.7",
 		"typed.js": "^2.1.0"
 	}

@@ -167,7 +167,7 @@ const facebookStrategy = new FacebookStrategy({
     clientID: process.env.OAUTH_FACEBOOK_KEY,
     clientSecret: process.env.OAUTH_FACEBOOK_SECRET,
     callbackURL: "/api/auth/facebook/callback",
-    scope: ['email', 'user_photos', 'user_hometown', 'user_location'],  // Adjust the scope according to your needs
+    scope: ['email', 'user_photos', 'user_hometown', 'location'],  // Adjust the scope according to your needs
     profileFields: [
         'id',              // User's Facebook ID
         'displayName',     // User's full name

@@ -63,7 +63,7 @@
     aria-labelledby="modal-title"
     role="dialog"
     aria-modal="true">
-    <div class="test11 fixed inset-0 transition-opacity" />
+    <div class="modalDelete fixed inset-0 transition-opacity" />
     <div class="fixed inset-0 modal-css w-screen overflow-y-auto">
       <div
         class="flex min-h-full items-end justify-center p-4 text-center

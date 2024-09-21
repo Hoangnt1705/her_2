@@ -16,7 +16,7 @@
   .button-22 {
     align-items: center;
     appearance: button;
-    background-color: #22d3ee;
+    background-color: #8546F0;
     border-radius: 8px;
     border-style: none;
     box-shadow: rgba(255, 255, 255, 0.26) 0 1px 2px inset;
@@ -46,7 +46,7 @@
   }
 
   .button-22:hover {
-    background-color: #0891b2;
+    background-color: #6a38cc;
   }
   p {
     line-height: 20px !important;

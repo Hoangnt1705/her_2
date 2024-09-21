@@ -105,7 +105,7 @@
     <div class="flex-1 border-b border-gray-700" />
   </div>
 </div>
-<div class="relative">
+<div class="relative" style="margin-bottom:30px">
   <button
     on:click={generateResume}
     type="button"

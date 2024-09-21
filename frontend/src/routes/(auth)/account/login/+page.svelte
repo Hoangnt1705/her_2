@@ -242,7 +242,7 @@
   </div>
 
   <div
-    class="p-4 rounded-lg col-span-3 text-xs text-gray-500 content-end
+    class="p-4 pb-1 ml-3 rounded-lg col-span-3 text-xs text-gray-500 content-end
     items-center text-center">
     © 2024 Her. All rights reserved.
   </div>

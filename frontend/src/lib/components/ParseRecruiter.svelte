@@ -170,7 +170,7 @@ const scrollTo = async () => {
                             dark:shadow-none text-left bg-gray-50">
                             <p class="text-sm text-gray-600 relative ok1 max-w-[200px]" style="color: #a3aed0 !important">{key}</p>
                             <p class="text-base font-medium text-navy-700 relative  max-w-[200px]">
-                                {#if value === null || value === "NULL" || value === "Null" || value === undefined || value === "undefined"}
+                                {#if !value || value === null || value === "NULL" || value === "Null" || value === undefined || value === "undefined"}
                                 No
                                 {:else if value === false}
                                 No
@@ -254,9 +254,4 @@ const scrollTo = async () => {
     <!-- End Chat -->
     {/each}
 </ul>
-<svelte:head>
-    <!-- <link
-    rel="stylesheet"
-    href="https://horizon-tailwind-react-git-tailwind-components-horizon-ui.vercel.app/static/css/main.ad49aa9b.css" /> -->
 
-    </svelte:head>

@@ -32,3 +32,7 @@ export const isModalResumePdf = writable(false);
 export const dataResume = writable(null);
 export const alertTryAgainGenerateResume = writable(true);
 export const sessionExpired = writable(false);
+export const openSidebarResumeConversation = writable(false);
+export const resizeMainPageResumeAI = writable(null);
+export const resumeConversationID = writable(null);
+export const documentsByIDConversation = writable([]);

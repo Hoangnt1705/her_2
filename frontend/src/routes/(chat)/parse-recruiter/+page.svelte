@@ -9,6 +9,7 @@
   import { fade } from 'svelte/transition'
   import { END_POINT } from '$lib/constants.js'
   import { accessToken, historyChat, statusSend, activeChatId, lengthChat } from '$lib/stores.js'
+  import AlertMissingField from '$lib/components/alert/alertMissingField.svelte';
   import { goto } from '$app/navigation'
   import axios from 'axios'
 
@@ -22,7 +23,8 @@
   const focus = (node) => node.focus()
   let text = ''
   let typingSpeed = 50 // Adjust typing speed as needed
-
+  let errorMessage;
+  let visibleWarning = false;
   // Select a random placeholder text from the array
   let randomIndex = Math.floor(Math.random() * data.placeholderTexts.length)
   let placeholderText = data.placeholderTexts[randomIndex]
@@ -72,12 +74,24 @@
     else return 
   }
   const handleParseRecruiter = async () => {
-    if (!inputParseRecruiter?.trim()) {
-        return;
+    if(!inputParseRecruiter.trim()) return;
+    const wordCount = inputParseRecruiter.trim().split(/\s+/).filter(word => word.length > 0).length;
+    if (wordCount < 200) {
+      disabled = true;
+      visibleWarning = true;
+      errorMessage = `Your input contains only ${wordCount} words. Please enter at least 200 words.`;
+      return setTimeout(async () => {
+        visibleWarning = false;
+        disabled = false;
+        await tick();
+        inputParseRecruiter = '';
+      }, 1500);
+    } else {
+      // Perform the form submission or other actions here
+      // Disable the button
+      disabled = true;
+      errorMessage = '';
     }
-
-    // Disable the button
-    disabled = true;
 
     try {
         const response = await axios.post(
@@ -143,6 +157,7 @@
 </script>
 
 {#if browser}
+  <AlertMissingField visible={visibleWarning} content={errorMessage} title="Warning!"/>
   <main class="main-page content-center">
     <Nav />
     <div
@@ -163,8 +178,11 @@
                 style="clear: both;"
                 rows="8"
                 class="block p-2.5 w-full text-base text-gray-900 bg-gray-50
-                rounded-lg border border-gray-300 focus:ring-red-300
-                focus:border-red-200 textareaScroll" />
+                rounded-lg border border-gray-300 focus:ring-red-500
+                focus:border-red-500 textareaScroll outline-none 
+                disabled:opacity-50 disabled:pointer-events-none
+                dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
+                dark:placeholder-neutral-500 dark:focus:ring-neutral-600 textareaScroll" />
               <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 -->
             </div>
           </div>

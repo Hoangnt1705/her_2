@@ -4,6 +4,7 @@ import {
     fade,
     fly
 } from 'svelte/transition';
+import { browser } from "$app/environment";
 import {
     flip
 } from 'svelte/animate';
@@ -85,8 +86,8 @@ $: $sidebar ? rotate = '180deg' : rotate = '0deg';
 $: console.log('$sidebar', $sidebar)
 onMount(() => {
     const mediaQuery = window.matchMedia('(max-width: 768px)'); // Adjust the width as needed
-
     function handleScreenChange(event) {
+        console.log(event);
       if (event.matches) {
         if($sidebar) active = true;
       } else {
@@ -219,9 +220,9 @@ await getDataChat($user.id, currentPage, pageSize);
 }
 $: console.log('$historyChat', currentPage); // Check for duplicate IDs
 </script>
-
+<!-- transition:slide={{ duration: 100, quintOut: quintOut }} -->
 <div class="wrap-sidebar">
-    <div id="sidebar" class:hidden={!$sidebar} transition:slide={{ duration: 100, quintOut: quintOut }}>
+    <div id="sidebar" class:hidden={!$sidebar} >
         <div class="float-top">
             <div class="sidebar-controls">
                 <button class="new-chat" on:click={() => goto('/')} aria-label="New chat">
@@ -378,22 +379,26 @@ $: console.log('$historyChat', currentPage); // Check for duplicate IDs
             </div>
             {/if}
             <div class="wrap-open-sidebar-full-screen" style="z-index: 0">
-                <div class="open-sidebar-full-screen"
-                    on:click={async () => {
-                    sidebar.update((s) => s = !s );
+                <button class="open-sidebar-full-screen p-0"
+                type="button"
+                on:click={async () => {
+                    sidebar.update((s) => s = !s);
                     await tick();
                     active = false;
-
-                    }}
-                    on:mouseover={handleHover}
-                    on:mouseout={handleHoverOut}
-                    use:tooltip={{ content, delay: 300, theme: 'withe', placement: 'right', offset: [0, -1]}}>
+                }}
+                on:mouseover={handleHover}
+                on:mouseout={handleHoverOut}
+                on:focus={handleHover}
+                on:blur={handleHoverOut}
+                use:tooltip={{ content, delay: 400, theme: 'white', placement: 'right', offset: [0, 0] }}
+                aria-label="Toggle Sidebar"
+                >
                     <svg  id="arrow-svg" style="transform: rotate({rotate})" width="60px" height="60px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g id="Interface / Line_M">
                             <path id="Vector" d={pathValue} stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </g>
                     </svg>
-                </div>
+                </button>
             </div>
         </div>
         <Overlay {active} on:click={handleOverlay} style="z-index:14"/>

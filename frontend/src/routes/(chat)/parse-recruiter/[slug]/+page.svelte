@@ -1,4 +1,5 @@
 <script>
+	import { visible } from './../../../../lib/stores.js';
     import '$lib/css/main.css'
     import { getContext, onMount, setContext, tick, onDestroy, afterUpdate, beforeUpdate } from 'svelte'
     import Nav from '$lib/components/Nav.svelte'
@@ -10,6 +11,7 @@
     import ParseRecruiter from '$lib/components/ParseRecruiter.svelte'
     import { END_POINT } from '$lib/constants.js'
     import { accessToken, dataParseRecruiter, statusSend } from '$lib/stores.js'
+    import AlertMissingField from '$lib/components/alert/alertMissingField.svelte';
 
     import axios from 'axios'
   
@@ -22,6 +24,8 @@
     let disabled = false
     let btnFocus = ''
     let div;
+    let visibleWarning = false;
+    let errorMessage;
     const focus = (node) => node.focus();
     
   
@@ -54,9 +58,25 @@
       } else return
     }
     const handleParseRecruiter = async () => {
-    if (!inputParseRecruiter?.trim()) {
-      return;
+    if(!inputParseRecruiter.trim()) return;
+    const wordCount = inputParseRecruiter.trim().split(/\s+/).filter(word => word.length > 0).length;
+    if (wordCount < 200) {
+      disabled = true;
+      visibleWarning = true;
+      errorMessage = `Your input contains only ${wordCount} word${wordCount === 1 ? '' : 's'}. Please enter at least 200 words.`;
+      return setTimeout(async () => {
+        visibleWarning = false;
+        disabled = false;
+        await tick();
+        inputParseRecruiter = '';
+      }, 1500);
+    } else {
+      // Perform the form submission or other actions here
+      // Disable the button
+      disabled = true;
+      errorMessage = '';
     }
+
     console.log(!inputParseRecruiter.trim())
     try {
       disabled = true
@@ -105,22 +125,8 @@
     });
   </script>
   
-  <svelte:head>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer" />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/flowbite@1.4.4/dist/flowbite.min.css" />
-    <script src="https://unpkg.com/flowbite@1.4.0/dist/flowbite.js">
-  
-    </script>
-    
-  </svelte:head>
-
+ 
+    <AlertMissingField visible={visibleWarning} content={errorMessage} title="Warning!"/>
     <main class="main-page content-center" bind:this={div}>
       <Nav />
       <div
@@ -141,8 +147,11 @@
                   style="clear: both;"
                   rows="8"
                   class="block p-2.5 w-full text-base text-gray-900 bg-gray-50
-                  rounded-lg border border-gray-300 focus:ring-red-300
-                  focus:border-red-200 textareaScroll" />
+                  rounded-lg border border-gray-300 focus:ring-red-500
+                  focus:border-red-500 textareaScroll outline-none
+                   disabled:opacity-50 disabled:pointer-events-none
+                  dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
+                  dark:placeholder-neutral-500 dark:focus:ring-neutral-600 textareaScroll" />
                 <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 -->
               </div>
             </div>

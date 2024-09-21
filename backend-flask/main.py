@@ -112,6 +112,7 @@ def resume_ai(data_resume):
             content_language += "English."
         elif data_resume['language'] == "vietnam":
             content_language = "Vietnamese."
+        content_language += " Requires clarification of information: full name, email, phone number, birthday, address, zipcode."
         messages = [
             {"role": "system", "content": content_language},
             {"role": "user",

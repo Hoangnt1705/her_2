@@ -1,22 +1,25 @@
-<!-- <script>
+<script>
   import { fade } from "svelte/transition";
   import PdfViewer from "$lib/components/resume_ai/PdfViewer.svelte";
-  import { isModalResumePdf, dataResume } from "$lib/stores.js";
+  import { isModalResumePdf, resumeConversationID } from "$lib/stores.js";
   import axios from 'axios';
   import { END_POINT } from "$lib/constants.js";
   import AlertTryAgainGenerateResume from "$lib/components/resume_ai/AlertTryAgainGenerateResume.svelte";
+  import { page } from "$app/stores";
+  import {goto} from "$app/navigation";
+  export let dataResume;
   let pdfUrl;
   let downloadProgress = 0;
   let isDownloading = false;
-
   const closeModalResumePdf = () => {
     isModalResumePdf.update((re) => (re = false));
-    dataResume.set(null);
+    dataResume = null;
+    goto(`/resume-ai/${$page.url.pathname.split("/")[2] || $resumeConversationID }`);
   };
 
-  $: if ($dataResume) isModalResumePdf.update((re) => (re = true));
+  $: if (dataResume) isModalResumePdf.update((re) => (re = true));
 
-  $: pdfUrl = $dataResume?.data.pdfUrl;
+  $: if (dataResume) pdfUrl = dataResume.resume_pdf_url;
 
   function extractPdfDetails(url) {
     if (isDownloading) return;
@@ -86,7 +89,7 @@
 }
 </script>
 
-{#if $isModalResumePdf && $dataResume && $dataResume.success && $dataResume.message === "PDF uploaded successfully"}
+{#if $isModalResumePdf && dataResume}
 <div
   in:fade
   out:fade
@@ -101,7 +104,7 @@
       <div
         class="flex justify-between items-center pb-4 border-b border-gray-200">
         <h4 class="titlePdfViewer text-sm text-gray-900 font-medium">
-          {$dataResume?.data.titleConversationResume}
+          {dataResume.title_resume}
         </h4>
         <button on:click={downloadPDF}
         
@@ -134,7 +137,7 @@
       </div>
 
       <div class="overflow-y-auto py-4 min-h-[100px]">
-        <PdfViewer pdf_url={$dataResume?.data.pdfUrl} />
+        <PdfViewer pdf_url={dataResume.resume_pdf_url} />
       </div>
      <AlertTryAgainGenerateResume/>
       <div
@@ -163,4 +166,4 @@
   </div>
   <p class="text-xs mt-2">{downloadProgress}%</p>
 </div>
-{/if} -->
+{/if}

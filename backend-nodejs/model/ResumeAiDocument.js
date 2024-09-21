@@ -11,6 +11,10 @@ const resumeAiDocument = new Schema(
             type: String,
             required: true
         },
+        title_resume: {
+            type: String,
+            required: true
+        },
         language: {
             type: String,
             required: true
@@ -23,5 +27,6 @@ const resumeAiDocument = new Schema(
     },
     { timestamps: true } // This option should be passed as the second argument
 );
+resumeAiDocument.index({ updatedAt: -1 });
 
 export default mongoose.model('resume_ai_documents', resumeAiDocument);

@@ -2,7 +2,7 @@ import {
   PUBLIC_APP_LOCALSTORAGE_REFRESH_NAME,
   PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME,
 } from '$env/static/public'
-import {goto} from "$app/navigation";
+import { goto } from "$app/navigation";
 import { user, refreshToken, accessToken, historyChat, statusSend, lengthChat, statusLogout, messageLogout, offBtnMoreChat, sessionExpired } from '$lib/stores.js'
 import { END_POINT } from '$lib/constants.js'
 import { browser } from '$app/environment';
@@ -91,6 +91,7 @@ export const logOutHandle = async (_accessToken, _path) => {
     accessToken.set(null);
     historyChat.set([]);
     user.set(null);
+    goto("/");
   }
 }
 
@@ -142,3 +143,22 @@ export const parseRecruiterDocument = async (params) => {
     return { error: err };
   }
 };
+
+export const resumeConversation = async (params) => {
+  try {
+    const response = await axios.get(`${END_POINT}/v1/resume-ai/document/${params.slug}`,
+      {
+        headers: { authorization: `Bearer ${localStorage.getItem(PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME)}` }
+      }
+    );
+
+    const { data } = response.data;
+    if (!data) {
+      throw error(404);
+    }
+
+    return { data: data.result, status: data.success };
+  } catch (err) {
+    return { error: err };
+  }
+}

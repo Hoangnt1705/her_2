@@ -20,25 +20,24 @@
 
     <!-- Dialog Content -->
     <div
-      class="relative m-4 w-full md:w-[80%] lg:w-[50%] xl:w-[30%] min-w-[25%]
-      max-w-full rounded-lg bg-white font-sans text-base font-light
-      leading-relaxed text-blue-gray-500 antialiased shadow-2xl">
+      class="relative m-4 w-full max-w-[95%] sm:max-w-[80%] md:max-w-[70%]
+      lg:max-w-[60%] xl:max-w-[40%] rounded-lg bg-white font-sans text-sm
+      md:text-base font-light leading-relaxed text-blue-gray-500 antialiased
+      shadow-2xl">
 
       <!-- Dialog Header -->
       <div
-        class="flex items-center justify-between p-4 md:p-6 font-sans text-xl
+        class="flex items-center justify-between p-3 md:p-6 font-sans text-lg
         md:text-2xl antialiased font-semibold leading-snug text-blue-gray-900">
         <div>
           <h5
             class="block font-sans text-lg md:text-xl antialiased font-semibold
-            leading-snug tracking-normal text-blue-gray-900"
-            style="margin-bottom: 0px !important">
+            leading-snug tracking-normal text-blue-gray-900">
             Connect an Account
           </h5>
           <p
             class="block font-sans text-sm md:text-base antialiased font-light
-            leading-relaxed text-gray-700"
-            style="margin-bottom: 0px !important">
+            leading-relaxed text-gray-700">
             Select the provider you want to use for login authorization
           </p>
         </div>
@@ -48,8 +47,7 @@
           class="relative h-8 w-8 select-none rounded-lg text-center
           align-middle font-sans text-xs font-medium uppercase
           text-blue-gray-500 transition-all hover:bg-blue-gray-500/10
-          active:bg-blue-gray-500/30 disabled:pointer-events-none
-          disabled:opacity-50 disabled:shadow-none"
+          active:bg-blue-gray-500/30"
           type="button"
           on:click={toggleDialog}>
           <span
@@ -73,32 +71,26 @@
 
       <!-- Dialog Body -->
       <div
-        class="relative overflow-y-scroll p-4 md:p-6 !px-5 font-sans text-base
-        font-light leading-relaxed text-blue-gray-500 antialiased">
+        class="relative overflow-y-scroll p-4 pt-2 pb-2 md:p-6 font-sans text-sm
+        md:text-base font-light leading-relaxed text-blue-gray-500 antialiased">
         <div class="mb-6">
           <p
-            class="block py-3 font-sans text-base antialiased font-semibold
-            leading-relaxed uppercase text-blue-gray-900 opacity-70"
-            style="margin-bottom: 0px !important">
+            class="block py-3 font-sans text-sm md:text-base antialiased
+            font-semibold leading-relaxed uppercase text-blue-gray-900
+            opacity-70">
             Popular
           </p>
-          <ul class="flex flex-col gap-1 mt-3 -ml-2">
+          <ul class="flex flex-col gap-1 mt-3">
             <button
               on:click={() => {
                 window.location.href = `${END_POINT}/auth/google/login`;
               }}
-              role="menuitem"
-              class="mb-4 flex w-full cursor-pointer select-none items-center
-              justify-center gap-3 rounded-md px-3 !py-4 pt-[9px] pb-2
-              text-start leading-tight shadow-md outline-none transition-all
-              hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900
-              focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900
-              active:bg-blue-gray-50 active:bg-opacity-80
-              active:text-blue-gray-900">
-              <img src="/login/google.png" alt="metamask" class="w-6 h-6" />
-              <h6
-                class="block font-sans text-base antialiased font-semibold
-                leading-relaxed tracking-normal uppercase text-blue-gray-900">
+              class="mb-4 flex w-full items-center justify-center gap-3
+              rounded-md px-3 py-4 text-start leading-tight shadow-md
+              transition-all hover:bg-blue-gray-50 hover:bg-opacity-80
+              focus:bg-blue-gray-50 focus:bg-opacity-80 active:bg-blue-gray-50">
+              <img src="/login/google.png" alt="google" class="w-6 h-6" />
+              <h6 class="font-semibold text-blue-gray-900 uppercase">
                 Continue with Google
               </h6>
             </button>
@@ -106,21 +98,12 @@
               on:click={() => {
                 window.location.href = `${END_POINT}/auth/facebook/login`;
               }}
-              role="menuitem"
-              class="mb-1 flex w-full cursor-pointer select-none items-center
-              justify-center gap-3 rounded-md px-3 !py-4 pt-[9px] pb-2
-              text-start leading-tight shadow-md outline-none transition-all
-              hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900
-              focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900
-              active:bg-blue-gray-50 active:bg-opacity-80
-              active:text-blue-gray-900">
-              <img
-                src="/login/facebook.png"
-                alt="coinbase"
-                class="w-6 h-6 rounded-md" />
-              <h6
-                class="block font-sans text-base antialiased font-semibold
-                leading-relaxed tracking-normal uppercase text-blue-gray-900">
+              class="mb-2 flex w-full items-center justify-center gap-3
+              rounded-md px-3 py-4 text-start leading-tight shadow-md
+              transition-all hover:bg-blue-gray-50 hover:bg-opacity-80
+              focus:bg-blue-gray-50 focus:bg-opacity-80 active:bg-blue-gray-50">
+              <img src="/login/facebook.png" alt="facebook" class="w-6 h-6" />
+              <h6 class="font-semibold text-blue-gray-900 uppercase">
                 Continue with Facebook
               </h6>
             </button>
@@ -128,31 +111,21 @@
         </div>
         <div>
           <p
-            class="block py-4 font-sans text-base antialiased font-semibold
-            leading-relaxed uppercase text-blue-gray-900 opacity-70"
-            style="margin-bottom: 0px !important">
+            class="block py-2 font-sans text-sm md:text-base font-semibold
+            leading-relaxed uppercase text-blue-gray-900 opacity-70">
             Other
           </p>
-          <ul class="mt-4 -ml-2.5 flex flex-col gap-1">
+          <ul class="mt-4 flex flex-col gap-1">
             <button
               on:click={() => {
                 window.location.href = `${END_POINT}/auth/linkedin/login`;
               }}
-              role="menuitem"
-              class="mb-4 flex w-full cursor-pointer select-none items-center
-              justify-center gap-3 rounded-md px-3 !py-4 pt-[9px] pb-2
-              text-start leading-tight shadow-md outline-none transition-all
-              hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900
-              focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900
-              active:bg-blue-gray-50 active:bg-opacity-80
-              active:text-blue-gray-900">
-              <img
-                src="/login/linkedin.png"
-                alt="trust-wallet"
-                class="border rounded-md h-7 w-7 border-blue-gray-50" />
-              <h6
-                class="block font-sans text-base antialiased font-semibold
-                leading-relaxed tracking-normal uppercase text-blue-gray-900">
+              class="mb-4 flex w-full items-center justify-center gap-3
+              rounded-md px-3 py-4 text-start leading-tight shadow-md
+              transition-all hover:bg-blue-gray-50 hover:bg-opacity-80
+              focus:bg-blue-gray-50 focus:bg-opacity-80 active:bg-blue-gray-50">
+              <img src="/login/linkedin.png" alt="linkedin" class="w-7 h-7 rounded-md" />
+              <h6 class="font-semibold text-blue-gray-900 uppercase">
                 Continue with Linkedin
               </h6>
             </button>
@@ -164,19 +137,12 @@
       <div
         class="flex flex-wrap items-center justify-between gap-2 p-4 md:p-6
         shrink-0 text-blue-gray-500">
-        <p
-          class="block font-sans text-sm md:text-base antialiased font-normal
-          leading-normal text-gray-700"
-          style="margin-bottom: 0px !important">
+        <p class="text-sm md:text-base font-normal text-gray-700">
           Why do we only use authorized login?
         </p>
         <button
-          class="select-none rounded-lg border border-gray-900 py-2 px-4
-          text-center align-middle font-sans text-xs font-bold uppercase
-          text-gray-900 transition-all hover:opacity-75 focus:ring
-          focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none
-          disabled:opacity-50 disabled:shadow-none"
-          type="button">
+          class="rounded-lg border border-gray-900 py-2 px-4 text-xs
+          font-bold uppercase text-gray-900 transition-all hover:opacity-75">
           Learn More
         </button>
       </div>

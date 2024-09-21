@@ -10,16 +10,7 @@ export default withMT({
 
   theme: {
     extend: {
-      container: {
-        center: true,
-        padding: {
-          DEFAULT: '1rem',
-          sm: '2rem',
-          lg: '4rem',
-          xl: '5rem',
-          '2xl': '6rem',
-        },
-      },
+     
       animation: {
         BounceDelayOne: 'bounce 1s 0.2s infinite',
         BounceDelayTwo: 'bounce 1s 0.4s infinite',

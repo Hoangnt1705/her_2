@@ -7,14 +7,13 @@
   export let languageResume;
 </script>
 
-<div class="max-w-md space-y-3">
+<div class="max-w-md space-y-3 margin-title-job">
   <h3 class="text-gray-900 text-4xl font-extrabold md:text-3xl lg:text-4xl">
     <span
-      class="text-transparent bg-clip-text bg-gradient-to-r to-gray-600
-      from-pink-500">
-      Job
+      class="text-black
+      from-[#EECC8C]">
+      Job Information
     </span>
-    Information
   </h3>
   <div class="relative">
     <div class="max-w-full space-y-3 ">

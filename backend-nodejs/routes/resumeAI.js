@@ -12,6 +12,7 @@ import uuid from 'uuid-v4';
 import sanitize from 'sanitize-filename';
 import { pySocket } from '../socket/index.js';
 import basic001 from '../template_resume/basic-001.js';
+import { printIn } from '../service/consoleLog.js';
 const templateResume = {
   basic001: basic001,
 }
@@ -75,16 +76,19 @@ resumeAIRoute.post('/upload', rateLimitAPI, verifyToken, async (req, res) => {
   if (!fullName && !email && !phoneNumber && !birthday && !address && !biography && !jobInformation && !languageResume) {
     return sendError(res, 'Data in missing');
   }
+  console.log('email>>>>>>>>>>>', email, cid)
   const personal = `FullName: ${fullName}, Email: ${email}, Phone: ${phoneNumber}, Address: ${address}, and Zip Code: ${zipCode}
   Sumary:
   ${biography}
   `;
   const myselfInformation = `Here is my information: ${personal} \n Here is recruitment information: ${jobInformation}`;
   try {
-    if (cid) return cidAuthenticated = await ResumeAiConversation.exists({ _id: cid });
+    if (cid) cidAuthenticated = await ResumeAiConversation.exists({ _id: cid, user: req.user.id });
+    console.log('cidAuthenticated', cidAuthenticated)
+
     if (cid && !cidAuthenticated) return sendError(res, "Forbidden!", 403);
     // const { instanceConnect: redisClient } = await getRedis();
-    pySocket.emit('resume-ai', {
+    pySocket.emit('resume-ai', { 
       'personal': personal,
       'job': jobInformation,
       'language': languageResume
@@ -103,21 +107,21 @@ resumeAIRoute.post('/upload', rateLimitAPI, verifyToken, async (req, res) => {
     if (!uploadResult.titleConversationResume && !uploadResult.pdfUrl) return sendError(res, 'Error handling upload', 403);
     if (!cidAuthenticated) {
       conversation = await ResumeAiConversation.create({
-        title: uploadResult.titleConversationResume ? uploadResult.titleConversationResume : 'error',
+        title: uploadResult.titleConversationResume ? uploadResult.titleConversationResume : 'Please try again',
         user: req.user.id,
       });
       conversation = conversation.toObject();  // Convert the Mongoose document to a plain JavaScript object
       conversation.source = "ResumeAiConversation";
       console.log(conversation, 'conversation');
     };
-
     const document = await ResumeAiDocument.create({
       myself_information: myselfInformation,
       resume_pdf_url: uploadResult.pdfUrl,
+      title_resume: uploadResult.titleConversationResume ? uploadResult.titleConversationResume : 'Please try again',
       language: languageResume,
       conversation: cidAuthenticated || conversation._id,
     });
-    sendSuccess(res, 'PDF uploaded successfully', { result: cidAuthenticated ? document : conversation });
+    sendSuccess(res, 'PDF uploaded successfully', { result: cidAuthenticated ? {document} : { conversation, document }});
   } catch (error) {
     console.error('Error handling upload:', error);
     res.status(500).json({ error: 'Failed to upload PDF' });
@@ -182,6 +186,54 @@ resumeAIRoute.get('/download/:pdfName/:token', async (req, res) => {
   } catch (error) {
     console.error('Error downloading PDF:', error);
     res.status(500).json({ error: 'Failed to download PDF' });
+  }
+});
+
+/**
+ * @route GET /api/v1/resume-ai/document/:cid
+ * @description get data in conversation by id
+ * @access private
+ */
+
+resumeAIRoute.get('/document/:cid', verifyToken, async (req, res) => {
+  try {
+    const { cid } = req.params;
+    const { id } = req.user;
+    console.log('id', id);
+
+    // Find the conversation documents
+    const conversation = await ResumeAiConversation.find({
+      $and: [
+        { _id: { $ne: null, $eq: cid } },
+        { user: { $ne: null, $eq: id } },
+      ]
+    });
+
+    // Check if any conversation documents were found
+    if (conversation.length === 0) {
+      console.log('No conversation documents found');
+      return sendError(res, 'No conversation documents found');
+    }
+    if (conversation[0].deleted) {
+      console.log('No conversation documents found');
+      return sendError(res, 'No conversation documents found');
+    }
+    // Log the IDs of the found conversation documents
+    conversation.forEach(c => console.log('conversation', c._id));
+
+    // Find the document based on the conversation IDs
+    const document = await ResumeAiDocument.find({
+      conversation: { $ne: null, $in: conversation.map(c => c._id) }
+    }).populate({
+      path: 'conversation',
+      model: ResumeAiConversation,
+    }).sort({ updatedAt: -1 });
+
+    return sendSuccess(res, 'Get data Successfully.', { result: document });
+
+  } catch (error) {
+    console.error(error);
+    sendError(res, 'An unexpected error occurred.', 500);
   }
 });
 

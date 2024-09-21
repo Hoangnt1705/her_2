@@ -11,6 +11,8 @@ def chat_completion_request(messages, tools=None, tool_choice=None, model=GPT_MO
     try:
         response = client.chat.completions.create(
             model=model,
+            temperature=0.2,
+            top_p=0.1,
             response_format={"type": "json_object"},
             messages=messages,
             tools=tools,

@@ -1,5 +1,4 @@
 <script>
-  import { browser } from "$app/environment";
   import "$lib/css/main.css";
   import { getContext, onMount, setContext, tick, onDestroy } from "svelte";
   import SidebarToggle from "$lib/components/SidebarToggle.svelte";
@@ -16,8 +15,9 @@
   let clickResumeAI = true;
   let clickParseRecruiter = true;
   const selectHidden = (i) => {
-    if (i) clickResumeAI = !clickResumeAI;
-    else clickParseRecruiter = !clickParseRecruiter;
+    if(!clickResumeAI || !clickParseRecruiter) return;
+    if (i) clickResumeAI = false;
+    else clickParseRecruiter = false;
   };
   $: console.log($activeChatId);
 </script>
@@ -28,7 +28,7 @@
 </style>
 
 <svelte:head>
-  <link
+  <!-- <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
@@ -37,9 +37,8 @@
   <script
     src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js">
 
-  </script>
+  </script> -->
 </svelte:head>
-{#if browser}
   <main class="main-page relative ">
     <!-- <Nav hiddenNavItems={true} /> -->
     <div
@@ -277,7 +276,6 @@
       </span>
     </div>
   </main>
-{/if}
 <!-- <Row>
             <Col xs="3">.col-3</Col>
             <Col xs="auto">.col-auto - variable width content</Col>
