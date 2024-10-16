@@ -3,10 +3,13 @@ import {
   PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME,
 } from '$env/static/public'
 import { goto } from "$app/navigation";
-import { user, refreshToken, accessToken, historyChat, statusSend, lengthChat, statusLogout, messageLogout, offBtnMoreChat, sessionExpired } from '$lib/stores.js'
+import { user, refreshToken, accessToken, historyChat, statusSend,
+   lengthChat, statusLogout, messageLogout, offBtnMoreChat, sessionExpired,
+   resumeTemplateID, loadingSelectTemplate } from '$lib/stores.js'
 import { END_POINT } from '$lib/constants.js'
 import { browser } from '$app/environment';
 import { error } from '@sveltejs/kit';
+import { get } from 'svelte/store'; // Assuming you are using a store to manage state
 
 import axios from 'axios'
 
@@ -160,5 +163,69 @@ export const resumeConversation = async (params) => {
     return { data: data.result, status: data.success };
   } catch (err) {
     return { error: err };
+  }
+};
+
+// Function to select or deselect a resume
+export const selectResume = async (templateID) => {
+  loadingSelectTemplate.update(load => load = true);
+  try {
+    // Get the currently selected template from the store
+    const currentSelected = get(resumeTemplateID);
+    console.log(templateID === currentSelected);
+    console.log(currentSelected);
+
+    // If the selected resume matches the current one, deselect it
+    if (templateID === currentSelected) {
+      // Call backend to deselect or set resume template to null
+      await axios.delete(`${END_POINT}/v1/resume-template/delete`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem(PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME)}`,
+          },
+        },
+        { data: null }
+      );
+
+      // Reset the resumeTemplateID store
+      resumeTemplateID.set(null);
+    } else {
+      // Call backend to select the new resume
+      const response = await axios.post(`${END_POINT}/v1/resume-template/select`, { templateID },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem(PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME)}`,
+          },
+        }
+      );
+
+      const result = response.data.data.result;
+      console.log(result);
+
+      // Update the store with the newly selected resume template ID
+      resumeTemplateID.set(result.resume_template);
+    }
+  } catch (error) {
+    console.error('Error selecting resume template:', error);
+  }
+  finally{
+    setTimeout(() => {
+      loadingSelectTemplate.update(load => load = false);
+    }, 2000);
+  }
+};
+
+export const checkedSelect = async () => {
+  try {
+    const response = await axios.get(`${END_POINT}/v1/resume-template/target`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(PUBLIC_APP_LOCALSTORAGE_TOKEN_NAME)}`,
+      },
+    })
+    const result = response.data.data.result;
+    console.log('here3', result);
+    resumeTemplateID.set(result.resume_template);
+  } catch (error) {
+
   }
 }

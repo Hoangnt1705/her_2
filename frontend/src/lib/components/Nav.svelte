@@ -17,7 +17,6 @@
   function isActivePath(regex) {
     return regex.test($page.url.pathname);
   }
-
 </script>
 
 <style>
@@ -62,7 +61,7 @@
         <a
           href={isActivePath(parseRecruiterPath) ? '' : '/parse-recruiter'}
           class="drhv intern-ai-drop"
-          on:click={() => isActivePath(parseRecruiterPath) ? '' :  loadPage = !loadPage }
+          on:click={() => (isActivePath(parseRecruiterPath) ? '' : (loadPage = !loadPage))}
           aria-current={isActivePath(parseRecruiterPath)}
           class:active={isActivePath(parseRecruiterPath)}
           data-sveltekit-preload-code>
@@ -87,7 +86,7 @@
         <a
           href={isActivePath(createCvPath) ? '' : '/resume-ai'}
           class="drhv senior-ai-drop"
-          on:click={() => isActivePath(createCvPath) ? '' : loadPage = !loadPage}
+          on:click={() => (isActivePath(createCvPath) ? '' : (loadPage = !loadPage))}
           aria-current={isActivePath(createCvPath)}
           class:active={isActivePath(createCvPath)}
           data-sveltekit-preload-code>
@@ -104,9 +103,25 @@
             <button
               type="button"
               class="update-to-senior py-2.5 px-6 text-sm rounded-lg text-white
-              cursor-pointer font-semibold text-center shadow-xs transition-all
-              duration-500">
+              cursor-pointer font-semibold text-center transition-all
+              duration-500"
+              style=" background-color: #8546F0; /* Button color */ box-shadow:
+              0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19); /*
+              Shadow for depth */ position: relative; overflow: hidden; /*
+              Ensures the glossy effect stays inside the button */ transition:
+              background-color 0.3s ease, box-shadow 0.3s ease; "
+              onmouseover="this.style.boxShadow='0 8px 16px rgba(0, 0, 0, 0.3),
+              0 12px 24px rgba(0, 0, 0, 0.22)';"
+              onmouseout="this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.2), 0
+              6px 20px rgba(0, 0, 0, 0.19)';">
               Upgrade to Resume AI
+              <!-- Glossy Effect -->
+              <div
+                style=" content: ''; position: absolute; top: 0; left: 0; right:
+                0; height: 50%; background: rgba(255, 255, 255, 0.2); /* White
+                glossy layer */ border-radius: inherit; pointer-events: none;
+                transform: translateY(-100%); transition: transform 0.5s ease; " />
+
             </button>
           </div>
           <div>
@@ -118,8 +133,7 @@
         </a>
         <div
           class:hidden={loadPage}
-          class="absolute top-0 start-0 size-full bg-white/50 rounded-lg
-          dark:bg-neutral-800/40" />
+          class="absolute top-0 start-0 size-full bg-white/50 rounded-lg " />
 
         <div
           class:hidden={loadPage}

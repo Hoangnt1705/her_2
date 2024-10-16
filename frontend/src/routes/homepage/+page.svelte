@@ -1,7 +1,184 @@
 <script>
   import { goto } from "$app/navigation";
-  import {onMount} from 'svelte';
+  import { onMount, onDestroy } from "svelte";
+  import xsg from "animejs";
+  let anime = xsg;
+  let contentElement;
+  let titleElement;
+  let authorElement;
+  let buttonElement;
+  let modelElement;
+  let svgElement;
+  let slideItem1,
+    slideItem2,
+    slideItem3,
+    slideItem4,
+    slideItem5,
+    slideItem6,
+    slideItem7,
+    slideItem8,
+    slideItem9,
+    slideItem10;
+  onDestroy(() => {
+    anime.remove([
+      titleElement,
+      modelElement,
+      authorElement,
+      buttonElement,
+      svgElement,
+      slideItem1,
+      slideItem2,
+      slideItem3,
+      slideItem4,
+      slideItem5,
+      slideItem6,
+      slideItem7,
+      slideItem8,
+      slideItem9,
+      slideItem10,
+    ]);
+  });
+  onMount(() => {
+    // Animate the slides
+    anime({
+      targets: slideItem1,
+      opacity: [0, 1],
+      duration: 1000,
+      easing: "easeOutExpo",
+      delay: 1800,
+    });
+    anime({
+      targets: slideItem2,
+      opacity: [0, 1],
+      duration: 1000,
+      easing: "easeOutExpo",
+      delay: 2000,
 
+    });
+    anime({
+      targets: slideItem3,
+      opacity: [0, 1],
+      duration: 1000,
+      easing: "easeOutExpo",
+      delay: 2200,
+
+    });
+    anime({
+      targets: slideItem4,
+      opacity: [0, 1],
+      duration: 1000,
+      easing: "easeOutExpo",
+      delay: 2400,
+
+    });
+    anime({
+      targets: slideItem5,
+      opacity: [0, 1],
+      duration: 1000,
+      easing: "easeOutExpo",
+      delay: 2600,
+
+    });
+    anime({
+      targets: slideItem6,
+      opacity: [0, 1],
+      duration: 1000,
+      easing: "easeOutExpo",
+      delay: 2800,
+
+    });
+    anime({
+      targets: slideItem7,
+      opacity: [0, 1],
+      duration: 1000,
+      easing: "easeOutExpo",
+      delay: 3000,
+    });
+    anime({
+      targets: slideItem8,
+      opacity: [0, 1],
+      duration: 1000,
+      easing: "easeOutExpo",
+      delay: 3200,
+    });
+    anime({
+      targets: slideItem9,
+      opacity: [0, 1],
+      duration: 1000,
+      easing: "easeOutExpo",
+      delay: 3400,
+    });
+    anime({
+      targets: slideItem10,
+      opacity: [0, 1],
+      duration: 1000,
+      easing: "easeOutExpo",
+      delay: 3600,
+    });
+
+    // Animate the title
+    anime({
+      targets: titleElement,
+      opacity: [0, 1],
+      duration: 1000,
+      easing: "easeOutExpo",
+      delay: 300,
+    });
+
+    // Animate the author section
+    anime({
+      targets: authorElement,
+      opacity: [0, 1],
+      translateX: [-50, 0],
+      delay: 500,
+      duration: 1000,
+      easing: "easeOutExpo",
+    });
+
+    // Animate the button
+    anime({
+      targets: buttonElement,
+      scale: [0, 1],
+      opacity: [0, 1],
+      delay: 1000,
+      duration: 800,
+      easing: "easeOutElastic(1, 0.5)",
+    });
+
+    // Animate the model image
+    anime({
+      targets: modelElement,
+      opacity: [0, 1],
+      translateY: [50, 0],
+      delay: 1200,
+      duration: 1000,
+      easing: "easeOutExpo",
+    });
+
+    // Animate the SVG logo
+    anime({
+      targets: svgElement,
+      strokeDashoffset: [anime.setDashoffset, 0],
+      easing: "easeInOutSine",
+      duration: 1500,
+      delay: function (el, i) {
+        return i * 250;
+      },
+      direction: "alternate",
+      loop: true,
+    });
+  });
+
+  function handleGetStarted() {
+    anime({
+      targets: contentElement,
+      opacity: 0,
+      translateY: -50,
+      duration: 500,
+      easing: "easeInExpo",
+      complete: () => goto("/"),
+    });
+  }
 </script>
 
 <style>
@@ -258,40 +435,40 @@
 
   <div class="banner">
     <div class="slider" style="--quantity: 10">
-      <div class="item" style="--position: 1">
+      <div class="item" style="--position: 1" bind:this={slideItem1}>
         <img src="images/resume_1.jpg" alt="" />
       </div>
-      <div class="item" style="--position: 2">
+      <div class="item" style="--position: 2" bind:this={slideItem2}>
         <img src="images/resume_2.jpg" alt="" />
       </div>
-      <div class="item" style="--position: 3">
+      <div class="item" style="--position: 3" bind:this={slideItem3}>
         <img src="images/resume_3.jpg" alt="" />
       </div>
-      <div class="item" style="--position: 4">
+      <div class="item" style="--position: 4" bind:this={slideItem4}>
         <img src="images/resume_4.jpg" alt="" />
       </div>
-      <div class="item" style="--position: 5">
+      <div class="item" style="--position: 5" bind:this={slideItem5}>
         <img src="images/resume_5.jpg" alt="" />
       </div>
-      <div class="item" style="--position: 6">
+      <div class="item" style="--position: 6" bind:this={slideItem6}>
         <img src="images/resume_6.jpg" alt="" />
       </div>
-      <div class="item" style="--position: 7">
+      <div class="item" style="--position: 7" bind:this={slideItem7}>
         <img src="images/resume_7.jpg" alt="" />
       </div>
-      <div class="item" style="--position: 8">
+      <div class="item" style="--position: 8" bind:this={slideItem8}>
         <img src="images/resume_8.jpg" alt="" />
       </div>
-      <div class="item" style="--position: 9">
+      <div class="item" style="--position: 9" bind:this={slideItem9}>
         <img src="images/resume_9.jpg" alt="" />
       </div>
-      <div class="item" style="--position: 10">
+      <div class="item" style="--position: 10" bind:this={slideItem10}>
         <img src="images/resume_10.jpg" alt="" />
       </div>
     </div>
-    <div class="content">
-      <h1 data-content="Resume AI">Resume AI</h1>
-      <div class="author">
+    <div class="content" bind:this={contentElement}>
+      <h1 data-content="Resume AI" bind:this={titleElement}>Resume AI</h1>
+      <div class="author" bind:this={authorElement}>
         <h2 class="font-bold">
           <svg
             class="logo-brand"
@@ -400,22 +577,26 @@
           Create a resume using AI, and condense the recruitment information
         </p>
         <div style="margin-top:20px">
-          <button on:click={() => (goto('/'))}
+          <button
+            on:click={() => goto('/')}
             data-ripple-light="true"
             class="btn-get-started active:opacity-[0.85]"
-            type="button">
+            type="button"
+            bind:this={buttonElement}>
             <span>>>> Get Started</span>
           </button>
         </div>
       </div>
-      <div class="model" style="background-image: url(images/model.png)"/>
+      <div
+        class="model"
+        style="background-image: url(images/model.png)"
+        bind:this={modelElement} />
       <div class="copy-right w-full text-xs bottom-0 text-gray-800">
         © 2024 Her. All rights reserved.
       </div>
     </div>
   </div>
 </div>
-
 <!-- <script>
   import "$lib/css/homepage.css";
   import { afterUpdate, onMount, tick } from "svelte";

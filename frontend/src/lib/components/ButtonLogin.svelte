@@ -3,65 +3,54 @@
   import { invalidate } from "$app/navigation";
   import { onMount } from "svelte";
   import { accessToken, user } from "$lib/stores.js";
-
 </script>
 
 <style>
-  @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap");
-
   /* CSS */
-  .login-wrap {
-    font-family: "Roboto Mono", monospace;
-  }
+  
   .button-22 {
     align-items: center;
     appearance: button;
-    background-color: #8546F0;
+    background-color: #9659ff; /* More vibrant purple */
     border-radius: 8px;
-    border-style: none;
-    box-shadow: rgba(255, 255, 255, 0.26) 0 1px 2px inset;
+    border: 2px solid #bba4f0; /* Subtle border for better contrast */
+    box-shadow: rgba(0, 0, 0, 0.1) 0 4px 6px, rgba(255, 255, 255, 0.2) 0 1px 2px inset;
     box-sizing: border-box;
     color: #fff;
     cursor: pointer;
     flex-direction: row;
     flex-shrink: 0;
     font-size: 100%;
+    font-weight: 600; /* Slightly bolder text */
     line-height: 1.15;
-    padding: 10px 21px;
+    padding: 12px 24px; /* Increased padding for balance */
     text-align: center;
     text-transform: none;
-    transition: color 0.13s ease-in-out, 0.13s ease-in-out,
-      opacity 0.13s ease-in-out, box-shadow 0.13s ease-in-out;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
     width: 200px;
-    margin-top: 10px;
   }
 
   .button-22:active {
-    /* background-color: #006AE8; */
     border-color: #fff;
-    border: 3px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 3px 5px inset;
   }
 
   .button-22:hover {
-    background-color: #6a38cc;
+    background-color: #7b47d3; /* Darker purple on hover */
+    box-shadow: rgba(0, 0, 0, 0.15) 0 6px 8px, rgba(255, 255, 255, 0.2) 0 2px 4px inset;
   }
+
   p {
     line-height: 20px !important;
     padding: 3px 0;
   }
 </style>
 
-<div class="login-wrap" style="margin: 22px;">
-  <p style="color: #1b254b;font-weight: 500;font-size: 0.675rem;">Login</p>
-  <p style="color: #a3aed0;font-size: 0.675rem;">
-    Save your chat history, share chats, and personalize your experience.
-  </p>
   <button
     class="button-22"
     on:click={() => window.location.href = '/account/login'}>
     Sign in
   </button>
-</div>

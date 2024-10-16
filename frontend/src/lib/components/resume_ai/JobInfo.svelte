@@ -23,8 +23,7 @@
         class="outline-none py-3 px-4 block w-full border border-solid
         border-red-200 rounded-lg text-sm focus:border-red-500
         focus:ring-red-500 disabled:opacity-50 disabled:pointer-events-none
-        dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
-        dark:placeholder-neutral-500 dark:focus:ring-neutral-600 textareaScroll"
+        textareaScroll"
         rows="15"
         placeholder="Please enter the recruitment information." />
     </div>

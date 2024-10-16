@@ -7,16 +7,19 @@ const ResumeTemplateSchema = new Schema(
             type: String,
             required: true,
         },
-        symbol_number:{
-            type: Number,
+        symbol: {
+            type: String,
             required: true,
+            unique: true,
         },
-        url: {
+        image_url: {
             type: String,
             required: true,
         },
-
-
+        template: {
+            type: String,
+            required: true,
+        }
     }
 );
 

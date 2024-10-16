@@ -36,3 +36,6 @@ export const openSidebarResumeConversation = writable(false);
 export const resizeMainPageResumeAI = writable(null);
 export const resumeConversationID = writable(null);
 export const documentsByIDConversation = writable([]);
+export const resumeTemplateID = writable(null);
+export const loadingSelectTemplate = writable(false);
+export const activeSidebarTemplate = writable(false);

@@ -1,20 +1,42 @@
 <script>
-  import { fade, fly } from "svelte/transition";
+  import { fade, fly, slide } from "svelte/transition";
   import { svg } from "$lib/constants.js";
   import "$lib/css/main.css";
   import { onMount, onDestroy } from "svelte";
-  import { activeRTSidebar } from "$lib/stores.js";
+  import { activeRTSidebar, resumeTemplateID, loadingSelectTemplate } from "$lib/stores.js";
   import { Dialog, Overlay } from "svelte-materialify";
   import FullScreenResumeTemplate from "$lib/components/resume_ai/FullScreenResumeTemplate.svelte";
-
-  export let resumeTemplateValue;
-  let active = false;
+  import axios from "axios";
+  import { END_POINT } from "$lib/constants.js";
+  import { lottieExport } from "$lib/utils/lottieFile.js";
+  import { selectResume, checkedSelect } from "$lib/context/MainContext.js";
+  export let resumeTemplateValue; 
+  let lottieContainer;
+  let lottiePath =
+    "https://lottie.host/1721e596-df86-4ffe-9f5c-67a8a302916f/Eq3csNgIUO.json"; // the path to your animation JSON file;
+    let animationInstance;
+    let active = false;
   let responsive = false;
   let selectedIndex = null;
   let isOpenFullScreenRT = false;
+  let templateData = [];
   $: if (responsive) active = $activeRTSidebar;
-  
-  onDestroy(() =>activeRTSidebar.update(a => a = false));
+  $: if (!$loadingSelectTemplate) resumeTemplateValue = $resumeTemplateID;
+  onMount(() => {
+    animationInstance = lottieExport(lottieContainer, lottiePath);
+  });
+  onMount(async () => {
+    try {
+      const response = await axios.get(`${END_POINT}/v1/resume-template/`);
+      templateData = response.data.data.result;
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  onMount(async () => {
+    await checkedSelect();
+  })
+
   onMount(() => {
     const mediaQuery = window.matchMedia("(max-width: 768px)"); // Adjust the width as needed
 
@@ -37,20 +59,17 @@
       mediaQuery.removeEventListener("change", handleScreenChange);
     };
   });
-
-  const selectResume = (index) => {
-    if (index == localStorage.getItem("resumeId")) {
-      localStorage.removeItem("resumeId");
-      return (resumeTemplateValue = null);
+  onDestroy(() => {
+    if (animationInstance) {
+      animationInstance.destroy();
     }
-    localStorage.setItem("resumeId", index);
-    return (resumeTemplateValue = parseInt(localStorage.getItem("resumeId")));
-  };
+  });
+  onDestroy(() => activeRTSidebar.update((a) => (a = false)));
+
   function handleOverlay() {
     active = !active;
     return activeRTSidebar.update((s) => (s = !s));
   }
-
   function toggleSidebar() {
     if (responsive) {
       active = !active;
@@ -79,15 +98,15 @@
   .sidebar-closed {
     transform: translateX(100%);
   }
-  .selected {
-    border: 2px solid #1E293B; /* Example border color for selected state */
+  /* .selected {
+    border: 2px solid #1E293B; 
     border-radius: 5px;
-  }
+  } */
 
   .success-icon {
     position: absolute;
     top: 10px;
-    left: 10px;
+    right: 60px;
     width: 24px;
     height: 24px;
   }
@@ -111,9 +130,9 @@
     <button
       out:fade={{ duration: 100 }}
       type="button"
-      class="resumeTemplateSidebarBtn absolute inline-flex top-2.5 right-0 items-center
-      justify-center px-3 py-1.5 overflow-hidden tracking-tighter text-white
-      bg-gray-900 rounded-lg group text-[11px]"
+      class="resumeTemplateSidebarBtn absolute inline-flex top-2.5 right-0
+      items-center justify-center px-3 py-1.5 overflow-hidden tracking-tighter
+      text-white bg-gray-800 rounded-lg group text-[11px] z-[9] hover:bg-gray-900"
       on:click={toggleSidebar}
       aria-label="Toggle navigation">
       <span class="sr-only">Toggle Navigation</span>
@@ -173,8 +192,7 @@
       type="button"
       class="text-gray-500 hover:text-gray-600 text-sm font-semibold
       rounded-full border border-transparent text-gray-800 hover:bg-gray-100
-      disabled:opacity-50 disabled:pointer-events-none dark:text-white
-      dark:hover:bg-neutral-700 s-Ya-e_a9uP7N4"
+      disabled:opacity-50 disabled:pointer-events-none s-Ya-e_a9uP7N4"
       on:click={toggleSidebar}
       aria-label="Toggle navigation">
       <span class="sr-only">Toggle Navigation</span>
@@ -206,9 +224,11 @@
     data-hs-accordion-always-open>
 
     <ul class="space-y-1.5">
-      {#each [0, 1, 2] as _, index}
-        <!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
-        <li class={selectedIndex === index ? 'selected' : ''}>
+      {#each templateData as template (template._id)}
+        <li
+          class="mb-5"
+          style="box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3)
+          0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;">
           <div
             class="sm:self-end col-span-12 sm:col-span-5 md:col-span-4
             lg:col-span-3 relative">
@@ -217,22 +237,38 @@
               <div
                 data-ripple-light="true"
                 role="button"
-                on:click={() => handleClick(index)}
-                on:keydown={() => handleClick(index)}
+                on:click={() => handleClick(template._id)}
+                on:keydown={() => handleClick(template._id)}
                 tabindex="0"
                 class="aspect-w-12 aspect-h-7 sm:aspect-none rounded-xl
                 overflow-hidden">
                 <img
                   class="h-full group-hover:scale-105 transition-transform
                   duration-500 ease-in-out rounded-xl w-full object-cover"
-                  src="https://www.resumehelp.com/wp-content/uploads/2023/09/Harvard-Resume-Template-Example.svg"
-                  alt="" />
-                {#if resumeTemplateValue == index}
+                  src={template.image_url}
+                  alt={template.name} />
+                {#if resumeTemplateValue === template._id}
                   <div class="success-icon">
-                    <span style="    box-shadow: 4.0px 8.0px 8.0px hsl(0deg 0% 0% / 0.38);" class="py-1 px-2 inline-flex items-center gap-x-1 text-xs font-medium bg-teal-100 text-teal-800 rounded-full dark:bg-teal-500/10 dark:text-teal-500">
-                      <svg class="shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
-                        <path d="m9 12 2 2 4-4"></path>
+                    <span
+                      style=" box-shadow: 4.0px 8.0px 8.0px hsl(0deg 0% 0% /
+                      0.38);"
+                      class="py-1 px-2 inline-flex items-center gap-x-1 text-xs
+                      font-medium bg-teal-100 text-teal-800 rounded-full">
+                      <svg
+                        class="shrink-0 size-3"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path
+                          d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477
+                          2 12s4.477 10 10 10z" />
+                        <path d="m9 12 2 2 4-4" />
                       </svg>
                       Picked
                     </span>
@@ -241,18 +277,18 @@
               </div>
               <div class="absolute bottom-0 start-0 end-0 p-2">
                 <div
-                  class="font-semibold text-gray-800 rounded-lg bg-white p-3
-                  dark:bg-neutral-800 dark:text-neutral-200">
+                  class="font-semibold text-gray-800 rounded-lg shadow-xl
+                  shadow-blue-gray-900/50 backdrop-blur-sm p-3">
                   <div>
-                    <span>Basic</span>
+                    <span>{template.name}</span>
                   </div>
-                  {#if selectedIndex === index}
+                  {#if selectedIndex === template._id}
                     <div class="flex flex-col space-y-2">
                       <button
                         type="button"
-                        on:click={() => selectResume(index)}
+                        on:click={() => selectResume(template._id)}
                         class="w-full gap-2 flex content-center items-center
-                        delay-50 select-none rounded-lg {resumeTemplateValue == index ? 'bg-gray-900' : 'bg-emerald-300'}
+                        delay-50 select-none rounded-lg {resumeTemplateValue == template._id ? 'bg-gray-900' : 'bg-emerald-300'}
                         py-2 px-4 text-center align-middle font-sans text-xs
                         font-bold uppercase text-white shadow-md
                         shadow-gray-900/10 transition-all hover:shadow-lg
@@ -260,7 +296,7 @@
                         focus:shadow-none active:opacity-[0.85]
                         active:shadow-none disabled:pointer-events-none
                         disabled:opacity-50 disabled:shadow-none">
-                        {#if resumeTemplateValue == index}
+                        {#if resumeTemplateValue == template._id}
                           <svg
                             width="24"
                             height="24"
@@ -298,7 +334,7 @@
                               class="my-path" />
                           </svg>
                         {/if}
-                        {resumeTemplateValue == index ? 'Unselect' : 'Select'}
+                        {resumeTemplateValue == template._id ? 'Unselect' : 'Select'}
                       </button>
                       <button
                         on:click={openModalFullScreenRT}
@@ -368,7 +404,25 @@
       </li> -->
 
       <!-- Add more items as needed -->
+
     </ul>
+    <div
+      class:hidden={!$loadingSelectTemplate}
+      class="absolute top-0 start-0 size-full bg-gray-300 bg-opacity-60
+      backdrop-blur-sm ">
+      <div
+        class="absolute top-1/2 start-1/2 transform -translate-x-1/2
+        -translate-y-1/2">
+        <div class="grid gap-3">
+          <div class="flex items-center justify-center">
+            <div
+              bind:this={lottieContainer}
+              class="mx-auto grid place-items-center w-[200px] h-[200px]" />
+          </div>
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
   </nav>
 </div>
 

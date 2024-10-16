@@ -17,6 +17,7 @@ import axios from 'axios';
 import authRoute from './routes/auth.js'; // Assuming this is the correct route for authentication
 import adminRoute from "./routes/admin/index.js";
 import userRoute from "./routes/user.js";
+import resumeTemplate from "./routes/resumeTemplate.js";
 import parseRecruiter from './routes/parseRecruiter.js';
 import resumeAIRoute from './routes/resumeAI.js';
 import chatAndConversation from './routes/chatAndConversation.js';
@@ -113,6 +114,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
   .use('/api/v1/parse-recruiter', parseRecruiter)
   .use('/api/v1/chat-and-conversation', chatAndConversation)
   .use('/api/v1/resume-ai', resumeAIRoute)
+  .use('/api/v1/resume-template', resumeTemplate)
 app.use('/*', async (req, res) => {
   res.status(501).send("Don't implement.")
 })

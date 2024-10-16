@@ -1,6 +1,5 @@
 <script>
 	import { visible } from './../../../../lib/stores.js';
-    import '$lib/css/main.css'
     import { getContext, onMount, setContext, tick, onDestroy, afterUpdate, beforeUpdate } from 'svelte'
     import Nav from '$lib/components/Nav.svelte'
     import { sidebar } from '$lib/stores.js'
@@ -10,9 +9,9 @@
     import { fade } from 'svelte/transition'
     import ParseRecruiter from '$lib/components/ParseRecruiter.svelte'
     import { END_POINT } from '$lib/constants.js'
-    import { accessToken, dataParseRecruiter, statusSend } from '$lib/stores.js'
+    import { accessToken, dataParseRecruiter, statusSend, activeChatId } from '$lib/stores.js'
     import AlertMissingField from '$lib/components/alert/alertMissingField.svelte';
-
+    import '$lib/css/main.css'
     import axios from 'axios'
   
     export let data;
@@ -123,13 +122,15 @@
     afterUpdate(() => {
       div.scrollTo(0, 0);
     });
+    onDestroy(() => activeChatId.set(null));
   </script>
   
  
-    <AlertMissingField visible={visibleWarning} content={errorMessage} title="Warning!"/>
     <main class="main-page content-center" bind:this={div}>
+      <AlertMissingField visible={visibleWarning} content={errorMessage} title="Warning!"/>
       <Nav />
-      <div
+      <div>
+        <div
         class="grid grid-cols-1 text-xl leading-6 justify-center
         .max-h-1 wrap-view-parse-recruiter">
         <div class="view new-func-view">
@@ -150,8 +151,7 @@
                   rounded-lg border border-gray-300 focus:ring-red-500
                   focus:border-red-500 textareaScroll outline-none
                    disabled:opacity-50 disabled:pointer-events-none
-                  dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
-                  dark:placeholder-neutral-500 dark:focus:ring-neutral-600 textareaScroll" />
+                   textareaScroll" />
                 <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 -->
               </div>
             </div>
@@ -184,6 +184,8 @@
           </div>
         </div>
       </div>
+      </div>
+     
     </main>
   
   <!-- <Row>

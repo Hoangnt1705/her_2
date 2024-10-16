@@ -98,12 +98,9 @@
     const login = localStorage.getItem("login");
     if (!login) {
       try {
-        const response = await axios.get(
-          `${END_POINT}/auth/login/success`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get(`${END_POINT}/auth/login/success`, {
+          withCredentials: true,
+        });
         if (response.status === 200 && response.data.success) {
           const { user, accessToken, refreshToken } = response.data.data;
           signInHandle(accessToken, refreshToken, user);
@@ -120,8 +117,7 @@
           console.error(`Network error: ${error.message}`);
         }
       }
-    }
-    else return;
+    } else return;
   });
 </script>
 
@@ -242,8 +238,8 @@
   </div>
 
   <div
-    class="p-4 pb-1 ml-3 rounded-lg col-span-3 text-xs text-gray-500 content-end
-    items-center text-center">
+    class="mt-[-20px] p-4 pb-1 ml-3 rounded-lg col-span-3 text-xs text-gray-500
+    content-end items-center text-center">
     © 2024 Her. All rights reserved.
   </div>
   <!-- Skeleton or loader (you can style this as needed) -->

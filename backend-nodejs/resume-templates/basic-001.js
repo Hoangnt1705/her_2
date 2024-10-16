@@ -1,5 +1,4 @@
 const resumeContent = (data) => {
-  console.log(data.leadership ? 'true' : 'false', data.leadership);
   const renderSkills = `
 ${data.skills[0].technical && data.skills[0].technical.length > 0 ? `
     <div>

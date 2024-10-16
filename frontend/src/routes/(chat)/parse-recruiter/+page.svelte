@@ -12,8 +12,13 @@
   import AlertMissingField from '$lib/components/alert/alertMissingField.svelte';
   import { goto } from '$app/navigation'
   import axios from 'axios'
-
+  import IntroductionPage from '$lib/components/parser-recruiter/IntroductionPage.svelte'
+  import {lottieExport} from "$lib/utils/lottieFile.js";
+  
   export let data
+  let lottieContainer;
+  let lottiePath = 'https://lottie.host/d9bdd602-74e0-4208-9eb3-dbfb0dec5bcf/thhoToC7O2.json' // the path to your animation JSON file;
+  let animationInstance;
   let selectedModel = 'gpt-3'
   let messageBoxHeight = '30px'
   let translateXContent = '0px'
@@ -141,14 +146,21 @@
 };
 
 
-  onDestroy(() => {
-    stopAutoWriter()
-  })
-
+  onMount(() => {
+    animationInstance = lottieExport(lottieContainer, lottiePath);
+  });
   onMount(() => {
     typeWriter();
-    activeChatId.set(null);
   });
+  onDestroy(() => {
+    stopAutoWriter()
+  });
+  onDestroy(() => {
+    if (animationInstance) {
+      animationInstance.destroy();
+    }
+  });
+  onDestroy(() => activeChatId.set(null));
 
   // function handleUpdate(event) {
   //   isOpen = event.detail.isOpen
@@ -181,8 +193,7 @@
                 rounded-lg border border-gray-300 focus:ring-red-500
                 focus:border-red-500 textareaScroll outline-none 
                 disabled:opacity-50 disabled:pointer-events-none
-                dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
-                dark:placeholder-neutral-500 dark:focus:ring-neutral-600 textareaScroll" />
+                textareaScroll" />
               <!-- dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 -->
             </div>
           </div>
@@ -205,6 +216,11 @@
         </div>
           
        
+      </div>
+      <div class="w-full">
+        <div bind:this={lottieContainer} 
+             class="mx-auto grid place-items-center"
+             style="width: 100%; height: auto; max-width: 500px; max-height: 300px;"></div>
       </div>
     </div>
   </main>

@@ -11,12 +11,10 @@ import fs from 'fs';
 import uuid from 'uuid-v4';
 import sanitize from 'sanitize-filename';
 import { pySocket } from '../socket/index.js';
-import basic001 from '../template_resume/basic-001.js';
 import { printIn } from '../service/consoleLog.js';
-const templateResume = {
-  basic001: basic001,
-}
-// ... your routes
+import basic001 from '../resume-templates/basic-001.js';
+
+// ... my routes
 const resumeAIRoute = express.Router();
 
 const upload = multer({ dest: 'uploads/' }); // Temporary storage
@@ -69,14 +67,14 @@ const generateResume = async (content, title) => {
  */
 
 resumeAIRoute.post('/upload', rateLimitAPI, verifyToken, async (req, res) => {
-  const { fullName, email, phoneNumber, birthday, address, zipCode, biography, jobInformation, languageResume, cid } = req.body;
+  const { fullName, email, phoneNumber, birthday, address, zipCode, biography, jobInformation, languageResume, resumeTemplateValue, cid } = req.body;
   let cidAuthenticated;
   let resFlask;
   let conversation;
   if (!fullName && !email && !phoneNumber && !birthday && !address && !biography && !jobInformation && !languageResume) {
     return sendError(res, 'Data in missing');
   }
-  console.log('email>>>>>>>>>>>', email, cid)
+  console.log('email>>>>>>>>>>>', email, cid, resumeTemplateValue)
   const personal = `FullName: ${fullName}, Email: ${email}, Phone: ${phoneNumber}, Address: ${address}, and Zip Code: ${zipCode}
   Sumary:
   ${biography}
@@ -88,7 +86,7 @@ resumeAIRoute.post('/upload', rateLimitAPI, verifyToken, async (req, res) => {
 
     if (cid && !cidAuthenticated) return sendError(res, "Forbidden!", 403);
     // const { instanceConnect: redisClient } = await getRedis();
-    pySocket.emit('resume-ai', { 
+    pySocket.emit('resume-ai', {
       'personal': personal,
       'job': jobInformation,
       'language': languageResume
@@ -102,8 +100,11 @@ resumeAIRoute.post('/upload', rateLimitAPI, verifyToken, async (req, res) => {
     // Cache the result for future requests
     // redisClient.set(data, JSON.stringify(resFlask), { EX: 3600 });
     // console.log(resFlask.data.content);
-
-    const uploadResult = await generateResume(templateResume.basic001(resFlask.data.content), resFlask.data.content.title);
+    let resumeTemplate = await ResumeTemplateSchema.findOne({ _id: resumeTemplateValue }).select({ template: 1, _id: 0 });
+    console.log('object', resumeTemplate);
+    const functionString = resumeTemplate.template;
+    const resumeContent = eval(`(${functionString})`);
+    const uploadResult = await generateResume(resumeContent(resFlask.data.content), resFlask.data.content.title);
     if (!uploadResult.titleConversationResume && !uploadResult.pdfUrl) return sendError(res, 'Error handling upload', 403);
     if (!cidAuthenticated) {
       conversation = await ResumeAiConversation.create({
@@ -121,7 +122,7 @@ resumeAIRoute.post('/upload', rateLimitAPI, verifyToken, async (req, res) => {
       language: languageResume,
       conversation: cidAuthenticated || conversation._id,
     });
-    sendSuccess(res, 'PDF uploaded successfully', { result: cidAuthenticated ? {document} : { conversation, document }});
+    sendSuccess(res, 'PDF uploaded successfully', { result: cidAuthenticated ? { document } : { conversation, document } });
   } catch (error) {
     console.error('Error handling upload:', error);
     res.status(500).json({ error: 'Failed to upload PDF' });
@@ -284,4 +285,114 @@ resumeAIRoute.get('/document/:cid', verifyToken, async (req, res) => {
 //   }
 // });
 
+
+/**
+ * @route POST /api/v1/resume-ai/test
+ * @description Save function into MongoDB
+ * @access Public
+ */
+resumeAIRoute.post('/test', async (req, res) => {
+  try {
+    // The JavaScript function as a string
+    const templateResume = {
+      basic001: basic001,
+    }
+    const resumeContentAsString = templateResume.basic001.toString();
+
+    // Create a new document for system.js collections
+    const newFunction = new ResumeTemplateSchema({
+      name: "Basic 02",
+      symbol: "basic_002",
+      image_url: "https://firebasestorage.googleapis.com/v0/b/her-ai-a4653.appspot.com/o/resume-template-images%2Fcv_page-0001.jpg?alt=media&token=91adf947-3879-4cf0-8ad5-d020b27ad841",
+      template: resumeContentAsString   // Store the function as a string
+    });
+
+    // Save the function into MongoDB
+    await newFunction.save();
+
+    // Send success response
+
+    return sendSuccess(res, 'Function saved successfully!', 201);
+  } catch (error) {
+    // Handle errors
+    res.status(500).json({
+      success: false,
+      message: 'Failed to save function',
+      error: error.message
+    });
+  }
+});
+
+
+/**
+ * @route GET /api/v1/resume-ai/test-get
+ * @description Save function into MongoDB
+ * @access Public
+ */
+resumeAIRoute.get("/test-get", async (req, res) => {
+  try {
+    const data = {
+      leadership: true,
+      skills: [
+        {
+          technical: ["JavaScript", "MongoDB"],
+          language: ["English"],
+          laboratory: ["Physics Lab"],
+          interests: ["Coding", "Reading"]
+        }
+      ],
+      personal_info: {
+        name: "John Doe",
+        address: "123 Main St",
+        zipcode: "90210",
+        email: "john.doe@example.com",
+        phone: "123-456-7890"
+      },
+      education: [
+        {
+          institution: "ABC University",
+          location: "City, Country",
+          degree: "Bachelor of Science",
+          scores: "3.9 GPA",
+          duration: "2016-2020",
+          thesis: "Machine Learning",
+          relevant_coursework: "Artificial Intelligence"
+        }
+      ],
+      experience: [
+        {
+          organization: "XYZ Corp",
+          location: "City, Country",
+          position_title: "Software Engineer",
+          duration: "2020-2023",
+          description: ["Developed web applications", "Managed databases"],
+          projects: ["Project A", "Project B"]
+        }
+      ],
+      leadership_and_actives: [
+        {
+          organization: "Volunteer Org",
+          location: "City, Country",
+          role: "Team Leader",
+          duration: "2021-2022",
+          description: ["Led a team of volunteers", "Organized events"]
+        }
+      ]
+    };
+    let result = await ResumeTemplateSchema.findOne({ symbol: 'basic_001' }).select({ template: 1, _id: 0 });
+    console.log("result", result);
+    res.status(201).json({
+      success: true,
+      message: 'Function saved successfully!',
+      data: resumeHTML
+    });
+  } catch (error) {
+    // Handle errors
+    res.status(500).json({
+      success: false,
+      message: 'Failed to save function',
+      error: error.message
+    });
+  }
+})
 export default resumeAIRoute;

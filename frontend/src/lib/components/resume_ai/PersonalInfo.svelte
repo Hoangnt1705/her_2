@@ -137,14 +137,14 @@
           </h3>        <!-- Floating Input -->
         <!-- Full Name Input -->
         <div class="relative">
-            <input bind:value={fullName} type="text" id="hs-floating-input-name" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="Full name">
-            <label for="hs-floating-input-name" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] dark:text-white peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Full Name</label>
+            <input bind:value={fullName} type="text" id="hs-floating-input-name" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="Full name">
+            <label for="hs-floating-input-name" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Full Name</label>
         </div>
 
         <!-- Email Input -->
         <div class="relative">
-            <input bind:value={email} type="email" id="hs-floating-input-email" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="you@email.com">
-            <label for="hs-floating-input-email" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] dark:text-white peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Email</label>
+            <input bind:value={email} type="email" id="hs-floating-input-email" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="you@email.com">
+            <label for="hs-floating-input-email" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Email</label>
         </div>
 
         <!-- Phone Number Input -->
@@ -153,7 +153,7 @@
             <button
                 id="states-button"
                 data-dropdown-toggle="dropdown-states"
-                class="relative flex-shrink-0 overflow-hidden whitespace-nowrap inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white dark:border-gray-600"
+                class="relative flex-shrink-0 overflow-hidden whitespace-nowrap inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:outline-none"
                 type="button"
                 role="combobox"
                 aria-controls="dropdown-countries"
@@ -165,7 +165,7 @@
                 <div class="inline-flex items-center text-left">
                     <span class="flag flag-{selectedCountry.toLowerCase()} flex-shrink-0 mr-3" />
                     {#if options.format === 'national'}
-                    <span class="text-gray-600 dark:text-gray-400">+{selectedCountryDialCode}</span>
+                    <span class="text-gray-600">+{selectedCountryDialCode}</span>
                     {/if}
                 </div>
                 {:else}
@@ -188,7 +188,7 @@
             {#if isOpen}
                 <div
                 id="dropdown-countries"
-                class="absolute z-10 max-w-fit bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 overflow-hidden translate-y-11"
+                class="absolute z-10 max-w-fit bg-white rounded divide-y divide-gray-100 shadow overflow-hidden translate-y-11"
                 data-popper-reference-hidden=""
                 data-popper-escaped=""
                 data-popper-placement="bottom"
@@ -196,7 +196,7 @@
                 aria-labelledby="country-button"
                 tabindex="-1"
                 >
-                <div class="text-sm text-gray-700 dark:text-gray-200 max-h-48 overflow-y-auto" aria-labelledby="countries-button" role="listbox">
+                <div class="text-sm text-gray-700 max-h-48 overflow-y-auto" aria-labelledby="countries-button" role="listbox">
                     <input
                     aria-autocomplete="list"
                     type="text"
@@ -210,7 +210,7 @@
                         <button
                         value={country.iso2}
                         type="button"
-                        class="inline-flex py-2 px-4 w-full text-sm hover:bg-gray-100 dark:hover:bg-gray-600 active:bg-gray-800 dark:active:bg-gray-800 overflow-hidden {isActive ? 'bg-gray-600 dark:text-white' : 'dark:hover:text-white dark:text-gray-400'}"
+                        class="inline-flex py-2 px-4 w-full text-sm hover:bg-gray-100 overflow-hidden {isActive ? 'bg-gray-600' : ''}"
                         on:click={(e) => {
                             handleSelect(country.iso2, e);
                         }}
@@ -235,7 +235,7 @@
             bind:value={phone}
             {options}
             required
-            class="text-sm rounded-r-lg block w-full p-2.5 py-4 focus:outline-none border border-gray-300 border-l-gray-100 dark:border-l-gray-700 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white text-gray-900"
+            class="text-sm rounded-r-lg block w-full p-2.5 py-4 focus:outline-none border border-gray-300 border-l-gray-100 text-gray-900"
             />
         </div>
 
@@ -244,8 +244,8 @@
  
         <!-- Address Input -->
         <div class="relative">
-            <input bind:value={address} type="text" id="hs-floating-input-address" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="Address">
-            <label for="hs-floating-input-address" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] dark:text-white peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Address
+            <input bind:value={address} type="text" id="hs-floating-input-address" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500  focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none" placeholder="Address">
+            <label for="hs-floating-input-address" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Address
 
             </label>
         </div>
@@ -255,13 +255,13 @@
             bind:value={zipCode}
             type="text" 
             id="hs-floating-input-name" 
-            class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600 focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none"
+            class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500  focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2 outline-none"
             placeholder="Zip code" 
             pattern="[0-9]*" 
             inputmode="numeric"
             oninput="this.value = this.value.replace(/[^0-9]/g, '');"
             >
-            <label for="hs-floating-input-name" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] dark:text-white peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Zip code (Optional)</label>
+            <label for="hs-floating-input-name" class="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[&:not(:placeholder-shown)]:scale-90 peer-[&:not(:placeholder-shown)]:translate-x-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-1.5 peer-[&:not(:placeholder-shown)]:text-gray-500 dark:peer-[&:not(:placeholder-shown)]:text-neutral-500">Zip code (Optional)</label>
         </div>
         <div class="relative">
             <div class="flex">
@@ -274,7 +274,7 @@
                 {#if biography}
                 <div class="inline-flex flex-wrap gap-2 items-center pl-2">
                   <div>
-                    <span class="py-1 px-2 inline-flex items-center gap-x-1 text-xs font-medium bg-teal-100 text-teal-800 rounded-full">
+                    <span class="py-1 px-2 inline-flex items-center gap-x-1 text-xs font-medium bg-slate-900 text-white rounded-full">
                       <svg class="flex-shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
                         <path d="m9 12 2 2 4-4"></path>
@@ -309,7 +309,7 @@
                           <path d="M3.11222 6.04545L3.20668 3.94744L1.43679 5.08594L0.894886 4.14134L2.77415 3.18182L0.894886 2.2223L1.43679 1.2777L3.20668 2.41619L3.11222 0.318182H4.19105L4.09659 2.41619L5.86648 1.2777L6.40838 2.2223L4.52912 3.18182L6.40838 4.14134L5.86648 5.08594L4.09659 3.94744L4.19105 6.04545H3.11222Z" fill="#EF4444" />
                         </svg> Please enter your personal profile, including education, experience, skills, leadership abilities, and additional Information...
                       </p>
-                      <p class="flex items-center mt-1 text-gray-800 dark:text-neutral-400 text-left">
+                      <p class="flex items-center mt-1 text-gray-800 dark:text-neutral-400 text-left py-2">
                         <svg width="7" height="7" class="mr-1" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M3.11222 6.04545L3.20668 3.94744L1.43679 5.08594L0.894886 4.14134L2.77415 3.18182L0.894886 2.2223L1.43679 1.2777L3.20668 2.41619L3.11222 0.318182H4.19105L4.09659 2.41619L5.86648 1.2777L6.40838 2.2223L4.52912 3.18182L6.40838 4.14134L5.86648 5.08594L4.09659 3.94744L4.19105 6.04545H3.11222Z" fill="#EF4444" />
                         </svg> You have the option to present it as a personal introduction paragraph, or you may choose to list the information instead.

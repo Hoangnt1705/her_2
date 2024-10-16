@@ -15,12 +15,23 @@ export default withMT({
         BounceDelayOne: 'bounce 1s 0.2s infinite',
         BounceDelayTwo: 'bounce 1s 0.4s infinite',
         BounceDelayThree: 'bounce 1s 0.6s infinite',
+        scroll:
+					'scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite'
       },
+      keyframes: {
+				// ... other keyframes
+				scroll: {
+					to: {
+						transform: 'translate(calc(-50% - 0.5rem))'
+					}
+				}
+			},
       colors: {
         'navy-700': '#1b254b',
         'rose-400': '#FB7185',
         'rose-500': '#F43F5E',
-        'emerald-300': '#6EE7B7'
+        'emerald-300': '#6EE7B7',
+        'slate-900': '#0F172A',
 
       },
     },
@@ -39,7 +50,17 @@ export default withMT({
   ],
 });
 
+// This plugin adds each Tailwind color as a global CSS variable, e.g. var(--gray-200).
+function addVariablesForColors({ addBase, theme }) {
+  let allColors = flattenColorPalette(theme('colors'));
+  let newVars = Object.fromEntries(
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+  );
 
+  addBase({
+    ':root': newVars
+  });
+}
 // normal tailwind config
 
 // /** @type {import('tailwindcss').Config} */

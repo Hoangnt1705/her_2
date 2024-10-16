@@ -100,6 +100,7 @@
             jobInformation: jobValue,
             zipCode,
             languageResume,
+            resumeTemplateValue,
             cid: $resumeConversationID || null,
           },
           {
@@ -172,7 +173,7 @@
   onDestroy(() => dataResume.set(null));
   onDestroy(() => documentsByIDConversation.set([]));
   onDestroy(() => openSidebarResumeConversation.update((o) => (o = false)));
-
+  
   let div;
   $: resizeMainPageResumeAI.update((resize) => (resize = div?.offsetWidth));
   $: setTimeout(() => {
@@ -194,7 +195,7 @@
     content={contentWarning}
     visible={warningFieldAlertVisible} />
   <AlertSuccess
-    title="Success"
+    title="Success!"
     content="The biography has been updated successfully!"
     visible={updateBioAlertVisible} />
   {#if !$openSidebarResumeConversation}

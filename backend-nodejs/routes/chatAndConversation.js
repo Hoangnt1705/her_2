@@ -82,29 +82,39 @@ chatAndConversationRoute.get('/', async (req, res) => {
 });
 /**
  * @route PUT /api/v1/chat-and-conversation/description-chat-conversation-sidebar
- * @description update title chat in sidebar
+ * @description update title conversation in sidebar
  * @access private
  */
 chatAndConversationRoute.put('/description-chat-conversation-sidebar/update', verifyToken, async (req, res) => {
-  const { cid, title } = req.body;
+  const { cid, title, source } = req.body;
+  let chat;
   try {
-    const chat = await ParseRecruiterChat.findByIdAndUpdate(cid, { title });
+    if(!source) return sendError(res, "Forbidden!", 403);
+    if (source === "ParseRecruiterChat") {
+      chat = await ParseRecruiterChat.findByIdAndUpdate(cid, { title });
+    }
+    else chat = await ResumeAiConversation.findByIdAndUpdate(cid, { title });
+
     return sendSuccess(res, "update chat successfully.", { chat })
   } catch (error) {
     return sendError(res, error);
-  }
-})
+  };
+});
 
 /**
  * @route PUT /api/v1/chat-and-conversation/description-chat-conversation-sidebar/delete
- * @description delete chat in sidebar
+ * @description delete conversation in sidebar
  * @access private
  */
 
 chatAndConversationRoute.put('/description-chat-conversation-sidebar/delete', verifyToken, async (req, res) => {
-  const { cid } = req.body;
+  const { cid, source } = req.body;
   try {
-    await ParseRecruiterChat.findByIdAndUpdate(cid, { deleted: true });
+    if(!source) return sendError(res, "Forbidden!", 403);
+    if (source === "ParseRecruiterChat"){
+      await ParseRecruiterChat.findByIdAndUpdate(cid, { deleted: true });
+    }
+    else await ResumeAiConversation.findByIdAndUpdate(cid, { deleted: true });
     return sendSuccess(res, "delete chat successfully.")
   } catch (error) {
     return sendError(res, error);
