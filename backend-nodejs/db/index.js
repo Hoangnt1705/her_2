@@ -68,7 +68,8 @@ export const initRedis = async () => {
     password: process.env.REDIS_PASSWORD,
     socket: {
       host: process.env.REDIS_URI,
-      port: process.env.REDIS_PORT
+      port: process.env.REDIS_PORT,
+      
     }
   });
   client.instanceConnect = instanceRedis;

@@ -306,4 +306,3 @@ def create_ai(parse_language_resume_data, language_create_resume):
         # Handle case where the input is not a string
         print("Error: The input provided to json.loads is not a string.")
         return {"error": "The input is not a valid string."}
-

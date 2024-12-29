@@ -99,12 +99,12 @@ resumeAIRoute.post('/upload', rateLimitAPI, verifyToken, async (req, res) => {
     });
     // Cache the result for future requests
     // redisClient.set(data, JSON.stringify(resFlask), { EX: 3600 });
-    // console.log(resFlask.data.content);
+    printIn(resFlask.data.content);
     let resumeTemplate = await ResumeTemplateSchema.findOne({ _id: resumeTemplateValue }).select({ template: 1, _id: 0 });
     console.log('object', resumeTemplate);
     const functionString = resumeTemplate.template;
     const resumeContent = eval(`(${functionString})`);
-    const uploadResult = await generateResume(resumeContent(resFlask.data.content), resFlask.data.content.title);
+    const uploadResult = await generateResume(resumeContent(resFlask.data.content, languageResume), resFlask.data.content.title);
     if (!uploadResult.titleConversationResume && !uploadResult.pdfUrl) return sendError(res, 'Error handling upload', 403);
     if (!cidAuthenticated) {
       conversation = await ResumeAiConversation.create({
@@ -301,8 +301,8 @@ resumeAIRoute.post('/test', async (req, res) => {
 
     // Create a new document for system.js collections
     const newFunction = new ResumeTemplateSchema({
-      name: "Basic 02",
-      symbol: "basic_002",
+      name: "Basic 04",
+      symbol: "basic_004",
       image_url: "https://firebasestorage.googleapis.com/v0/b/her-ai-a4653.appspot.com/o/resume-template-images%2Fcv_page-0001.jpg?alt=media&token=91adf947-3879-4cf0-8ad5-d020b27ad841",
       template: resumeContentAsString   // Store the function as a string
     });

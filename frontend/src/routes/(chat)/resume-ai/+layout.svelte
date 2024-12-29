@@ -173,7 +173,8 @@
   onDestroy(() => dataResume.set(null));
   onDestroy(() => documentsByIDConversation.set([]));
   onDestroy(() => openSidebarResumeConversation.update((o) => (o = false)));
-  
+  onDestroy(() => isLoadGenerateResume.update((load) => (load = false)));
+
   let div;
   $: resizeMainPageResumeAI.update((resize) => (resize = div?.offsetWidth));
   $: setTimeout(() => {

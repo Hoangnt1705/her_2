@@ -112,7 +112,7 @@ def resume_ai(data_resume):
             content_language += "English."
         elif data_resume['language'] == "vietnam":
             content_language = "Vietnamese."
-        content_language += " Requires clarification of information: full name, email, phone number, birthday, address, zipcode."
+        # content_language += " Requires clarification of information: full name, email, phone number, birthday, address, zipcode."
         messages = [
             {"role": "system", "content": content_language},
             {"role": "user",
@@ -121,6 +121,7 @@ def resume_ai(data_resume):
         parse_language_response = parse_language_resume_data(messages)
         if parse_language_response.choices[0].message.content:
             print('create_ai(parse_language_response.choices[0].message.content)', parse_language_response.choices[0].message.content)
+
             send_success(emit, 'resume-ai', "Response Successfully", create_ai(parse_language_response.choices[0].message.content, data_resume['language']))
         else:
             send_error(emit, 'resume-ai', 'No content available')

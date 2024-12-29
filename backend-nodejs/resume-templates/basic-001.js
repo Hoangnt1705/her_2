@@ -1,4 +1,5 @@
-const resumeContent = (data) => {
+const resumeContent = (data, language) => {
+  const languageBoolean = language === "english";
   const renderSkills = `
 ${data.skills[0].technical && data.skills[0].technical.length > 0 ? `
     <div>
@@ -167,7 +168,7 @@ ${data.skills[0].technical && data.skills[0].technical.length > 0 ? `
         <div class="role">
           ${data.education.length ? `
           <div class="margin-main-role education">
-            <div class="title">Education</div>
+            <div class="title">${languageBoolean ? 'Education' : 'Học Vấn'}</div>
             ${data.education.map(edu => `
               <div class="module-edu marginTop">
                 <div class="flex-between">
@@ -186,15 +187,15 @@ ${data.skills[0].technical && data.skills[0].technical.length > 0 ? `
                     ${edu.duration}
                   </div>
                 </div>
-                ${edu.thesis ? `<div class="flex-between"><div>Thesis: ${edu.thesis}</div></div>` : ''}
-                ${edu.relevant_coursework ? `<div class="flex-between"><div>Relevant Coursework: ${edu.relevant_coursework}</div></div>` : ''}
+                ${edu.thesis ? `<div class="flex-between"><div>${languageBoolean ? 'Thesis' : 'Luận Văn'}: ${edu.thesis}</div></div>` : ''}
+                ${edu.relevant_coursework ? `<div class="flex-between"><div>${languageBoolean ? 'Relevant Coursework' : 'Các Khóa Học Liên Quan'}: ${edu.relevant_coursework}</div></div>` : ''}
               </div>
             `).join('')}
           </div>
           `: ''}
           ${data.experience.length ? `
            <div class="margin-main-role experience">
-            <div class="title">Experience</div>
+            <div class="title">${language === "english" ? 'Experience' : 'Kinh Nghiệm'}</div>
             ${data.experience.map(exp => `
               <div class="module-experience marginTop">
                 <div class="flex-between">
@@ -227,7 +228,7 @@ ${data.skills[0].technical && data.skills[0].technical.length > 0 ? `
           ` : ''}
          ${data.leadership_and_actives.length ? `
          <div class="margin-main-role leadership-and-actives">
-            <div class="title">Leadership and Actives</div>
+            <div class="title">${languageBoolean ? 'Leadership and Actives' : 'Vai Trò và Các Hoạt Động'}</div>
             ${data.leadership_and_actives.map(role => `
               <div class="module-laa marginTop">
                 <div class="flex-between">
@@ -257,7 +258,7 @@ ${data.skills[0].technical && data.skills[0].technical.length > 0 ? `
          `: ''}
          ${data.skills.length ? `
           <div class="margin-main-role skill-interest">
-            <div class="title">Skills & Interests</div>
+            <div class="title">${languageBoolean ? 'Skills & Interests' : 'Kỹ Năng & Sở Thích'}</div>
             <div class="module-skill-interests">
               ${renderSkills}
             </div>
